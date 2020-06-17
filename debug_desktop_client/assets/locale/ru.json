@@ -1,0 +1,17 @@
+{
+    "common_back": "Назад",
+    "common_save": "Сохранить",
+    "common_no_data": "Нет данных",
+    "common_cancel": "Отмена",
+    "common_add": "Добавить",
+    "common_remove": "Удалить",
+    "common_clear": "Очистить",
+    "connect": "Соединиться",
+    
+    "disconnect": "Разъединиться",
+    "date_format": "dd.MM.y, HH:mm",
+    "home": "Home",
+    "settings": "Логгер",
+    "channel_name": "Канал",
+    "add_delimiter": "Добавить разделитель"
+}

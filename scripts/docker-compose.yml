@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  # http://localhost:8001/#/
+  centrifugo:
+    image: centrifugo/centrifugo:v2.5
+    container_name: dev_centrifugo
+    restart: always
+    # depends_on:
+    #   - redis
+    ports:
+      - 8001:8001
+    volumes:
+      - ./config/centrifugo:/centrifugo
+    command: centrifugo --config=config.json --admin --admin_insecure # --engine=redis --redis_host=redis --redis_password=password 
+
+  # dev_redux_remote:
+  #   container_name: dev_redux_remote
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.remotedev_server
+  #   restart: always
+  #   ports:
+  #     - 8000:8000
+  #   command: remotedev --port 8000
+
+  # redis:
+  #   image: redis:4-alpine
+  #   container_name: redis
+  #   restart: always
+  #   ports:
+  #     - 6379:6379
+  #   volumes:
+  #     - ./config/redis:/usr/local/etc/redis
+  #   sysctls:
+  #     net.core.somaxconn: '511'
+  #   ulimits:
+  #     nofile:
+  #       soft: 65536
+  #       hard: 65536
+  #   command: redis-server /usr/local/etc/redis/redis.conf

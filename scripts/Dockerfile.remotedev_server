@@ -1,0 +1,5 @@
+FROM node:12
+
+WORKDIR /node/redux_remote
+
+RUN su root && npm install -g remotedev-server --unsafe-perm

@@ -1,0 +1,19 @@
+{
+    "token_hmac_secret_key": "secret",
+    "api_key": "strong_secret_for_api_auth",
+    "admin": true,
+    "admin_password": "password",
+    "admin_secret": "admin_secret",
+    "max_channel_length": 5000,
+    "connection_lifetime": 0,
+    "internal_port": "8001",
+    "api_port": "8001",
+    "port": "8001",
+    "log_level": "error",
+    "anonymous": true,
+    "publish": true,
+    "watch": true,
+    "presence": true,
+    "client_insecure": true,
+    "join_leave": true
+}
