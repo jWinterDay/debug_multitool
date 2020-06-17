@@ -1,6 +1,6 @@
 // import 'dart:async';
 
-import 'package:debug_desktop_client/services/local_storage_service.dart';
+import 'package:debug_desktop_client/services/db_service.dart';
 import 'package:debug_desktop_client/services/logger_service.dart';
 import 'package:flutter_simple_dependency_injection/injector.dart';
 
@@ -17,13 +17,25 @@ class AppDI {
       isSingleton: true,
     );
 
-    // local storage
-    di.map<LocalStorageService>(
+    // db
+    di.map<DbService>(
       (Injector di) {
-        return LocalStorageServiceImpl();
+        return DbService(
+          dbName: 'debug_desktop_client.db',
+          schemaInitPath: 'assets/db/schema_init.sql',
+          loggerService: loggerService,
+        );
       },
       isSingleton: true,
     );
+
+    // local storage
+    // di.map<LocalStorageService>(
+    //   (Injector di) {
+    //     return LocalStorageServiceImpl();
+    //   },
+    //   isSingleton: true,
+    // );
 
     loggerService.d('---di successfully initialized---');
   }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:debug_desktop_client/app_db.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:debug_desktop_client/app_local_storage.dart';
 import 'package:debug_desktop_client/mobx/channel_list.dart';
@@ -23,7 +24,8 @@ void main() {
     AppConfig.init(isUiTesting: false);
     await AppDI.init();
     await AppTranslations.init();
-    await AppLocalStorage.init();
+    await AppDb.init();
+    // await AppLocalStorage.init();
 
     runApp(_Main());
   }, (Object error, StackTrace stack) {

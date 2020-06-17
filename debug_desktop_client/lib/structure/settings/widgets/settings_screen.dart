@@ -93,20 +93,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   style: const TextStyle(fontSize: 18.0),
                                 ),
                               ),
-                              // CupertinoButton(
-                              //   child: Text(appTranslations.text('common_connect')),
-                              //   color: MyColors.primary.withOpacity(0.5),
-                              //   onPressed: () async {
-                              //     await _bloc.connect(channel);
-                              //   },
-                              // ),
-                              // CupertinoButton(
-                              //   child: Text(appTranslations.text('common_remove')),
-                              //   color: MyColors.red.withOpacity(0.5),
-                              //   onPressed: () {
-                              //     store.removeChannel(channel);
-                              //   },
-                              // ),
+                              CupertinoButton(
+                                child: Text(appTranslations.text('common_remove')),
+                                color: MyColors.red.withOpacity(0.5),
+                                onPressed: () {
+                                  _store.removeChannel(channel);
+                                },
+                              ),
+                              CupertinoButton(
+                                child: Text('fetch'),
+                                color: MyColors.red.withOpacity(0.5),
+                                onPressed: () {
+                                  _store.fetch();
+                                  // _store.removeChannel(channel);
+                                },
+                              ),
                             ],
                           ),
                         ),

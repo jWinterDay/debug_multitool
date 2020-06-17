@@ -8,10 +8,12 @@ import 'package:mobx/mobx.dart';
 import 'package:centrifuge/centrifuge.dart' as centrifuge;
 
 import 'connect_status.dart';
+import 'services/channel_service.dart';
 
 part 'channel.g.dart';
 
 LoggerService loggerService = di.get<LoggerService>();
+ChannelService _channelService = ChannelService();
 
 class Channel extends _Channel with _$Channel {
   String toJson() => json.encode(toMap());
@@ -93,22 +95,44 @@ abstract class _Channel with Store {
   String filterBlackList = '';
 
   @action
+  void setChannelUrl(String url) {
+    wsUrl = url;
+    _channelService.update(this);
+  }
+
+  @action
   void addLog(Log log) => logs.add(log);
 
   @action
   void clearLogs() => logs.clear();
 
   @action
-  void setFilterWhite(String filter) => filterWhiteList = filter;
+  void setFilterWhite(String filter) {
+    filterWhiteList = filter;
+
+    _channelService.update(this);
+  }
 
   @action
-  void setFilterBlack(String filter) => filterBlackList = filter;
+  void setFilterBlack(String filter) {
+    filterBlackList = filter;
+
+    _channelService.update(this);
+  }
 
   @action
-  void useWhiteList(bool val) => isWhiteListUsed = val;
+  void useWhiteList(bool val) {
+    isWhiteListUsed = val;
+
+    _channelService.update(this);
+  }
 
   @action
-  void useBlackList(bool val) => isBlackListUsed = val;
+  void useBlackList(bool val) {
+    isBlackListUsed = val;
+
+    _channelService.update(this);
+  }
 
   // centrifugo
   @observable

@@ -1,34 +1,16 @@
 import 'dart:convert';
 
+import 'package:debug_desktop_client/mobx/services/channel_service.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 import 'channel.dart';
 
 part 'channel_list.g.dart';
 
+ChannelService _channelService = ChannelService();
+
 class ChannelList extends _ChannelList with _$ChannelList {
-  static ChannelList fromJson(String str) => ChannelList.fromMap(json.decode(str) as Map<String, dynamic>);
-
   String toJson() => json.encode(toMap());
-
-  static ChannelList fromMap(Map<String, dynamic> json) {
-    // final List<dynamic> t = json['channelList'] as List<dynamic>;
-    // t.forEach((dynamic element) {
-    //   final Map<String, dynamic> m = element as Map<String, dynamic>;
-    //   print('${element.runtimeType} >>>> $m ');
-    // });
-
-    final ObservableList<Channel> calcList = () {
-      ObservableList<Channel> channelList;
-      if (json['channelList'] == null) {
-        return null;
-      }
-
-      return null;
-    }();
-
-    return ChannelList()..channelList = calcList; //json['channelList'] == null ? null : ObservableList<Channel>();
-  }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -57,6 +39,20 @@ abstract class _ChannelList with Store {
     }, orElse: () => null);
   }
 
+  Future<void> fetch() async {
+    _channelService.fetch().then((value) {
+      print('value = $value');
+    });
+  }
+
+  Future<void> _addToDb(Channel channel) async {
+    _channelService.add(channel);
+  }
+
+  Future<void> _deleteFromDb(Channel channel) async {
+    _channelService.delete(channel);
+  }
+
   @action
   String addChannel(String name) {
     final bool exists = channelList.any((Channel ch) => ch.name == name);
@@ -65,7 +61,12 @@ abstract class _ChannelList with Store {
       return 'Channel with this name already exists';
     }
 
-    channelList.add(Channel()..name = name);
+    final Channel channel = Channel()..name = name;
+
+    channelList.add(channel);
+
+    // save to db
+    _addToDb(channel);
 
     return null;
   }
@@ -79,9 +80,12 @@ abstract class _ChannelList with Store {
 
   @action
   void removeChannel(Channel channel) {
+    getChannelByName(channel.name).setConnected(isConnected: false);
     channelList.removeWhere((Channel ch) {
       return ch.name == channel.name;
     });
+
+    _deleteFromDb(channel);
   }
 
   @action
@@ -102,6 +106,7 @@ abstract class _ChannelList with Store {
 
   @action
   void setChannelUrl(Channel channel, String url) {
-    channel.wsUrl = url;
+    // delegate set connected to channel
+    channel.setChannelUrl(url);
   }
 }

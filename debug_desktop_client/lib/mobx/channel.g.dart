@@ -260,6 +260,17 @@ mixin _$Channel on _Channel, Store {
   final _$_ChannelActionController = ActionController(name: '_Channel');
 
   @override
+  void setChannelUrl(String url) {
+    final _$actionInfo =
+        _$_ChannelActionController.startAction(name: '_Channel.setChannelUrl');
+    try {
+      return super.setChannelUrl(url);
+    } finally {
+      _$_ChannelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void addLog(Log log) {
     final _$actionInfo =
         _$_ChannelActionController.startAction(name: '_Channel.addLog');
