@@ -118,7 +118,7 @@ class _ChannelState extends State<ChannelScreen> {
     return _input(
       textEditingController: _urlEditingController,
       placeholder: 'web socket url',
-      enabled: !connected,
+      enabled: false, // !connected,
       child: GestureDetector(
         onTap: () {
           channelListStore.setConnected(widget.channel, connected: !connected);
@@ -376,9 +376,11 @@ class _ChannelState extends State<ChannelScreen> {
                                 Observer(
                                   builder: (_) {
                                     final List<Log> list = channelListStore.currentChannel.filteredLogs;
-                                    // if (list.isNotEmpty) {
-                                    //   _scrollController.jumpTo(_scrollController.position?.maxScrollExtent ?? 0);
-                                    // }
+                                    if (list != null &&
+                                        list.isNotEmpty &&
+                                        (_scrollController?.position?.maxScrollExtent ?? 0) > 0) {
+                                      _scrollController.jumpTo(_scrollController.position?.maxScrollExtent ?? 0);
+                                    }
 
                                     return SliverList(
                                       delegate: SliverChildBuilderDelegate(

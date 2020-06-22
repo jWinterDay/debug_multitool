@@ -49,7 +49,7 @@ abstract class _Channel with Store {
   DateTime datetime;
 
   @observable
-  String wsUrl = 'ws://localhost:8001/connection/websocket?format=protobuf';
+  String wsUrl = 'ws://172.16.55.141:8001/connection/websocket?format=protobuf';
 
   /// channel name
   @observable
