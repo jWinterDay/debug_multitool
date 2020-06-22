@@ -13,5 +13,6 @@
     "home": "Home",
     "settings": "Логгер",
     "channel_name": "Канал",
-    "add_delimiter": "Добавить разделитель"
+    "add_delimiter": "Добавить разделитель",
+    "settings_no_channels": "Нет каналов"
 }

@@ -11,6 +11,7 @@ import 'package:debug_desktop_client/structure/settings/widgets/channel_screen.d
 import 'package:debug_desktop_client/tools/uikit.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
+import '../../../mobx/connect_status.dart';
 import 'channel_dialog.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -32,6 +33,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     final ChannelList _store = Provider.of<ChannelList>(context);
 
     return CupertinoPageScaffold(
@@ -60,6 +62,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
               return SliverList(
                 delegate: SliverChildListDelegate(
                   <Widget>[
+                    // empty
+                    if (_store.channelList.isEmpty)
+                      Container(
+                        height: size.height,
+                        child: Center(
+                          child: Text(
+                            appTranslations.text('settings_no_channels'),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+
+                    // data
                     ..._store.channelList.map((Channel channel) {
                       return GestureDetector(
                         onTap: () async {
@@ -71,7 +86,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                           margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                           decoration: BoxDecoration(
-                            color: channel.connected ? MyColors.green.withOpacity(0.1) : MyColors.white,
+                            color: channel.connectStatus == ConnectStatus.connected
+                                ? MyColors.green.withOpacity(0.1)
+                                : MyColors.white,
                             borderRadius: const BorderRadius.all(Radius.circular(8.0)),
                             border: Border.all(
                               width: 1.0,
@@ -84,7 +101,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 padding: const EdgeInsets.only(right: 8.0),
                                 child: Icon(
                                   CupertinoIcons.circle_filled,
-                                  color: channel.connected ? MyColors.green : MyColors.gray_666666,
+                                  color: channel.connectStatus == ConnectStatus.connected
+                                      ? MyColors.green
+                                      : MyColors.gray_666666,
                                 ),
                               ),
                               Expanded(

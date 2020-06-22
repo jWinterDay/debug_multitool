@@ -28,60 +28,60 @@ class ChannelService {
   }
 
   Future<void> add(Channel channel) async {
-    await _dbService.database.rawInsert(
-      '''
-        insert into channel(
-          ws_url,
-          name,
-          description,
-          is_white_list_used,
-          is_black_list_used,
-          filter_white_list,
-          filter_black_list)
-        values (?,?,?,?,?,?,?)
-        ''',
-      [
-        channel.wsUrl,
-        channel.name,
-        channel.description ?? '',
-        channel.isWhiteListUsed ? 1 : 0,
-        channel.isBlackListUsed ? 1 : 0,
-        channel.filterWhiteList ?? '',
-        channel.filterBlackList ?? ''
-      ],
-    );
+    // await _dbService.database.rawInsert(
+    //   '''
+    //     insert into channel(
+    //       ws_url,
+    //       name,
+    //       description,
+    //       is_white_list_used,
+    //       is_black_list_used,
+    //       filter_white_list,
+    //       filter_black_list)
+    //     values (?,?,?,?,?,?,?)
+    //     ''',
+    //   [
+    //     channel.wsUrl,
+    //     channel.name,
+    //     channel.description ?? '',
+    //     channel.isWhiteListUsed ? 1 : 0,
+    //     channel.isBlackListUsed ? 1 : 0,
+    //     channel.filterWhiteList ?? '',
+    //     channel.filterBlackList ?? ''
+    //   ],
+    // );
   }
 
   Future<void> update(Channel channel) async {
-    await _dbService.database.rawUpdate(
-      '''
-        update channel
-          set ws_url = ?,
-              description = ?,
-              is_white_list_used = ?,
-              is_black_list_used = ?,
-              filter_white_list = ?,
-              filter_black_list = ?
-        where name = ?
-        ''',
-      [
-        channel.wsUrl,
-        channel.description,
-        channel.isWhiteListUsed ? 1 : 0,
-        channel.isBlackListUsed ? 1 : 0,
-        channel.filterWhiteList,
-        channel.filterBlackList,
-        channel.name, // name is PK
-      ],
-    );
+    // await _dbService.database.rawUpdate(
+    //   '''
+    //     update channel
+    //       set ws_url = ?,
+    //           description = ?,
+    //           is_white_list_used = ?,
+    //           is_black_list_used = ?,
+    //           filter_white_list = ?,
+    //           filter_black_list = ?
+    //     where name = ?
+    //     ''',
+    //   [
+    //     channel.wsUrl,
+    //     channel.description,
+    //     channel.isWhiteListUsed ? 1 : 0,
+    //     channel.isBlackListUsed ? 1 : 0,
+    //     channel.filterWhiteList,
+    //     channel.filterBlackList,
+    //     channel.name, // name is PK
+    //   ],
+    // );
   }
 
   Future<void> delete(Channel channel) async {
-    await _dbService.database.rawDelete(
-      '''
-        delete from channel where name = ?
-        ''',
-      [channel.name],
-    );
+    // await _dbService.database.rawDelete(
+    //   '''
+    //     delete from channel where name = ?
+    //     ''',
+    //   [channel.name],
+    // );
   }
 }

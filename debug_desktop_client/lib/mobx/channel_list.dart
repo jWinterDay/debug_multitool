@@ -4,6 +4,7 @@ import 'package:debug_desktop_client/mobx/services/channel_service.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 import 'channel.dart';
+import 'connect_status.dart';
 
 part 'channel_list.g.dart';
 
@@ -29,7 +30,7 @@ abstract class _ChannelList with Store {
   @computed
   ObservableList<Channel> get connectedChannels {
     return ObservableList<Channel>.of(channelList.where((Channel channel) {
-      return channel.connected;
+      return channel.connectStatus == ConnectStatus.connected;
     }));
   }
 

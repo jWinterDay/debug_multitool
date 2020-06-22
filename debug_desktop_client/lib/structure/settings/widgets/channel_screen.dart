@@ -112,20 +112,19 @@ class _ChannelState extends State<ChannelScreen> {
   Widget _urlInput({
     @required ChannelList channelListStore,
   }) {
-    final bool connected = channelListStore.currentChannel?.connected ?? false;
+    final bool connected = channelListStore.currentChannel?.connectStatus == ConnectStatus.connected;
     final String urlButtonCaption = connected ? appTranslations.text('disconnect') : appTranslations.text('connect');
 
     return _input(
       textEditingController: _urlEditingController,
       placeholder: 'web socket url',
-      enabled: false, // !connected,
+      enabled: false,
       child: GestureDetector(
         onTap: () {
           channelListStore.setConnected(widget.channel, connected: !connected);
         },
         child: Container(
           padding: const EdgeInsets.only(left: 24.0, right: 16.0),
-          // height: 44.0,
           color: MyColors.transparent,
           child: Center(
             child: Text(

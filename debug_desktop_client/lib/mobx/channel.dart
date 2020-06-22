@@ -58,9 +58,6 @@ abstract class _Channel with Store {
   @observable
   String description;
 
-  @observable
-  bool connected = false;
-
   @computed
   List<Log> get filteredLogs {
     return logs.where((Log log) {
@@ -263,7 +260,5 @@ abstract class _Channel with Store {
       connectStatus = ConnectStatus.disconnected;
       client = null;
     }
-
-    connected = isConnected;
   }
 }

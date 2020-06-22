@@ -77,21 +77,6 @@ mixin _$Channel on _Channel, Store {
     });
   }
 
-  final _$connectedAtom = Atom(name: '_Channel.connected');
-
-  @override
-  bool get connected {
-    _$connectedAtom.reportRead();
-    return super.connected;
-  }
-
-  @override
-  set connected(bool value) {
-    _$connectedAtom.reportWrite(value, super.connected, () {
-      super.connected = value;
-    });
-  }
-
   final _$logsAtom = Atom(name: '_Channel.logs');
 
   @override
@@ -354,7 +339,6 @@ datetime: ${datetime},
 wsUrl: ${wsUrl},
 name: ${name},
 description: ${description},
-connected: ${connected},
 logs: ${logs},
 isWhiteListUsed: ${isWhiteListUsed},
 filterWhiteList: ${filterWhiteList},
