@@ -22,13 +22,13 @@ class Channel extends _Channel with _$Channel {
 
   static Channel fromMap(Map<String, dynamic> json) {
     return Channel()
-      ..wsUrl = (json['wsUrl'] as String)
-      ..name = (json['name'] as String)
-      ..description = (json['description'] as String)
-      ..isWhiteListUsed = (json['isWhiteListUsed'] as bool)
-      ..filterWhiteList = (json['filterWhiteList'] as String)
-      ..isBlackListUsed = (json['isBlackListUsed'] as bool)
-      ..filterBlackList = (json['filterBlackList'] as String);
+      ..wsUrl = json['wsUrl']
+      ..name = json['name']
+      ..description = json['description']
+      ..isWhiteListUsed = json['isWhiteListUsed'] == 1
+      ..filterWhiteList = json['filterWhiteList'] ?? ''
+      ..isBlackListUsed = json['isBlackListUsed'] == 1
+      ..filterBlackList = json['filterBlackList'] ?? '';
   }
 
   Map<String, dynamic> toMap() {

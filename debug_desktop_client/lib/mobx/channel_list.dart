@@ -13,6 +13,10 @@ ChannelService _channelService = ChannelService();
 class ChannelList extends _ChannelList with _$ChannelList {
   String toJson() => json.encode(toMap());
 
+  static List<Channel> fromList(List<Map<String, dynamic>> list) {
+    return list.map((Map<String, dynamic> element) => Channel.fromMap(element)).toList();
+  }
+
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'channelList': channelList.map((Channel channel) => channel.toMap()).toList(),
@@ -41,17 +45,9 @@ abstract class _ChannelList with Store {
   }
 
   Future<void> fetch() async {
-    _channelService.fetch().then((value) {
-      print('value = $value');
-    });
-  }
+    List<Channel> list = await _channelService.fetch();
 
-  Future<void> _addToDb(Channel channel) async {
-    _channelService.add(channel);
-  }
-
-  Future<void> _deleteFromDb(Channel channel) async {
-    _channelService.delete(channel);
+    addChannelList(list);
   }
 
   @action
@@ -67,16 +63,14 @@ abstract class _ChannelList with Store {
     channelList.add(channel);
 
     // save to db
-    _addToDb(channel);
+    _channelService.add(channel);
 
     return null;
   }
 
   @action
-  void addChannelList(List<String> list) {
-    list.forEach((String name) {
-      addChannel(name);
-    });
+  void addChannelList(List<Channel> list) {
+    channelList.addAll(list);
   }
 
   @action
@@ -86,12 +80,19 @@ abstract class _ChannelList with Store {
       return ch.name == channel.name;
     });
 
-    _deleteFromDb(channel);
+    _channelService.delete(channel);
   }
 
   @action
   void clearChannelList() {
+    channelList.forEach((Channel channel) {
+      channel.setConnected(isConnected: false);
+    });
+
     channelList.clear();
+
+    // delete all channels from db
+    _channelService.deleteAll();
   }
 
   @action

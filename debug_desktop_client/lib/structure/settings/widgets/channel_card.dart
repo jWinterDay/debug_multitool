@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:debug_desktop_client/mobx/log.dart';
 import 'package:debug_desktop_client/tools/uikit.dart';
-import 'package:intl/intl.dart';
 
 class ChannelCardScreen extends StatefulWidget {
   const ChannelCardScreen({

@@ -118,7 +118,7 @@ class _ChannelState extends State<ChannelScreen> {
     return _input(
       textEditingController: _urlEditingController,
       placeholder: 'web socket url',
-      enabled: false,
+      enabled: !connected, // false,
       child: GestureDetector(
         onTap: () {
           channelListStore.setConnected(widget.channel, connected: !connected);

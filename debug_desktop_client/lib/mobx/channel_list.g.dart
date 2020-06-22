@@ -62,7 +62,7 @@ mixin _$ChannelList on _ChannelList, Store {
   }
 
   @override
-  void addChannelList(List<String> list) {
+  void addChannelList(List<Channel> list) {
     final _$actionInfo = _$_ChannelListActionController.startAction(
         name: '_ChannelList.addChannelList');
     try {

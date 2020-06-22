@@ -22,6 +22,16 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ChannelList _store = Provider.of<ChannelList>(context, listen: false);
+      _store.fetch();
+    });
+  }
+
   Future<void> _navigateToChannel(Channel channel) async {
     await AppConfig.rootNavigator.push<dynamic>(
       CoolRoute<dynamic>(
@@ -40,17 +50,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
       navigationBar: CupertinoNavigationBar(
         transitionBetweenRoutes: false,
         middle: Text(appTranslations.text('settings')),
-        trailing: GestureDetector(
-          child: const Icon(
-            CupertinoIcons.add,
-            size: 42.0,
-          ),
-          onTap: () async {
-            await showCupertinoModalPopup<String>(
-              context: context,
-              builder: (_) => const ChannelDialogScreen(),
-            );
-          },
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // delete all channels
+            GestureDetector(
+              child: const Icon(
+                CupertinoIcons.delete,
+                size: 42.0,
+              ),
+              onTap: () async {
+                _store.clearChannelList();
+              },
+            ),
+            SizedBox(
+              width: 48.0,
+            ),
+            // add channel
+            GestureDetector(
+              child: const Icon(
+                CupertinoIcons.add,
+                size: 42.0,
+              ),
+              onTap: () async {
+                await showCupertinoModalPopup<String>(
+                  context: context,
+                  builder: (_) => const ChannelDialogScreen(),
+                );
+              },
+            ),
+          ],
         ),
         previousPageTitle: appTranslations.text('common_back'),
       ),
@@ -112,21 +141,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   style: const TextStyle(fontSize: 18.0),
                                 ),
                               ),
-                              CupertinoButton(
-                                child: Text(appTranslations.text('common_remove')),
-                                color: MyColors.red.withOpacity(0.5),
-                                onPressed: () {
+
+                              GestureDetector(
+                                onTap: () {
                                   _store.removeChannel(channel);
                                 },
+                                child: Icon(
+                                  CupertinoIcons.delete_solid,
+                                  size: 48.0,
+                                ),
                               ),
-                              CupertinoButton(
-                                child: Text('fetch'),
-                                color: MyColors.red.withOpacity(0.5),
-                                onPressed: () {
-                                  _store.fetch();
-                                  // _store.removeChannel(channel);
-                                },
-                              ),
+                              // CupertinoButton(
+                              //   child: Text(appTranslations.text('common_remove')),
+                              //   color: MyColors.red.withOpacity(0.5),
+                              //   onPressed: () {
+                              //     _store.removeChannel(channel);
+                              //   },
+                              // ),
+                              // CupertinoButton(
+                              //   child: Text('fetch'),
+                              //   color: MyColors.red.withOpacity(0.5),
+                              //   onPressed: () {
+                              //     _store.fetch();
+                              //     // _store.removeChannel(channel);
+                              //   },
+                              // ),
                             ],
                           ),
                         ),
