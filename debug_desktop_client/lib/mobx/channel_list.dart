@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:debug_desktop_client/mobx/services/channel_service.dart';
+import 'package:debug_desktop_client/services/channel/channel_service.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 import 'channel.dart';

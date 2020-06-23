@@ -10,3 +10,12 @@ create table channel (
 );
 
 create index channel_name_idx on channel (name);
+
+create table used_url (
+    used_url_id integer primary key autoincrement,
+    name text not null,
+    is_permanent integer not null default (0)
+);
+
+insert into used_url(name, is_permanent)
+values('ws://localhost:8001/connection/websocket?format=protobuf', 1);

@@ -3,12 +3,12 @@ import 'dart:convert';
 
 import 'package:debug_desktop_client/app_di.dart';
 import 'package:debug_desktop_client/mobx/log.dart';
+import 'package:debug_desktop_client/services/channel/channel_service.dart';
 import 'package:debug_desktop_client/services/logger_service.dart';
 import 'package:mobx/mobx.dart';
 import 'package:centrifuge/centrifuge.dart' as centrifuge;
 
 import 'connect_status.dart';
-import 'services/channel_service.dart';
 
 part 'channel.g.dart';
 
