@@ -46,6 +46,21 @@ class _UrlInputState extends State<UrlInput> {
       final String urlButtonCaption = connected ? appTranslations.text('disconnect') : appTranslations.text('connect');
 
       return MyInputText(
+        prefixWidget: GestureDetector(
+          onTap: () async {
+            print('select url');
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('select url'),
+              Icon(
+                CupertinoIcons.tag_solid,
+                color: MyColors.red,
+              ),
+            ],
+          ),
+        ),
         textEditingController: widget.controller,
         placeholder: 'web socket url',
         enabled: !connected,

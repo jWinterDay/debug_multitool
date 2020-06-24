@@ -8,6 +8,7 @@ class MyInputText extends StatelessWidget {
     this.enabled = true,
     this.decoration,
     @required this.child,
+    this.prefixWidget,
   })  : assert(textEditingController != null),
         assert(enabled != null);
 
@@ -16,6 +17,7 @@ class MyInputText extends StatelessWidget {
   final bool enabled;
   final BoxDecoration decoration;
   final Widget child;
+  final Widget prefixWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +31,7 @@ class MyInputText extends StatelessWidget {
           // header
           Expanded(
             child: CupertinoTextField(
+              prefix: prefixWidget,
               placeholder: placeholder,
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               controller: textEditingController,

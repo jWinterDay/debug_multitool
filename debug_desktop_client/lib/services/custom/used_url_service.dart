@@ -1,5 +1,3 @@
-import 'package:debug_desktop_client/mobx/channel.dart';
-import 'package:debug_desktop_client/mobx/channel_state.dart';
 import 'package:debug_desktop_client/mobx/used_url.dart';
 import 'package:debug_desktop_client/mobx/used_url_state.dart';
 import 'package:debug_desktop_client/services/db_service.dart';
