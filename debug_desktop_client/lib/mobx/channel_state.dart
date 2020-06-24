@@ -1,16 +1,15 @@
 import 'dart:convert';
 
-import 'package:debug_desktop_client/services/channel/channel_service.dart';
+import 'package:debug_desktop_client/app_di.dart';
+import 'package:debug_desktop_client/services/custom/channel_service.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 import 'channel.dart';
 import 'connect_status.dart';
 
-part 'channel_list.g.dart';
+part 'channel_state.g.dart';
 
-ChannelService _channelService = ChannelService();
-
-class ChannelList extends _ChannelList with _$ChannelList {
+class ChannelState extends _ChannelState with _$ChannelState {
   String toJson() => json.encode(toMap());
 
   static List<Channel> fromList(List<Map<String, dynamic>> list) {
@@ -24,7 +23,9 @@ class ChannelList extends _ChannelList with _$ChannelList {
   }
 }
 
-abstract class _ChannelList with Store {
+abstract class _ChannelState with Store {
+  ChannelService _channelService = di.get<ChannelService>();
+
   @observable
   Channel currentChannel;
 
@@ -47,7 +48,7 @@ abstract class _ChannelList with Store {
   Future<void> fetch() async {
     List<Channel> list = await _channelService.fetch();
 
-    addChannelList(list);
+    addChannelState(list);
   }
 
   @action
@@ -55,7 +56,7 @@ abstract class _ChannelList with Store {
     final bool exists = channelList.any((Channel ch) => ch.name == name);
 
     if (exists) {
-      return 'Channel with this name already exists';
+      return 'Channel with name $name already exists';
     }
 
     final Channel channel = Channel()..name = name;
@@ -69,7 +70,7 @@ abstract class _ChannelList with Store {
   }
 
   @action
-  void addChannelList(List<Channel> list) {
+  void addChannelState(List<Channel> list) {
     channelList.addAll(list);
   }
 
@@ -84,7 +85,7 @@ abstract class _ChannelList with Store {
   }
 
   @action
-  void clearChannelList() {
+  void clearChannelState() {
     channelList.forEach((Channel channel) {
       channel.setConnected(isConnected: false);
     });

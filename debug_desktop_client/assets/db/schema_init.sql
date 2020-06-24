@@ -17,5 +17,7 @@ create table used_url (
     is_permanent integer not null default (0)
 );
 
-insert into used_url(name, is_permanent)
-values('ws://localhost:8001/connection/websocket?format=protobuf', 1);
+insert into used_url (name, is_permanent)
+values
+    ('ws://localhost:8001/connection/websocket?format=protobuf', 1),
+    ('ws://172.16.55.141:8001/connection/websocket?format=protobuf', 1);

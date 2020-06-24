@@ -1,3 +1,4 @@
+import 'package:debug_desktop_client/mobx/channel_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:debug_desktop_client/app_config.dart';
@@ -5,7 +6,6 @@ import 'package:provider/provider.dart';
 
 import 'package:debug_desktop_client/app_translations.dart';
 import 'package:debug_desktop_client/mobx/channel.dart';
-import 'package:debug_desktop_client/mobx/channel_list.dart';
 import 'package:debug_desktop_client/structure/back_animation/utils/cool_route.dart';
 import 'package:debug_desktop_client/structure/settings/widgets/channel_screen.dart';
 import 'package:debug_desktop_client/tools/uikit.dart';
@@ -27,7 +27,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final ChannelList _store = Provider.of<ChannelList>(context, listen: false);
+      final ChannelState _store = Provider.of<ChannelState>(context, listen: false);
       _store.fetch();
     });
   }
@@ -44,7 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    final ChannelList _store = Provider.of<ChannelList>(context);
+    final ChannelState _store = Provider.of<ChannelState>(context);
 
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
@@ -60,7 +60,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 size: 42.0,
               ),
               onTap: () async {
-                _store.clearChannelList();
+                _store.clearChannelState();
               },
             ),
             SizedBox(
@@ -107,9 +107,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ..._store.channelList.map((Channel channel) {
                       return GestureDetector(
                         onTap: () async {
-                          Provider.of<ChannelList>(context, listen: false).setCurrentChannel(channel);
+                          Provider.of<ChannelState>(context, listen: false).setCurrentChannel(channel);
                           await _navigateToChannel(channel);
-                          Provider.of<ChannelList>(context, listen: false).setCurrentChannel(null);
+                          Provider.of<ChannelState>(context, listen: false).setCurrentChannel(null);
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),

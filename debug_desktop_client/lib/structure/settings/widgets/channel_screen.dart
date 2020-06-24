@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:debug_desktop_client/app_translations.dart';
 import 'package:debug_desktop_client/mobx/channel.dart';
-import 'package:debug_desktop_client/mobx/channel_list.dart';
+import 'package:debug_desktop_client/mobx/channel_state.dart';
 import 'package:debug_desktop_client/mobx/connect_status.dart';
 import 'package:debug_desktop_client/mobx/log.dart';
 import 'package:debug_desktop_client/structure/settings/widgets/channel_card.dart';
@@ -45,25 +45,25 @@ class _ChannelState extends State<ChannelScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // channel list store
-      final ChannelList channelListStore = Provider.of<ChannelList>(context, listen: false);
+      final ChannelState ChannelStateStore = Provider.of<ChannelState>(context, listen: false);
 
-      channelListStore.setCurrentChannel(widget.channel);
+      ChannelStateStore.setCurrentChannel(widget.channel);
 
-      _urlEditingController.text = channelListStore.currentChannel.wsUrl;
+      _urlEditingController.text = ChannelStateStore.currentChannel.wsUrl;
       _urlEditingController.addListener(() {
-        channelListStore.setChannelUrl(widget.channel, _currentUrl);
+        ChannelStateStore.setChannelUrl(widget.channel, _currentUrl);
       });
 
       // filter white list
-      _whiteListEditingController.text = channelListStore.currentChannel.filterWhiteList;
+      _whiteListEditingController.text = ChannelStateStore.currentChannel.filterWhiteList;
       _whiteListEditingController.addListener(() {
-        channelListStore.currentChannel.setFilterWhite(_whiteListEditingController.text);
+        ChannelStateStore.currentChannel.setFilterWhite(_whiteListEditingController.text);
       });
 
       // filter black list
-      _blackListEditingController.text = channelListStore.currentChannel.filterBlackList;
+      _blackListEditingController.text = ChannelStateStore.currentChannel.filterBlackList;
       _blackListEditingController.addListener(() {
-        channelListStore.currentChannel.setFilterBlack(_blackListEditingController.text);
+        ChannelStateStore.currentChannel.setFilterBlack(_blackListEditingController.text);
       });
     });
   }
@@ -110,9 +110,9 @@ class _ChannelState extends State<ChannelScreen> {
   }
 
   Widget _urlInput({
-    @required ChannelList channelListStore,
+    @required ChannelState ChannelStateStore,
   }) {
-    final bool connected = channelListStore.currentChannel?.connectStatus == ConnectStatus.connected;
+    final bool connected = ChannelStateStore.currentChannel?.connectStatus == ConnectStatus.connected;
     final String urlButtonCaption = connected ? appTranslations.text('disconnect') : appTranslations.text('connect');
 
     return _input(
@@ -121,7 +121,7 @@ class _ChannelState extends State<ChannelScreen> {
       enabled: !connected, // false,
       child: GestureDetector(
         onTap: () {
-          channelListStore.setConnected(widget.channel, connected: !connected);
+          ChannelStateStore.setConnected(widget.channel, connected: !connected);
         },
         child: Container(
           padding: const EdgeInsets.only(left: 24.0, right: 16.0),
@@ -137,8 +137,8 @@ class _ChannelState extends State<ChannelScreen> {
     );
   }
 
-  Widget _whiteListInput({@required ChannelList channelListStore}) {
-    final bool isWhiteListUsed = channelListStore.currentChannel.isWhiteListUsed;
+  Widget _whiteListInput({@required ChannelState ChannelStateStore}) {
+    final bool isWhiteListUsed = ChannelStateStore.currentChannel.isWhiteListUsed;
 
     return _input(
       textEditingController: _whiteListEditingController,
@@ -155,7 +155,7 @@ class _ChannelState extends State<ChannelScreen> {
             CupertinoSwitch(
               value: isWhiteListUsed,
               onChanged: (bool val) {
-                channelListStore.currentChannel.useWhiteList(val);
+                ChannelStateStore.currentChannel.useWhiteList(val);
               },
             ),
           ],
@@ -164,8 +164,8 @@ class _ChannelState extends State<ChannelScreen> {
     );
   }
 
-  Widget _blackListInput({@required ChannelList channelListStore}) {
-    final bool isBlackListUsed = channelListStore.currentChannel.isBlackListUsed;
+  Widget _blackListInput({@required ChannelState ChannelStateStore}) {
+    final bool isBlackListUsed = ChannelStateStore.currentChannel.isBlackListUsed;
 
     return _input(
       textEditingController: _blackListEditingController,
@@ -182,7 +182,7 @@ class _ChannelState extends State<ChannelScreen> {
             CupertinoSwitch(
               value: isBlackListUsed,
               onChanged: (bool val) {
-                channelListStore.currentChannel.useBlackList(val);
+                ChannelStateStore.currentChannel.useBlackList(val);
               },
             ),
           ],
@@ -191,7 +191,7 @@ class _ChannelState extends State<ChannelScreen> {
     );
   }
 
-  Widget _actions({@required ChannelList channelListStore}) {
+  Widget _actions({@required ChannelState ChannelStateStore}) {
     return Container(
       decoration: const BoxDecoration(
         color: MyColors.gray_b3b3b3,
@@ -201,7 +201,7 @@ class _ChannelState extends State<ChannelScreen> {
         children: <Widget>[
           // clear
           GestureDetector(
-            onTap: channelListStore.currentChannel.connectStatus == ConnectStatus.connecting
+            onTap: ChannelStateStore.currentChannel.connectStatus == ConnectStatus.connecting
                 ? null
                 : () {
                     setState(() {
@@ -209,7 +209,7 @@ class _ChannelState extends State<ChannelScreen> {
                       _currentLog = null;
                     });
 
-                    channelListStore.currentChannel.clearLogs();
+                    ChannelStateStore.currentChannel.clearLogs();
                   },
             child: Container(
               color: MyColors.transparent,
@@ -231,7 +231,7 @@ class _ChannelState extends State<ChannelScreen> {
 
           // add delimiter
           GestureDetector(
-            onTap: channelListStore.currentChannel.connectStatus == ConnectStatus.connecting
+            onTap: ChannelStateStore.currentChannel.connectStatus == ConnectStatus.connecting
                 ? null
                 : () {
                     final Log log = Log(
@@ -240,7 +240,7 @@ class _ChannelState extends State<ChannelScreen> {
                       state: 'test state',
                       enabled: false,
                     );
-                    channelListStore.currentChannel.addLog(log);
+                    ChannelStateStore.currentChannel.addLog(log);
                   },
             child: Container(
               color: MyColors.transparent,
@@ -275,8 +275,8 @@ class _ChannelState extends State<ChannelScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ChannelList channelListStore = Provider.of<ChannelList>(context);
-    if (channelListStore?.currentChannel == null) {
+    final ChannelState ChannelStateStore = Provider.of<ChannelState>(context);
+    if (ChannelStateStore?.currentChannel == null) {
       return Container();
     }
     final String name = appTranslations.text('channel_name') + ': ${widget.channel.name}';
@@ -298,19 +298,19 @@ class _ChannelState extends State<ChannelScreen> {
         children: <Widget>[
           // url
           Observer(builder: (_) {
-            return _urlInput(channelListStore: channelListStore);
+            return _urlInput(ChannelStateStore: ChannelStateStore);
           }),
           // filter white list
           Observer(builder: (_) {
-            return _whiteListInput(channelListStore: channelListStore);
+            return _whiteListInput(ChannelStateStore: ChannelStateStore);
           }),
           // filter black list
           Observer(builder: (_) {
-            return _blackListInput(channelListStore: channelListStore);
+            return _blackListInput(ChannelStateStore: ChannelStateStore);
           }),
           // actions
           Observer(builder: (_) {
-            return _actions(channelListStore: channelListStore);
+            return _actions(ChannelStateStore: ChannelStateStore);
           }),
 
           //
@@ -374,7 +374,7 @@ class _ChannelState extends State<ChannelScreen> {
                                 // logs
                                 Observer(
                                   builder: (_) {
-                                    final List<Log> list = channelListStore.currentChannel.filteredLogs;
+                                    final List<Log> list = ChannelStateStore.currentChannel.filteredLogs;
                                     if (list != null &&
                                         list.isNotEmpty &&
                                         (_scrollController?.position?.maxScrollExtent ?? 0) > 0) {

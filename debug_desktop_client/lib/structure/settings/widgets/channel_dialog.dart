@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:debug_desktop_client/app_translations.dart';
-import 'package:debug_desktop_client/mobx/channel_list.dart';
+import 'package:debug_desktop_client/mobx/channel_state.dart';
 import 'package:debug_desktop_client/tools/uikit.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -26,7 +26,7 @@ class _ChannelDialogState extends State<ChannelDialogScreen> {
     _textEditingController = TextEditingController(text: '');
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final ChannelList store = Provider.of<ChannelList>(context, listen: false);
+      final ChannelState store = Provider.of<ChannelState>(context, listen: false);
 
       _textEditingController.addListener(() {
         final bool notExists = store.getChannelByName(_currentText) == null;
@@ -44,7 +44,7 @@ class _ChannelDialogState extends State<ChannelDialogScreen> {
     super.dispose();
   }
 
-  void _add(ChannelList store) {
+  void _add(ChannelState store) {
     store.addChannel(_currentText);
 
     Navigator.of(context).pop(_currentText);
@@ -52,7 +52,7 @@ class _ChannelDialogState extends State<ChannelDialogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ChannelList store = Provider.of<ChannelList>(context);
+    final ChannelState store = Provider.of<ChannelState>(context);
 
     return Center(
       child: Container(

@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:debug_desktop_client/app_di.dart';
 import 'package:debug_desktop_client/mobx/log.dart';
-import 'package:debug_desktop_client/services/channel/channel_service.dart';
+import 'package:debug_desktop_client/services/custom/channel_service.dart';
 import 'package:debug_desktop_client/services/logger_service.dart';
 import 'package:mobx/mobx.dart';
 import 'package:centrifuge/centrifuge.dart' as centrifuge;
@@ -12,8 +12,7 @@ import 'connect_status.dart';
 
 part 'channel.g.dart';
 
-LoggerService loggerService = di.get<LoggerService>();
-ChannelService _channelService = ChannelService();
+// LoggerService _loggerService = di.get<LoggerService>();
 
 class Channel extends _Channel with _$Channel {
   String toJson() => json.encode(toMap());
@@ -45,6 +44,9 @@ class Channel extends _Channel with _$Channel {
 }
 
 abstract class _Channel with Store {
+  ChannelService _channelService = di.get<ChannelService>();
+  LoggerService _loggerService = di.get<LoggerService>();
+
   @observable
   DateTime datetime;
 
@@ -215,7 +217,7 @@ abstract class _Channel with Store {
 
           prettyState = state == null ? _exceptionStub(message.toString()) : _encoder.convert(state);
         } catch (exc) {
-          loggerService.e('publishStream. exc: $exc');
+          _loggerService.e('publishStream. exc: $exc');
         }
 
         final Log log = Log(

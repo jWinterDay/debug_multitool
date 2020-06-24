@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'package:debug_desktop_client/app_db.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:debug_desktop_client/app_local_storage.dart';
-import 'package:debug_desktop_client/mobx/channel_list.dart';
+import 'package:debug_desktop_client/mobx/channel_state.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -38,7 +37,7 @@ class _Main extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: <SingleChildWidget>[
-        Provider<ChannelList>(create: (_) => ChannelList()),
+        Provider<ChannelState>(create: (_) => ChannelState()),
       ],
       child: Localizations(
         locale: const Locale('en', 'US'),

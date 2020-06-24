@@ -1,5 +1,7 @@
 // import 'dart:async';
 
+import 'package:debug_desktop_client/services/custom/channel_service.dart';
+import 'package:debug_desktop_client/services/custom/used_url_service.dart';
 import 'package:debug_desktop_client/services/db_service.dart';
 import 'package:debug_desktop_client/services/logger_service.dart';
 import 'package:flutter_simple_dependency_injection/injector.dart';
@@ -17,13 +19,33 @@ class AppDI {
       isSingleton: true,
     );
 
-    // db
+    // db service
     di.map<DbService>(
       (Injector di) {
         return DbService(
           dbName: 'debug_desktop_client.db',
           schemaInitPath: 'assets/db/schema_init.sql',
           loggerService: loggerService,
+        );
+      },
+      isSingleton: true,
+    );
+
+    // channel service
+    di.map<ChannelService>(
+      (Injector di) {
+        return ChannelService(
+          dbService: di.get<DbService>(),
+        );
+      },
+      isSingleton: true,
+    );
+
+    // used url service
+    di.map<UsedUrlService>(
+      (Injector di) {
+        return UsedUrlService(
+          dbService: di.get<DbService>(),
         );
       },
       isSingleton: true,
