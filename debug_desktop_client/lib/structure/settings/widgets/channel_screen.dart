@@ -1,3 +1,4 @@
+import 'package:debug_desktop_client/structure/settings/widgets/components/log_actions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:debug_desktop_client/app_translations.dart';
@@ -10,6 +11,10 @@ import 'package:debug_desktop_client/structure/settings/widgets/channel_full_inf
 import 'package:debug_desktop_client/tools/uikit.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
+
+import 'components/black_list_input.dart';
+import 'components/url_input.dart';
+import 'components/white_list_input.dart';
 
 class ChannelScreen extends StatefulWidget {
   const ChannelScreen(this.channel);
@@ -45,25 +50,25 @@ class _ChannelState extends State<ChannelScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // channel list store
-      final ChannelState ChannelStateStore = Provider.of<ChannelState>(context, listen: false);
+      final ChannelState channelStateStore = Provider.of<ChannelState>(context, listen: false);
 
-      ChannelStateStore.setCurrentChannel(widget.channel);
+      channelStateStore.setCurrentChannel(widget.channel);
 
-      _urlEditingController.text = ChannelStateStore.currentChannel.wsUrl;
-      _urlEditingController.addListener(() {
-        ChannelStateStore.setChannelUrl(widget.channel, _currentUrl);
-      });
+      _urlEditingController.text = channelStateStore.currentChannel.wsUrl;
+      // _urlEditingController.addListener(() {
+      //   channelStateStore.setChannelUrl(widget.channel, _currentUrl);
+      // });
 
       // filter white list
-      _whiteListEditingController.text = ChannelStateStore.currentChannel.filterWhiteList;
+      _whiteListEditingController.text = channelStateStore.currentChannel.filterWhiteList;
       _whiteListEditingController.addListener(() {
-        ChannelStateStore.currentChannel.setFilterWhite(_whiteListEditingController.text);
+        channelStateStore.currentChannel.setFilterWhite(_whiteListEditingController.text);
       });
 
       // filter black list
-      _blackListEditingController.text = ChannelStateStore.currentChannel.filterBlackList;
+      _blackListEditingController.text = channelStateStore.currentChannel.filterBlackList;
       _blackListEditingController.addListener(() {
-        ChannelStateStore.currentChannel.setFilterBlack(_blackListEditingController.text);
+        channelStateStore.currentChannel.setFilterBlack(_blackListEditingController.text);
       });
     });
   }
@@ -73,195 +78,6 @@ class _ChannelState extends State<ChannelScreen> {
     _scrollController.dispose();
 
     super.dispose();
-  }
-
-  Widget _input({
-    String placeholder,
-    @required TextEditingController textEditingController,
-    bool enabled = true,
-    BoxDecoration decoration,
-    @required Widget child,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      decoration: const BoxDecoration(
-        color: MyColors.gray_b3b3b3,
-      ),
-      child: Row(
-        children: <Widget>[
-          // header
-          Expanded(
-            child: CupertinoTextField(
-              placeholder: placeholder,
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              controller: textEditingController,
-              clearButtonMode: enabled ? OverlayVisibilityMode.always : OverlayVisibilityMode.never,
-              decoration: decoration ?? BoxDecoration(color: enabled ? MyColors.white : MyColors.gray_d8d8d8),
-              enabled: enabled,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-
-          // child
-          if (child != null) child,
-        ],
-      ),
-    );
-  }
-
-  Widget _urlInput({
-    @required ChannelState ChannelStateStore,
-  }) {
-    final bool connected = ChannelStateStore.currentChannel?.connectStatus == ConnectStatus.connected;
-    final String urlButtonCaption = connected ? appTranslations.text('disconnect') : appTranslations.text('connect');
-
-    return _input(
-      textEditingController: _urlEditingController,
-      placeholder: 'web socket url',
-      enabled: !connected, // false,
-      child: GestureDetector(
-        onTap: () {
-          ChannelStateStore.setConnected(widget.channel, connected: !connected);
-        },
-        child: Container(
-          padding: const EdgeInsets.only(left: 24.0, right: 16.0),
-          color: MyColors.transparent,
-          child: Center(
-            child: Text(
-              urlButtonCaption,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _whiteListInput({@required ChannelState ChannelStateStore}) {
-    final bool isWhiteListUsed = ChannelStateStore.currentChannel.isWhiteListUsed;
-
-    return _input(
-      textEditingController: _whiteListEditingController,
-      placeholder: 'white list',
-      decoration: BoxDecoration(color: isWhiteListUsed ? MyColors.white : MyColors.gray_d8d8d8),
-      child: Container(
-        padding: const EdgeInsets.only(left: 24.0, right: 16.0),
-        child: Row(
-          children: <Widget>[
-            const Text(
-              'White list',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            CupertinoSwitch(
-              value: isWhiteListUsed,
-              onChanged: (bool val) {
-                ChannelStateStore.currentChannel.useWhiteList(val);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _blackListInput({@required ChannelState ChannelStateStore}) {
-    final bool isBlackListUsed = ChannelStateStore.currentChannel.isBlackListUsed;
-
-    return _input(
-      textEditingController: _blackListEditingController,
-      placeholder: 'black list',
-      decoration: BoxDecoration(color: isBlackListUsed ? MyColors.white : MyColors.gray_d8d8d8),
-      child: Container(
-        padding: const EdgeInsets.only(left: 24.0, right: 16.0),
-        child: Row(
-          children: <Widget>[
-            const Text(
-              'Black list',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            CupertinoSwitch(
-              value: isBlackListUsed,
-              onChanged: (bool val) {
-                ChannelStateStore.currentChannel.useBlackList(val);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _actions({@required ChannelState ChannelStateStore}) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: MyColors.gray_b3b3b3,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          // clear
-          GestureDetector(
-            onTap: ChannelStateStore.currentChannel.connectStatus == ConnectStatus.connecting
-                ? null
-                : () {
-                    setState(() {
-                      _currentIndex = -1;
-                      _currentLog = null;
-                    });
-
-                    ChannelStateStore.currentChannel.clearLogs();
-                  },
-            child: Container(
-              color: MyColors.transparent,
-              child: Column(
-                children: <Widget>[
-                  const Icon(
-                    CupertinoIcons.clear_circled,
-                    color: MyColors.red,
-                    size: 24.0,
-                  ),
-                  Text(
-                    appTranslations.text('common_clear'),
-                    style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // add delimiter
-          GestureDetector(
-            onTap: ChannelStateStore.currentChannel.connectStatus == ConnectStatus.connecting
-                ? null
-                : () {
-                    final Log log = Log(
-                      action: '------------------------',
-                      actionPayload: 'test action payload',
-                      state: 'test state',
-                      enabled: false,
-                    );
-                    ChannelStateStore.currentChannel.addLog(log);
-                  },
-            child: Container(
-              color: MyColors.transparent,
-              child: Column(
-                children: <Widget>[
-                  const Icon(
-                    CupertinoIcons.add_circled,
-                    color: MyColors.red,
-                    size: 24.0,
-                  ),
-                  Text(
-                    appTranslations.text('add_delimiter'),
-                    style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   int _currentIndex = -1;
@@ -275,8 +91,8 @@ class _ChannelState extends State<ChannelScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ChannelState ChannelStateStore = Provider.of<ChannelState>(context);
-    if (ChannelStateStore?.currentChannel == null) {
+    final ChannelState channelStateStore = Provider.of<ChannelState>(context);
+    if (channelStateStore?.currentChannel == null) {
       return Container();
     }
     final String name = appTranslations.text('channel_name') + ': ${widget.channel.name}';
@@ -297,20 +113,44 @@ class _ChannelState extends State<ChannelScreen> {
       child: Column(
         children: <Widget>[
           // url
-          Observer(builder: (_) {
-            return _urlInput(ChannelStateStore: ChannelStateStore);
-          }),
+          UrlInput(
+            controller: _urlEditingController,
+            channel: widget.channel,
+          ),
+
           // filter white list
           Observer(builder: (_) {
-            return _whiteListInput(ChannelStateStore: ChannelStateStore);
+            return WhiteListInput(
+              controller: _whiteListEditingController,
+              isWhiteListUsed: channelStateStore.currentChannel.isWhiteListUsed,
+              callback: (val) => channelStateStore.currentChannel.useWhiteList(val),
+            );
           }),
+
           // filter black list
           Observer(builder: (_) {
-            return _blackListInput(ChannelStateStore: ChannelStateStore);
+            return BlackListInput(
+              controller: _blackListEditingController,
+              isBlackListUsed: channelStateStore.currentChannel.isBlackListUsed,
+              callback: (val) => channelStateStore.currentChannel.useBlackList(val),
+            );
           }),
+
           // actions
           Observer(builder: (_) {
-            return _actions(ChannelStateStore: ChannelStateStore);
+            return LogActions(
+              channelStateStore: channelStateStore,
+              clearCallback: channelStateStore.currentChannel.connectStatus == ConnectStatus.connecting
+                  ? null
+                  : () {
+                      setState(() {
+                        _currentIndex = -1;
+                        _currentLog = null;
+                      });
+
+                      channelStateStore.currentChannel.clearLogs();
+                    },
+            );
           }),
 
           //
@@ -374,7 +214,7 @@ class _ChannelState extends State<ChannelScreen> {
                                 // logs
                                 Observer(
                                   builder: (_) {
-                                    final List<Log> list = ChannelStateStore.currentChannel.filteredLogs;
+                                    final List<Log> list = channelStateStore.currentChannel.filteredLogs;
                                     if (list != null &&
                                         list.isNotEmpty &&
                                         (_scrollController?.position?.maxScrollExtent ?? 0) > 0) {
