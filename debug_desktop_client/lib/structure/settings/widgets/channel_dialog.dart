@@ -47,7 +47,7 @@ class _ChannelDialogState extends State<ChannelDialogScreen> {
   }
 
   void _add(ChannelState store, {String host = 'unknownHost'}) {
-    final String result = '$host:$_currentText';
+    final String result = '${host}_$_currentText';
     store.addChannel(result);
 
     Navigator.of(context).pop(result);

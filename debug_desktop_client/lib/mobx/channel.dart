@@ -154,21 +154,6 @@ abstract class _Channel with Store {
   StreamSubscription<centrifuge.PublishEvent> _publishSub;
 
   final JsonEncoder _encoder = const JsonEncoder.withIndent('   ');
-  String _exceptionStub(String message) {
-    return '''
-      Parse error. Use next format:
-        {
-          "action": "action1",
-          "payload": {
-            "name":"name1",
-            "pl": "pl1"
-          },
-        "state": "state1"
-        }
-
-      message: $message
-    ''';
-  }
 
   @action
   void setConnected({bool isConnected}) {
@@ -201,22 +186,18 @@ abstract class _Channel with Store {
       // publish sub
       _publishSub = subscription.publishStream.listen((centrifuge.PublishEvent event) {
         //example: {"action": "action1", "payload": {"name":"name1", "pl": "pl1"}, "state": "state1"}
-        final dynamic message = json.decode(utf8.decode(event.data));
-        String prettyActionPayload;
-        String prettyState;
-        String action;
+        final Map<String, dynamic> message = json.decode(utf8.decode(event.data));
+        String prettyActionPayload = 'unknown action payload';
+        String prettyState = 'unknown state';
+        String action = 'unknown action';
 
         try {
-          action = message['action'].toString();
-          final String actionPayload = message['payload'].toString();
-          final String state = message['state'].toString();
+          action = message['action']?.toString() ?? 'unknown action';
+          final dynamic rawPayload = message['payload'];
+          final dynamic rawState = message['state'];
 
-          // calc
-          action ??= 'unknown action';
-          prettyActionPayload =
-              actionPayload == null ? _exceptionStub(message.toString()) : _encoder.convert(actionPayload);
-
-          prettyState = state == null ? _exceptionStub(message.toString()) : _encoder.convert(state);
+          prettyActionPayload = _encoder.convert(rawPayload);
+          prettyState = _encoder.convert(rawState);
         } catch (exc) {
           _loggerService.e('publishStream. exc: $exc');
         }
