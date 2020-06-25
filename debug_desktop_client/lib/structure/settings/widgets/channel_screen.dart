@@ -255,7 +255,7 @@ class _ChannelState extends State<ChannelScreen> {
                             flex: 2,
                             child: ChannelFullInfoScreen(
                               log: _currentLog,
-                              index: _currentIndex,
+                              // index: _currentIndex,
                             ),
                           ),
                       ],

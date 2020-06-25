@@ -29,11 +29,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void initState() {
     super.initState();
 
-    _goFlutterUtils.getInfo().then((Map<String, dynamic> info) {
-      //
-      print('info = $info');
-    });
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final ChannelState _store = Provider.of<ChannelState>(context, listen: false);
       _store.fetch();

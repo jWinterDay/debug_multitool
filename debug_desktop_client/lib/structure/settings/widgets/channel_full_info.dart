@@ -3,21 +3,87 @@ import 'package:flutter/material.dart';
 import 'package:debug_desktop_client/mobx/log.dart';
 import 'package:debug_desktop_client/tools/uikit.dart';
 
+enum _TabInfoType {
+  actionPayload,
+  state,
+  diff,
+}
+
+class _TabInfo {
+  _TabInfo({
+    @required this.title,
+    @required this.iconData,
+    @required this.tabInfoType,
+    @required this.viewedData,
+  });
+
+  final String title;
+  final IconData iconData;
+  final _TabInfoType tabInfoType;
+  final String viewedData;
+}
+
 class ChannelFullInfoScreen extends StatefulWidget {
   const ChannelFullInfoScreen({
     this.log,
-    this.index,
+    // this.index,
   });
 
   final Log log;
-  final int index;
+  // final int index;
 
   @override
-  ChannelFullInfoState createState() => ChannelFullInfoState();
+  _ChannelFullInfoState createState() => _ChannelFullInfoState();
 }
 
-class ChannelFullInfoState extends State<ChannelFullInfoScreen> {
-  int _currentTabIndex = 0;
+class _ChannelFullInfoState extends State<ChannelFullInfoScreen> {
+  _TabInfoType _currentTabInfoType = _TabInfoType.actionPayload;
+  List<_TabInfo> _tabInfoList = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _setTabList();
+  }
+
+  @override
+  void didUpdateWidget(ChannelFullInfoScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _setTabList();
+  }
+
+  void _setTabList() {
+    _tabInfoList = [
+      _TabInfo(
+        title: 'action payload',
+        iconData: CupertinoIcons.bell,
+        tabInfoType: _TabInfoType.actionPayload,
+        viewedData: widget.log.actionPayload,
+      ),
+      _TabInfo(
+        title: 'state',
+        iconData: CupertinoIcons.car,
+        tabInfoType: _TabInfoType.state,
+        viewedData: widget.log.state,
+      ),
+      _TabInfo(
+        title: 'diff',
+        iconData: CupertinoIcons.eye,
+        tabInfoType: _TabInfoType.diff,
+        viewedData: 'todo',
+      )
+    ];
+  }
+
+  String get _tabTitle {
+    final _TabInfo tabInfo = _tabInfoList.singleWhere((_TabInfo tabInfo) {
+      return tabInfo.tabInfoType == _currentTabInfoType;
+    }, orElse: () => null);
+
+    return tabInfo.viewedData ?? 'unknown tab';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +99,7 @@ class ChannelFullInfoState extends State<ChannelFullInfoScreen> {
         ),
       ),
       child: CustomScrollView(
-        physics: const ClampingScrollPhysics(), // NeverScrollableScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         slivers: <Widget>[
           // tabs
           SliverPersistentHeader(
@@ -44,29 +110,22 @@ class ChannelFullInfoState extends State<ChannelFullInfoScreen> {
                   color: MyColors.gray_d8d8d8,
                 ),
                 child: CupertinoTabBar(
-                  currentIndex: _currentTabIndex,
+                  currentIndex: _currentTabInfoType.index,
                   activeColor: MyColors.warning,
                   onTap: (int index) {
                     setState(() {
-                      _currentTabIndex = index;
+                      _currentTabInfoType = _TabInfoType.values.firstWhere((element) => element.index == index);
                     });
                   },
-                  items: const <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                      icon: Icon(CupertinoIcons.add),
+                  items: _tabInfoList.map((_TabInfo tabInfo) {
+                    return BottomNavigationBarItem(
+                      icon: Icon(tabInfo.iconData),
                       title: Text(
-                        'action payload',
+                        tabInfo.title,
                         style: TextStyle(fontSize: 18.0),
                       ),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(CupertinoIcons.add),
-                      title: Text(
-                        'state',
-                        style: TextStyle(fontSize: 18.0),
-                      ),
-                    )
-                  ],
+                    );
+                  }).toList(),
                 ),
               ),
             ),
@@ -75,7 +134,7 @@ class ChannelFullInfoState extends State<ChannelFullInfoScreen> {
           // content
           SliverToBoxAdapter(
             child: Text(
-              _currentTabIndex == 0 ? widget.log.actionPayload : widget.log.state,
+              _tabTitle,
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
             ),
           ),
