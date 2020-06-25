@@ -14,5 +14,6 @@
     "settings": "Логгер",
     "channel_name": "Канал",
     "add_delimiter": "Добавить разделитель",
-    "settings_no_channels": "Нет каналов"
+    "settings_no_channels": "Нет каналов",
+    "settings_select_url": "Сохраненные URL"
 }

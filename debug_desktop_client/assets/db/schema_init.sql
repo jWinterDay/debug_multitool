@@ -13,7 +13,7 @@ create index channel_name_idx on channel (name);
 
 create table used_url (
     used_url_id integer primary key autoincrement,
-    name text not null,
+    name text unique not null,
     is_permanent integer not null default (0)
 );
 

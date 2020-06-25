@@ -23,7 +23,7 @@ class UsedUrl {
     return UsedUrl(
       usedUrlId: json['usedUrlId'],
       name: json['name'],
-      isPermanent: json['isPermanent'],
+      isPermanent: json['isPermanent'] == 1,
     );
   }
 

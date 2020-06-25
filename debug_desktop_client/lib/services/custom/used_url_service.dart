@@ -53,9 +53,10 @@ class UsedUrlService {
           name,
           is_permanent
         )
-        values (?, 0)
+        select ?, 0
+         where not exists(select 1 from used_url where name = ?)
       ''',
-      [name],
+      [name, name],
     );
 
     final UsedUrl usedUrl = await fetchSingle(usedUrlId);
