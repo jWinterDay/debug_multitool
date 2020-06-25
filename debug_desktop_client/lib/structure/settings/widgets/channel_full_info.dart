@@ -70,14 +70,11 @@ class _ChannelFullInfoState extends State<ChannelFullInfoScreen> {
 
     // string
     if (logStateMap is String || prevLogStateMap is String) {
-      print('any string');
       return prevLog.state;
     }
 
     // map
     if (logStateMap is Map && prevLogStateMap is Map) {
-      print('all maps');
-
       final Iterable<String> logKeys = logStateMap.keys;
       final Iterable<String> prevLogKeys = prevLogStateMap.keys;
 
@@ -204,9 +201,35 @@ class _ChannelFullInfoState extends State<ChannelFullInfoScreen> {
 
           // content
           SliverToBoxAdapter(
-            child: Text(
-              _tabTitle,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+            child: Stack(
+              children: [
+                Positioned(
+                  child: Container(
+                    width: double.infinity,
+                    color: MyColors.gray_cccccc,
+                    child: SelectableText(
+                      _tabTitle,
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                      toolbarOptions: ToolbarOptions(
+                        copy: true,
+                        selectAll: true,
+                        cut: false,
+                        paste: false,
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  right: 0.0,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(CupertinoIcons.game_controller),
+                      Text('copy all(TODO)'),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],
