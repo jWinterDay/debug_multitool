@@ -2,6 +2,7 @@ import 'package:debug_desktop_client/mobx/channel_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:debug_desktop_client/app_config.dart';
+import 'package:go_flutter_utils/go_flutter_utils.dart';
 import 'package:provider/provider.dart';
 
 import 'package:debug_desktop_client/app_translations.dart';
@@ -22,9 +23,16 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  GoFlutterUtils _goFlutterUtils = GoFlutterUtils();
+
   @override
   void initState() {
     super.initState();
+
+    _goFlutterUtils.getInfo().then((Map<String, dynamic> info) {
+      //
+      print('info = $info');
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final ChannelState _store = Provider.of<ChannelState>(context, listen: false);
@@ -73,9 +81,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 size: 42.0,
               ),
               onTap: () async {
+                final Map<String, dynamic> info = await _goFlutterUtils.getInfo();
+                final String hostName = info['hostName'];
+
                 await showCupertinoModalPopup<String>(
                   context: context,
-                  builder: (_) => const ChannelDialogScreen(),
+                  builder: (_) => ChannelDialogScreen(hostName: hostName),
                 );
               },
             ),

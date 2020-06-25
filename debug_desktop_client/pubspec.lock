@@ -233,6 +233,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  go_flutter_utils:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "4706af6cdb361530761d9431bf3a79b62fa8cb4a"
+      url: "git://github.com/jWinterDay/go_flutter_utils.git"
+    source: git
+    version: "1.0.0+1"
   graphs:
     dependency: transitive
     description:
@@ -666,5 +675,5 @@ packages:
     source: hosted
     version: "2.2.1"
 sdks:
-  dart: ">=2.7.0 <3.0.0"
+  dart: ">=2.9.0-14.0.dev <3.0.0"
   flutter: ">=1.16.0 <2.0.0"

@@ -4,7 +4,8 @@ import (
 	"github.com/go-flutter-desktop/go-flutter"
 	// "github.com/go-flutter-desktop/plugins/shared_preferences"
 	"github.com/go-flutter-desktop/plugins/path_provider"
-	"github.com/nealwon/go-flutter-plugin-sqlite"
+	sqflite "github.com/nealwon/go-flutter-plugin-sqlite"
+	"os_info"
 )
 
 const (
@@ -15,15 +16,15 @@ const (
 var options = []flutter.Option{
 	flutter.WindowInitialDimensions(InitW, InitH),
 
-	// flutter.AddPlugin(&shared_preferences.SharedPreferencesPlugin{
-	// 	VendorName: "debug_desktop_multitool",
-	// 	ApplicationName: "debug_desktop_multitool",
-	// }),
+	// os info
+	flutter.AddPlugin(&os_info.OsInfoFlutterPlugin{}),
 
+	// path provider
 	flutter.AddPlugin(&path_provider.PathProviderPlugin{
-		VendorName: "debug_desktop_multitool",
+		VendorName:      "debug_desktop_multitool",
 		ApplicationName: "debug_desktop_multitool",
 	}),
-	
+
+	// sqlite
 	flutter.AddPlugin(sqflite.NewSqflitePlugin("debug_desktop_multitool", "debug_desktop_multitool")),
 }

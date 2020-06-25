@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ChannelDialogScreen extends StatefulWidget {
-  const ChannelDialogScreen();
+  const ChannelDialogScreen({@required this.hostName});
+
+  final String hostName;
 
   @override
   _ChannelDialogState createState() => _ChannelDialogState();
@@ -44,14 +46,16 @@ class _ChannelDialogState extends State<ChannelDialogScreen> {
     super.dispose();
   }
 
-  void _add(ChannelState store) {
-    store.addChannel(_currentText);
+  void _add(ChannelState store, {String host = 'unknownHost'}) {
+    final String result = '$host:$_currentText';
+    store.addChannel(result);
 
-    Navigator.of(context).pop(_currentText);
+    Navigator.of(context).pop(result);
   }
 
   @override
   Widget build(BuildContext context) {
+    final host = widget.hostName ?? 'unknownHost';
     final ChannelState store = Provider.of<ChannelState>(context);
 
     return Center(
@@ -60,6 +64,7 @@ class _ChannelDialogState extends State<ChannelDialogScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
         decoration: const BoxDecoration(color: MyColors.white, borderRadius: BorderRadius.all(Radius.circular(8.0))),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             // name
@@ -69,6 +74,11 @@ class _ChannelDialogState extends State<ChannelDialogScreen> {
                 autofocus: true,
                 controller: _textEditingController,
               ),
+            ),
+
+            Text(
+              'your computer name: $host',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
 
             // buttons
@@ -89,7 +99,7 @@ class _ChannelDialogState extends State<ChannelDialogScreen> {
                     return CupertinoButton(
                       color: MyColors.red.withOpacity(0.3),
                       child: Text(appTranslations.text('common_add')),
-                      onPressed: snapshot.data ? () => _add(store) : null,
+                      onPressed: snapshot.data ? () => _add(store, host: host) : null,
                     );
                   },
                 ),
