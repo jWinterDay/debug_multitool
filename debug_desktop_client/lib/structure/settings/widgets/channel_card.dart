@@ -48,7 +48,9 @@ class _ChannelCardState extends State<ChannelCardScreen> {
         children: <Widget>[
           Expanded(
             child: Text(
-              '${widget.index}) ${widget.log.datetime} > ${widget.log.action}',
+              widget.log.enabled
+                  ? '${widget.log.id}) ${widget.log.datetime} > ${widget.log.action}'
+                  : widget.log.action,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontWeight: FontWeight.bold),

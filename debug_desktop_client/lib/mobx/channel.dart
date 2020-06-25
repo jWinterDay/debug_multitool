@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:debug_desktop_client/app_di.dart';
 import 'package:debug_desktop_client/mobx/log.dart';
 import 'package:debug_desktop_client/services/custom/channel_service.dart';
-import 'package:debug_desktop_client/services/custom/used_url_service.dart';
 import 'package:debug_desktop_client/services/logger_service.dart';
 import 'package:mobx/mobx.dart';
 import 'package:centrifuge/centrifuge.dart' as centrifuge;
@@ -167,8 +166,10 @@ abstract class _Channel with Store {
         connectStatus = ConnectStatus.connected;
 
         final Log log = Log(
+          id: logs.length,
           action: 'connect',
           actionPayload: 'client: ${event.client}, version: ${event.version}',
+          prevLog: logs.isEmpty ? null : logs.last,
         );
 
         addLog(log);
@@ -178,8 +179,10 @@ abstract class _Channel with Store {
         connectStatus = ConnectStatus.disconnected;
 
         final Log log = Log(
+          id: logs.length,
           action: 'disconnect',
           actionPayload: 'reason: ${event.reason}, shouldReconnect: ${event.shouldReconnect}',
+          prevLog: logs.isEmpty ? null : logs.last,
         );
         addLog(log);
       });
@@ -203,9 +206,11 @@ abstract class _Channel with Store {
         }
 
         final Log log = Log(
+          id: logs.length,
           action: action,
           actionPayload: prettyActionPayload,
           state: prettyState,
+          prevLog: logs.isEmpty ? null : logs.last,
         );
         addLog(log);
       });

@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:debug_desktop_client/mobx/log.dart';
 import 'package:debug_desktop_client/tools/uikit.dart';
+
+final JsonEncoder _encoder = const JsonEncoder.withIndent('   ');
 
 enum _TabInfoType {
   actionPayload,
@@ -54,6 +58,73 @@ class _ChannelFullInfoState extends State<ChannelFullInfoScreen> {
     _setTabList();
   }
 
+  String _diffLogs(Log log) {
+    final Log prevLog = log.prevLog;
+
+    if (prevLog == null) {
+      return '---';
+    }
+
+    final logStateMap = json.decode(log.state);
+    final prevLogStateMap = json.decode(prevLog.state);
+
+    // string
+    if (logStateMap is String || prevLogStateMap is String) {
+      print('any string');
+      return prevLog.state;
+    }
+
+    // map
+    if (logStateMap is Map && prevLogStateMap is Map) {
+      print('all maps');
+
+      final Iterable<String> logKeys = logStateMap.keys;
+      final Iterable<String> prevLogKeys = prevLogStateMap.keys;
+
+      Set<String> uniqKeys = {
+        ...logKeys,
+        ...prevLogKeys,
+      };
+
+      // Set<String> updatedKey = <String>{};
+      // Set<String> addedKey = <String>{};
+      // Set<String> deletedKey = <String>{};
+
+      Map<String, dynamic> result = <String, dynamic>{};
+
+      uniqKeys.forEach((String uniqKey) {
+        // updated (may be) TODO
+        if (logKeys.contains(uniqKey) && prevLogKeys.contains(uniqKey)) {
+          if (logStateMap[uniqKey] != prevLogStateMap[uniqKey]) {
+            result.putIfAbsent('upd  $uniqKey', () => logStateMap[uniqKey]);
+            // updatedKey.add(uniqKey);
+          }
+        }
+
+        // deleted
+        if (!logKeys.contains(uniqKey) && prevLogKeys.contains(uniqKey)) {
+          result.putIfAbsent('-  $uniqKey', () => prevLogStateMap[uniqKey]);
+          // deletedKey.add(uniqKey);
+        }
+
+        // added
+        if (logKeys.contains(uniqKey) && !prevLogKeys.contains(uniqKey)) {
+          result.putIfAbsent('+  $uniqKey', () => logStateMap[uniqKey]);
+          // addedKey.add(uniqKey);
+        }
+      });
+
+      String prettyResult = _encoder.convert(result);
+
+      return prettyResult; //'addedKey: $addedKey, deletedKey: $deletedKey, updatedKey: $updatedKey';
+    }
+
+    // print('logStateMap = $logStateMap, type = ${logStateMap.runtimeType}');
+    // print('prevLogStateMap = $prevLogStateMap, type = ${prevLogStateMap.runtimeType}');
+
+    return 'gfd';
+  }
+
   void _setTabList() {
     _tabInfoList = [
       _TabInfo(
@@ -72,7 +143,7 @@ class _ChannelFullInfoState extends State<ChannelFullInfoScreen> {
         title: 'diff',
         iconData: CupertinoIcons.eye,
         tabInfoType: _TabInfoType.diff,
-        viewedData: 'todo',
+        viewedData: _diffLogs(widget.log), //.prevLog == null ? '---' : widget.log.prevLog.state,
       )
     ];
   }
