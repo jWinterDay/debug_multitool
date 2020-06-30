@@ -60,67 +60,68 @@ class _ChannelFullInfoState extends State<ChannelFullInfoScreen> {
   }
 
   String _diffLogs(Log log) {
-    final Log prevLog = log.prevLog;
+    return 'todo';
+    // final Log prevLog = log.prevLog;
 
-    if (prevLog == null) {
-      return '---';
-    }
+    // if (prevLog == null) {
+    //   return '---';
+    // }
 
-    final logStateMap = json.decode(log.state);
-    final prevLogStateMap = json.decode(prevLog.state);
+    // final logStateMap = json.decode(log.state);
+    // final prevLogStateMap = json.decode(prevLog.state);
 
-    // string
-    if (logStateMap is String || prevLogStateMap is String) {
-      return prevLog.state;
-    }
+    // // string
+    // if (logStateMap is String || prevLogStateMap is String) {
+    //   return prevLog.state;
+    // }
 
-    // map
-    if (logStateMap is Map && prevLogStateMap is Map) {
-      final Iterable<String> logKeys = logStateMap.keys;
-      final Iterable<String> prevLogKeys = prevLogStateMap.keys;
+    // // map
+    // if (logStateMap is Map && prevLogStateMap is Map) {
+    //   final Iterable<String> logKeys = logStateMap.keys;
+    //   final Iterable<String> prevLogKeys = prevLogStateMap.keys;
 
-      Set<String> uniqKeys = {
-        ...logKeys,
-        ...prevLogKeys,
-      };
+    //   Set<String> uniqKeys = {
+    //     ...logKeys,
+    //     ...prevLogKeys,
+    //   };
 
-      // Set<String> updatedKey = <String>{};
-      // Set<String> addedKey = <String>{};
-      // Set<String> deletedKey = <String>{};
+    //   // Set<String> updatedKey = <String>{};
+    //   // Set<String> addedKey = <String>{};
+    //   // Set<String> deletedKey = <String>{};
 
-      Map<String, dynamic> result = <String, dynamic>{};
+    //   Map<String, dynamic> result = <String, dynamic>{};
 
-      uniqKeys.forEach((String uniqKey) {
-        // updated (may be) TODO
-        if (logKeys.contains(uniqKey) && prevLogKeys.contains(uniqKey)) {
-          if (logStateMap[uniqKey] != prevLogStateMap[uniqKey]) {
-            result.putIfAbsent('upd  $uniqKey', () => logStateMap[uniqKey]);
-            // updatedKey.add(uniqKey);
-          }
-        }
+    //   uniqKeys.forEach((String uniqKey) {
+    //     // updated (may be) TODO
+    //     if (logKeys.contains(uniqKey) && prevLogKeys.contains(uniqKey)) {
+    //       if (logStateMap[uniqKey] != prevLogStateMap[uniqKey]) {
+    //         result.putIfAbsent('upd  $uniqKey', () => logStateMap[uniqKey]);
+    //         // updatedKey.add(uniqKey);
+    //       }
+    //     }
 
-        // deleted
-        if (!logKeys.contains(uniqKey) && prevLogKeys.contains(uniqKey)) {
-          result.putIfAbsent('-  $uniqKey', () => prevLogStateMap[uniqKey]);
-          // deletedKey.add(uniqKey);
-        }
+    //     // deleted
+    //     if (!logKeys.contains(uniqKey) && prevLogKeys.contains(uniqKey)) {
+    //       result.putIfAbsent('-  $uniqKey', () => prevLogStateMap[uniqKey]);
+    //       // deletedKey.add(uniqKey);
+    //     }
 
-        // added
-        if (logKeys.contains(uniqKey) && !prevLogKeys.contains(uniqKey)) {
-          result.putIfAbsent('+  $uniqKey', () => logStateMap[uniqKey]);
-          // addedKey.add(uniqKey);
-        }
-      });
+    //     // added
+    //     if (logKeys.contains(uniqKey) && !prevLogKeys.contains(uniqKey)) {
+    //       result.putIfAbsent('+  $uniqKey', () => logStateMap[uniqKey]);
+    //       // addedKey.add(uniqKey);
+    //     }
+    //   });
 
-      String prettyResult = _encoder.convert(result);
+    //   String prettyResult = _encoder.convert(result);
 
-      return prettyResult; //'addedKey: $addedKey, deletedKey: $deletedKey, updatedKey: $updatedKey';
-    }
+    //   return prettyResult; //'addedKey: $addedKey, deletedKey: $deletedKey, updatedKey: $updatedKey';
+    // }
 
-    // print('logStateMap = $logStateMap, type = ${logStateMap.runtimeType}');
-    // print('prevLogStateMap = $prevLogStateMap, type = ${prevLogStateMap.runtimeType}');
+    // // print('logStateMap = $logStateMap, type = ${logStateMap.runtimeType}');
+    // // print('prevLogStateMap = $prevLogStateMap, type = ${prevLogStateMap.runtimeType}');
 
-    return 'gfd';
+    // return 'gfd';
   }
 
   void _setTabList() {

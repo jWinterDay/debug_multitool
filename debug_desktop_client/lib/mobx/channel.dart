@@ -63,6 +63,12 @@ abstract class _Channel with Store {
 
   @computed
   List<LogState> get filteredLogs {
+    if (isFavoriteOnly) {
+      return logStates.where((LogState logState) {
+        return logState.isFavorite;
+      }).toList();
+    }
+
     return logStates.where((LogState logState) {
       // white
       if (isWhiteListUsed) {
@@ -82,6 +88,10 @@ abstract class _Channel with Store {
   @observable
   ObservableList<LogState> logStates = ObservableList<LogState>();
 
+  // favorite list
+  @observable
+  bool isFavoriteOnly = false;
+
   // white list
   @observable
   bool isWhiteListUsed = true;
@@ -93,6 +103,11 @@ abstract class _Channel with Store {
   bool isBlackListUsed = false;
   @observable
   String filterBlackList = '';
+
+  @action
+  void setFavoriteOnly() {
+    isFavoriteOnly = !isFavoriteOnly;
+  }
 
   @action
   void setChannelUrl(String url) {

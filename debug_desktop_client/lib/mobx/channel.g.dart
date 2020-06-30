@@ -92,6 +92,21 @@ mixin _$Channel on _Channel, Store {
     });
   }
 
+  final _$isFavoriteOnlyAtom = Atom(name: '_Channel.isFavoriteOnly');
+
+  @override
+  bool get isFavoriteOnly {
+    _$isFavoriteOnlyAtom.reportRead();
+    return super.isFavoriteOnly;
+  }
+
+  @override
+  set isFavoriteOnly(bool value) {
+    _$isFavoriteOnlyAtom.reportWrite(value, super.isFavoriteOnly, () {
+      super.isFavoriteOnly = value;
+    });
+  }
+
   final _$isWhiteListUsedAtom = Atom(name: '_Channel.isWhiteListUsed');
 
   @override
@@ -245,6 +260,17 @@ mixin _$Channel on _Channel, Store {
   final _$_ChannelActionController = ActionController(name: '_Channel');
 
   @override
+  void setFavoriteOnly() {
+    final _$actionInfo = _$_ChannelActionController.startAction(
+        name: '_Channel.setFavoriteOnly');
+    try {
+      return super.setFavoriteOnly();
+    } finally {
+      _$_ChannelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setChannelUrl(String url) {
     final _$actionInfo =
         _$_ChannelActionController.startAction(name: '_Channel.setChannelUrl');
@@ -340,6 +366,7 @@ wsUrl: ${wsUrl},
 name: ${name},
 description: ${description},
 logStates: ${logStates},
+isFavoriteOnly: ${isFavoriteOnly},
 isWhiteListUsed: ${isWhiteListUsed},
 filterWhiteList: ${filterWhiteList},
 isBlackListUsed: ${isBlackListUsed},

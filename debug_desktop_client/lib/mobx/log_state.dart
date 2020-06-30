@@ -18,7 +18,7 @@ abstract class _LogState with Store {
   }
 
   @action
-  void setFavorite(bool val) {
-    isFavorite = val;
+  void setFavorite() {
+    isFavorite = !isFavorite;
   }
 }

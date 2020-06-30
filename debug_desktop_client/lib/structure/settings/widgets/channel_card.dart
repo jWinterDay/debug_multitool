@@ -1,8 +1,8 @@
 import 'package:debug_desktop_client/mobx/log_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:debug_desktop_client/mobx/log.dart';
 import 'package:debug_desktop_client/tools/uikit.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 class ChannelCardScreen extends StatefulWidget {
   const ChannelCardScreen({
@@ -50,9 +50,18 @@ class _ChannelCardState extends State<ChannelCardScreen> {
           if (widget.logState.log.enabled)
             Container(
               padding: const EdgeInsets.only(right: 16.0),
-              child: Icon(
-                CupertinoIcons.heart,
-                color: MyColors.red,
+              child: GestureDetector(
+                onTap: () {
+                  widget.logState.setFavorite();
+                },
+                child: Observer(
+                  builder: (_) {
+                    return Icon(
+                      widget.logState.isFavorite ? CupertinoIcons.heart_solid : CupertinoIcons.heart,
+                      color: MyColors.red,
+                    );
+                  },
+                ),
               ),
             ),
           Expanded(

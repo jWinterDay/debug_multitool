@@ -27,11 +27,11 @@ mixin _$LogState on _LogState, Store {
   final _$_LogStateActionController = ActionController(name: '_LogState');
 
   @override
-  void setFavorite(bool val) {
+  void setFavorite() {
     final _$actionInfo =
         _$_LogStateActionController.startAction(name: '_LogState.setFavorite');
     try {
-      return super.setFavorite(val);
+      return super.setFavorite();
     } finally {
       _$_LogStateActionController.endAction(_$actionInfo);
     }

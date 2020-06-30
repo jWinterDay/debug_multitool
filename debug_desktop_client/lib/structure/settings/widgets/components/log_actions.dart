@@ -7,7 +7,6 @@ import 'package:debug_desktop_client/mobx/log_state.dart';
 import 'package:debug_desktop_client/tools/uikit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 
 class LogActions extends StatelessWidget {
@@ -30,6 +29,24 @@ class LogActions extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
+          // only favorites
+          Column(
+            children: [
+              Observer(builder: (_) {
+                return CupertinoSwitch(
+                  value: channelStateStore.currentChannel.isFavoriteOnly,
+                  onChanged: (bool val) {
+                    channelStateStore.currentChannel.setFavoriteOnly();
+                  },
+                );
+              }),
+              Text(
+                appTranslations.text('settings_favorite_only'),
+                style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+
           // follow to the end
           Column(
             children: [
