@@ -95,14 +95,20 @@ abstract class _Channel with Store {
   // white list
   @observable
   bool isWhiteListUsed = true;
+  @deprecated
   @observable
   String filterWhiteList = '';
+  @observable
+  ObservableList<String> whiteList = ObservableList<String>();
 
   // black list
   @observable
   bool isBlackListUsed = false;
+  @deprecated
   @observable
   String filterBlackList = '';
+  @observable
+  ObservableList<String> blackList = ObservableList<String>();
 
   @action
   void setFavoriteOnly() {
@@ -121,20 +127,7 @@ abstract class _Channel with Store {
   @action
   void clearLogs() => logStates.clear();
 
-  @action
-  void setFilterWhite(String filter) {
-    filterWhiteList = filter;
-
-    _channelService.update(this);
-  }
-
-  @action
-  void setFilterBlack(String filter) {
-    filterBlackList = filter;
-
-    _channelService.update(this);
-  }
-
+  // white and black filters
   @action
   void useWhiteList(bool val) {
     isWhiteListUsed = val;
@@ -145,6 +138,43 @@ abstract class _Channel with Store {
   @action
   void useBlackList(bool val) {
     isBlackListUsed = val;
+
+    _channelService.update(this);
+  }
+
+  @action
+  void addWhiteListItem(String filter) {
+    whiteList.add(filter);
+  }
+
+  @action
+  void removeWhiteListItem(String filter) {
+    whiteList.add(filter);
+  }
+
+  @action
+  void addBlackListItem(String filter) {
+    blackList.add(filter);
+  }
+
+  @action
+  void removeBlackListItem(String filter) {
+    blackList.add(filter);
+  }
+
+  // ----------------- remove old
+  @deprecated
+  @action
+  void setFilterWhite(String filter) {
+    filterWhiteList = filter;
+
+    _channelService.update(this);
+  }
+
+  @deprecated
+  @action
+  void setFilterBlack(String filter) {
+    filterBlackList = filter;
 
     _channelService.update(this);
   }

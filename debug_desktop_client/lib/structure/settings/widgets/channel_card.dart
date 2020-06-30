@@ -22,23 +22,11 @@ class ChannelCardScreen extends StatefulWidget {
 class _ChannelCardState extends State<ChannelCardScreen> {
   @override
   Widget build(BuildContext context) {
-    Color cardColor;
-    switch (widget.logState.log.action) {
-      case 'connect':
-        cardColor = MyColors.primary.withOpacity(0.1);
-        break;
-      case 'disconnect':
-        cardColor = MyColors.blue.withOpacity(0.1);
-        break;
-      default:
-        cardColor = MyColors.gray_e5e5e5;
-    }
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
       margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
       decoration: BoxDecoration(
-        color: widget.selected ? MyColors.primary : cardColor,
+        color: widget.selected ? MyColors.primary : widget.logState.color,
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
         border: Border.all(
           width: 1.0,

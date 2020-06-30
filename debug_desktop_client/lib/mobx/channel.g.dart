@@ -137,6 +137,21 @@ mixin _$Channel on _Channel, Store {
     });
   }
 
+  final _$whiteListAtom = Atom(name: '_Channel.whiteList');
+
+  @override
+  ObservableList<String> get whiteList {
+    _$whiteListAtom.reportRead();
+    return super.whiteList;
+  }
+
+  @override
+  set whiteList(ObservableList<String> value) {
+    _$whiteListAtom.reportWrite(value, super.whiteList, () {
+      super.whiteList = value;
+    });
+  }
+
   final _$isBlackListUsedAtom = Atom(name: '_Channel.isBlackListUsed');
 
   @override
@@ -164,6 +179,21 @@ mixin _$Channel on _Channel, Store {
   set filterBlackList(String value) {
     _$filterBlackListAtom.reportWrite(value, super.filterBlackList, () {
       super.filterBlackList = value;
+    });
+  }
+
+  final _$blackListAtom = Atom(name: '_Channel.blackList');
+
+  @override
+  ObservableList<String> get blackList {
+    _$blackListAtom.reportRead();
+    return super.blackList;
+  }
+
+  @override
+  set blackList(ObservableList<String> value) {
+    _$blackListAtom.reportWrite(value, super.blackList, () {
+      super.blackList = value;
     });
   }
 
@@ -304,28 +334,6 @@ mixin _$Channel on _Channel, Store {
   }
 
   @override
-  void setFilterWhite(String filter) {
-    final _$actionInfo =
-        _$_ChannelActionController.startAction(name: '_Channel.setFilterWhite');
-    try {
-      return super.setFilterWhite(filter);
-    } finally {
-      _$_ChannelActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setFilterBlack(String filter) {
-    final _$actionInfo =
-        _$_ChannelActionController.startAction(name: '_Channel.setFilterBlack');
-    try {
-      return super.setFilterBlack(filter);
-    } finally {
-      _$_ChannelActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void useWhiteList(bool val) {
     final _$actionInfo =
         _$_ChannelActionController.startAction(name: '_Channel.useWhiteList');
@@ -342,6 +350,72 @@ mixin _$Channel on _Channel, Store {
         _$_ChannelActionController.startAction(name: '_Channel.useBlackList');
     try {
       return super.useBlackList(val);
+    } finally {
+      _$_ChannelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addWhiteListItem(String filter) {
+    final _$actionInfo = _$_ChannelActionController.startAction(
+        name: '_Channel.addWhiteListItem');
+    try {
+      return super.addWhiteListItem(filter);
+    } finally {
+      _$_ChannelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removeWhiteListItem(String filter) {
+    final _$actionInfo = _$_ChannelActionController.startAction(
+        name: '_Channel.removeWhiteListItem');
+    try {
+      return super.removeWhiteListItem(filter);
+    } finally {
+      _$_ChannelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addBlackListItem(String filter) {
+    final _$actionInfo = _$_ChannelActionController.startAction(
+        name: '_Channel.addBlackListItem');
+    try {
+      return super.addBlackListItem(filter);
+    } finally {
+      _$_ChannelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removeBlackListItem(String filter) {
+    final _$actionInfo = _$_ChannelActionController.startAction(
+        name: '_Channel.removeBlackListItem');
+    try {
+      return super.removeBlackListItem(filter);
+    } finally {
+      _$_ChannelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setFilterWhite(String filter) {
+    final _$actionInfo =
+        _$_ChannelActionController.startAction(name: '_Channel.setFilterWhite');
+    try {
+      return super.setFilterWhite(filter);
+    } finally {
+      _$_ChannelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setFilterBlack(String filter) {
+    final _$actionInfo =
+        _$_ChannelActionController.startAction(name: '_Channel.setFilterBlack');
+    try {
+      return super.setFilterBlack(filter);
     } finally {
       _$_ChannelActionController.endAction(_$actionInfo);
     }
@@ -369,8 +443,10 @@ logStates: ${logStates},
 isFavoriteOnly: ${isFavoriteOnly},
 isWhiteListUsed: ${isWhiteListUsed},
 filterWhiteList: ${filterWhiteList},
+whiteList: ${whiteList},
 isBlackListUsed: ${isBlackListUsed},
 filterBlackList: ${filterBlackList},
+blackList: ${blackList},
 connectStatus: ${connectStatus},
 client: ${client},
 subscription: ${subscription},
