@@ -1,5 +1,6 @@
 // import 'dart:async';
 
+import 'package:debug_desktop_client/services/custom/app_settings_service.dart';
 import 'package:debug_desktop_client/services/custom/channel_service.dart';
 import 'package:debug_desktop_client/services/custom/used_url_service.dart';
 import 'package:debug_desktop_client/services/db_service.dart';
@@ -45,6 +46,16 @@ class AppDI {
     di.map<UsedUrlService>(
       (Injector di) {
         return UsedUrlService(
+          dbService: di.get<DbService>(),
+        );
+      },
+      isSingleton: true,
+    );
+
+    // app settings service
+    di.map<AppSettingsService>(
+      (Injector di) {
+        return AppSettingsService(
           dbService: di.get<DbService>(),
         );
       },
