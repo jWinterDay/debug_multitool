@@ -240,6 +240,14 @@ class _ChannelState extends State<ChannelScreen> {
                                     return SliverList(
                                       delegate: SliverChildBuilderDelegate(
                                         (_, int index) {
+                                          if (index == list.length) {
+                                            return Center(
+                                              child: Text(
+                                                list.isEmpty ? appTranslations.text('common_no_data') : '',
+                                              ),
+                                            );
+                                          }
+
                                           final LogState logState = list[index];
 
                                           return GestureDetector(
@@ -255,7 +263,7 @@ class _ChannelState extends State<ChannelScreen> {
                                             ),
                                           );
                                         },
-                                        childCount: list.length,
+                                        childCount: list.length + 1,
                                       ),
                                     );
                                   },
