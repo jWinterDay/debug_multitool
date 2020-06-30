@@ -9,13 +9,13 @@ part of 'channel.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$Channel on _Channel, Store {
-  Computed<List<Log>> _$filteredLogsComputed;
+  Computed<List<LogState>> _$filteredLogsComputed;
 
   @override
-  List<Log> get filteredLogs =>
-      (_$filteredLogsComputed ??= Computed<List<Log>>(() => super.filteredLogs,
+  List<LogState> get filteredLogs => (_$filteredLogsComputed ??=
+          Computed<List<LogState>>(() => super.filteredLogs,
               name: '_Channel.filteredLogs'))
-          .value;
+      .value;
 
   final _$datetimeAtom = Atom(name: '_Channel.datetime');
 
@@ -77,18 +77,18 @@ mixin _$Channel on _Channel, Store {
     });
   }
 
-  final _$logsAtom = Atom(name: '_Channel.logs');
+  final _$logStatesAtom = Atom(name: '_Channel.logStates');
 
   @override
-  ObservableList<Log> get logs {
-    _$logsAtom.reportRead();
-    return super.logs;
+  ObservableList<LogState> get logStates {
+    _$logStatesAtom.reportRead();
+    return super.logStates;
   }
 
   @override
-  set logs(ObservableList<Log> value) {
-    _$logsAtom.reportWrite(value, super.logs, () {
-      super.logs = value;
+  set logStates(ObservableList<LogState> value) {
+    _$logStatesAtom.reportWrite(value, super.logStates, () {
+      super.logStates = value;
     });
   }
 
@@ -256,11 +256,11 @@ mixin _$Channel on _Channel, Store {
   }
 
   @override
-  void addLog(Log log) {
+  void addLog(LogState logState) {
     final _$actionInfo =
         _$_ChannelActionController.startAction(name: '_Channel.addLog');
     try {
-      return super.addLog(log);
+      return super.addLog(logState);
     } finally {
       _$_ChannelActionController.endAction(_$actionInfo);
     }
@@ -339,7 +339,7 @@ datetime: ${datetime},
 wsUrl: ${wsUrl},
 name: ${name},
 description: ${description},
-logs: ${logs},
+logStates: ${logStates},
 isWhiteListUsed: ${isWhiteListUsed},
 filterWhiteList: ${filterWhiteList},
 isBlackListUsed: ${isBlackListUsed},

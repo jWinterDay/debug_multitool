@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 final DateFormat kFormatter = DateFormat('H:m:s');
 
+@immutable
 class Log {
   Log({
     @required this.id,

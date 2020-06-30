@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:debug_desktop_client/app_di.dart';
 import 'package:debug_desktop_client/mobx/log.dart';
+import 'package:debug_desktop_client/mobx/log_state.dart';
 import 'package:debug_desktop_client/services/custom/channel_service.dart';
 import 'package:debug_desktop_client/services/logger_service.dart';
 import 'package:mobx/mobx.dart';
@@ -61,17 +62,17 @@ abstract class _Channel with Store {
   String description;
 
   @computed
-  List<Log> get filteredLogs {
-    return logs.where((Log log) {
+  List<LogState> get filteredLogs {
+    return logStates.where((LogState logState) {
       // white
       if (isWhiteListUsed) {
-        return log.action.contains(filterWhiteList);
+        return logState.log.action.contains(filterWhiteList);
       }
 
       return true;
-    }).where((Log log) {
+    }).where((LogState logState) {
       if (isBlackListUsed) {
-        return filterBlackList == '' || !log.action.contains(filterBlackList);
+        return filterBlackList == '' || !logState.log.action.contains(filterBlackList);
       }
 
       return true;
@@ -79,7 +80,7 @@ abstract class _Channel with Store {
   }
 
   @observable
-  ObservableList<Log> logs = ObservableList<Log>();
+  ObservableList<LogState> logStates = ObservableList<LogState>();
 
   // white list
   @observable
@@ -100,10 +101,10 @@ abstract class _Channel with Store {
   }
 
   @action
-  void addLog(Log log) => logs.add(log);
+  void addLog(LogState logState) => logStates.add(logState);
 
   @action
-  void clearLogs() => logs.clear();
+  void clearLogs() => logStates.clear();
 
   @action
   void setFilterWhite(String filter) {
@@ -166,25 +167,25 @@ abstract class _Channel with Store {
         connectStatus = ConnectStatus.connected;
 
         final Log log = Log(
-          id: logs.length,
+          id: logStates.length,
           action: 'connect',
           actionPayload: 'client: ${event.client}, version: ${event.version}',
-          prevLog: logs.isEmpty ? null : logs.last,
+          prevLog: logStates.isEmpty ? null : logStates.last.log,
         );
 
-        addLog(log);
+        addLog(LogState(log));
       });
       // disconnect sub
       _disconnectSub = client.disconnectStream.listen((centrifuge.DisconnectEvent event) {
         connectStatus = ConnectStatus.disconnected;
 
         final Log log = Log(
-          id: logs.length,
+          id: logStates.length,
           action: 'disconnect',
           actionPayload: 'reason: ${event.reason}, shouldReconnect: ${event.shouldReconnect}',
-          prevLog: logs.isEmpty ? null : logs.last,
+          prevLog: logStates.isEmpty ? null : logStates.last.log,
         );
-        addLog(log);
+        addLog(LogState(log));
       });
       // publish sub
       _publishSub = subscription.publishStream.listen((centrifuge.PublishEvent event) {
@@ -206,13 +207,13 @@ abstract class _Channel with Store {
         }
 
         final Log log = Log(
-          id: logs.length,
+          id: logStates.length,
           action: action,
           actionPayload: prettyActionPayload,
           state: prettyState,
-          prevLog: logs.isEmpty ? null : logs.last,
+          prevLog: logStates.isEmpty ? null : logStates.last.log,
         );
-        addLog(log);
+        addLog(LogState(log));
       });
 
       // subscription.joinStream.listen((centrifuge.JoinEvent event) {

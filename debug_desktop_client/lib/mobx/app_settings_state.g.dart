@@ -39,6 +39,17 @@ mixin _$AppSettingsState on _AppSettingsState, Store {
   }
 
   @override
+  void setSettings(AppSettingsState appSettingsState) {
+    final _$actionInfo = _$_AppSettingsStateActionController.startAction(
+        name: '_AppSettingsState.setSettings');
+    try {
+      return super.setSettings(appSettingsState);
+    } finally {
+      _$_AppSettingsStateActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 scrollToEnd: ${scrollToEnd}

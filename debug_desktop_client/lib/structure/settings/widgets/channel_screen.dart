@@ -1,4 +1,5 @@
 import 'package:debug_desktop_client/mobx/app_settings_state.dart';
+import 'package:debug_desktop_client/mobx/log_state.dart';
 import 'package:debug_desktop_client/structure/settings/widgets/components/log_actions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -82,10 +83,10 @@ class _ChannelState extends State<ChannelScreen> {
   }
 
   int _currentIndex = -1;
-  Log _currentLog;
-  void _showDetails(Log log, int index) {
+  LogState _currentLogState;
+  void _showDetails(LogState logState, int index) {
     setState(() {
-      _currentLog = log;
+      _currentLogState = logState;
       _currentIndex = index;
     });
   }
@@ -160,7 +161,7 @@ class _ChannelState extends State<ChannelScreen> {
                   : () {
                       setState(() {
                         _currentIndex = -1;
-                        _currentLog = null;
+                        _currentLogState = null;
                       });
 
                       channelStateStore.currentChannel.clearLogs();
@@ -232,23 +233,23 @@ class _ChannelState extends State<ChannelScreen> {
                                 Observer(
                                   builder: (_) {
                                     final scrollToEnd = appSettingsState.scrollToEnd;
-                                    final List<Log> list = channelStateStore.currentChannel.filteredLogs;
+                                    final List<LogState> list = channelStateStore.currentChannel.filteredLogs;
 
                                     _setScrolling(scrollToEnd: scrollToEnd);
 
                                     return SliverList(
                                       delegate: SliverChildBuilderDelegate(
                                         (_, int index) {
-                                          final Log log = list[index];
+                                          final LogState logState = list[index];
 
                                           return GestureDetector(
-                                            onTap: log.enabled
+                                            onTap: logState.log.enabled
                                                 ? () {
-                                                    _showDetails(log, index);
+                                                    _showDetails(logState, index);
                                                   }
                                                 : null,
                                             child: ChannelCardScreen(
-                                              log: list[index],
+                                              logState: list[index],
                                               index: index,
                                               selected: index == _currentIndex,
                                             ),
@@ -265,11 +266,11 @@ class _ChannelState extends State<ChannelScreen> {
                         ),
 
                         // full info
-                        if (_currentLog != null)
+                        if (_currentLogState != null)
                           Expanded(
                             flex: 2,
                             child: ChannelFullInfoScreen(
-                              log: _currentLog,
+                              logState: _currentLogState,
                               // index: _currentIndex,
                             ),
                           ),

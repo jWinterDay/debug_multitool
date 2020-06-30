@@ -3,6 +3,7 @@ import 'package:debug_desktop_client/mobx/app_settings_state.dart';
 import 'package:debug_desktop_client/mobx/channel_state.dart';
 import 'package:debug_desktop_client/mobx/connect_status.dart';
 import 'package:debug_desktop_client/mobx/log.dart';
+import 'package:debug_desktop_client/mobx/log_state.dart';
 import 'package:debug_desktop_client/tools/uikit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -74,16 +75,16 @@ class LogActions extends StatelessWidget {
                 ? null
                 : () {
                     final Log log = Log(
-                      id: channelStateStore.currentChannel.logs.length,
+                      id: channelStateStore.currentChannel.logStates.length,
                       action: '------------------------',
                       actionPayload: '',
                       state: '',
                       enabled: false,
-                      prevLog: channelStateStore.currentChannel.logs.isEmpty
+                      prevLog: channelStateStore.currentChannel.logStates.isEmpty
                           ? null
-                          : channelStateStore.currentChannel.logs.last,
+                          : channelStateStore.currentChannel.logStates.last.log,
                     );
-                    channelStateStore.currentChannel.addLog(log);
+                    channelStateStore.currentChannel.addLog(LogState(log));
                   },
             child: Container(
               color: MyColors.transparent,

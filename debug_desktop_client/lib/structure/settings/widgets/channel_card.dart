@@ -1,3 +1,4 @@
+import 'package:debug_desktop_client/mobx/log_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:debug_desktop_client/mobx/log.dart';
@@ -5,12 +6,12 @@ import 'package:debug_desktop_client/tools/uikit.dart';
 
 class ChannelCardScreen extends StatefulWidget {
   const ChannelCardScreen({
-    this.log,
+    this.logState,
     this.index,
     this.selected,
   });
 
-  final Log log;
+  final LogState logState;
   final int index;
   final bool selected;
 
@@ -22,7 +23,7 @@ class _ChannelCardState extends State<ChannelCardScreen> {
   @override
   Widget build(BuildContext context) {
     Color cardColor;
-    switch (widget.log.action) {
+    switch (widget.logState.log.action) {
       case 'connect':
         cardColor = MyColors.primary.withOpacity(0.1);
         break;
@@ -46,18 +47,17 @@ class _ChannelCardState extends State<ChannelCardScreen> {
       ),
       child: Row(
         children: <Widget>[
-          Container(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: const Icon(
-              CupertinoIcons.heart_solid,
-              color: MyColors.red,
+          if (widget.logState.log.enabled)
+            Container(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: Icon(
+                CupertinoIcons.heart,
+                color: MyColors.red,
+              ),
             ),
-          ),
           Expanded(
             child: Text(
-              widget.log.enabled
-                  ? '${widget.log.id}) ${widget.log.datetime} > ${widget.log.action}'
-                  : widget.log.action,
+              widget.logState.viewedText,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontWeight: FontWeight.bold),

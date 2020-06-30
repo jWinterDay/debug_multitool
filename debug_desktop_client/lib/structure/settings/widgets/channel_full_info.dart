@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:debug_desktop_client/mobx/log_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:debug_desktop_client/mobx/log.dart';
@@ -29,11 +30,11 @@ class _TabInfo {
 
 class ChannelFullInfoScreen extends StatefulWidget {
   const ChannelFullInfoScreen({
-    this.log,
+    this.logState,
     // this.index,
   });
 
-  final Log log;
+  final LogState logState;
   // final int index;
 
   @override
@@ -128,19 +129,19 @@ class _ChannelFullInfoState extends State<ChannelFullInfoScreen> {
         title: 'action payload',
         iconData: CupertinoIcons.bell,
         tabInfoType: _TabInfoType.actionPayload,
-        viewedData: widget.log.actionPayload,
+        viewedData: widget.logState.log.actionPayload,
       ),
       _TabInfo(
         title: 'state',
         iconData: CupertinoIcons.car,
         tabInfoType: _TabInfoType.state,
-        viewedData: widget.log.state,
+        viewedData: widget.logState.log.state,
       ),
       _TabInfo(
         title: 'diff',
         iconData: CupertinoIcons.eye,
         tabInfoType: _TabInfoType.diff,
-        viewedData: _diffLogs(widget.log), //.prevLog == null ? '---' : widget.log.prevLog.state,
+        viewedData: _diffLogs(widget.logState.log), //.prevLog == null ? '---' : widget.log.prevLog.state,
       )
     ];
   }
