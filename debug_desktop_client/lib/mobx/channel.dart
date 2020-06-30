@@ -22,13 +22,13 @@ class Channel extends _Channel with _$Channel {
 
   static Channel fromMap(Map<String, dynamic> json) {
     return Channel()
-      ..wsUrl = json['wsUrl']
-      ..name = json['name']
-      ..description = json['description']
+      ..wsUrl = json['wsUrl'].toString()
+      ..name = json['name'].toString()
+      ..description = json['description'].toString()
       ..isWhiteListUsed = json['isWhiteListUsed'] == 1
-      ..filterWhiteList = json['filterWhiteList'] ?? ''
+      ..filterWhiteList = json['filterWhiteList'].toString() ?? ''
       ..isBlackListUsed = json['isBlackListUsed'] == 1
-      ..filterBlackList = json['filterBlackList'] ?? '';
+      ..filterBlackList = json['filterBlackList'].toString() ?? '';
   }
 
   Map<String, dynamic> toMap() {
@@ -45,8 +45,8 @@ class Channel extends _Channel with _$Channel {
 }
 
 abstract class _Channel with Store {
-  ChannelService _channelService = di.get<ChannelService>();
-  LoggerService _loggerService = di.get<LoggerService>();
+  final ChannelService _channelService = di.get<ChannelService>();
+  final LoggerService _loggerService = di.get<LoggerService>();
 
   @observable
   DateTime datetime;
@@ -118,7 +118,8 @@ abstract class _Channel with Store {
   @action
   void setChannelUrl(String url) {
     wsUrl = url;
-    _channelService.update(this);
+    // ignore: argument_type_not_assignable
+    _channelService.update(this as Channel);
   }
 
   @action
@@ -132,14 +133,14 @@ abstract class _Channel with Store {
   void useWhiteList(bool val) {
     isWhiteListUsed = val;
 
-    _channelService.update(this);
+    _channelService.update(this as Channel);
   }
 
   @action
   void useBlackList(bool val) {
     isBlackListUsed = val;
 
-    _channelService.update(this);
+    _channelService.update(this as Channel);
   }
 
   @action
@@ -168,7 +169,7 @@ abstract class _Channel with Store {
   void setFilterWhite(String filter) {
     filterWhiteList = filter;
 
-    _channelService.update(this);
+    _channelService.update(this as Channel);
   }
 
   @deprecated
@@ -176,7 +177,7 @@ abstract class _Channel with Store {
   void setFilterBlack(String filter) {
     filterBlackList = filter;
 
-    _channelService.update(this);
+    _channelService.update(this as Channel);
   }
 
   // centrifugo
@@ -235,7 +236,7 @@ abstract class _Channel with Store {
       // publish sub
       _publishSub = subscription.publishStream.listen((centrifuge.PublishEvent event) {
         //example: {"action": "action1", "payload": {"name":"name1", "pl": "pl1"}, "state": "state1"}
-        final Map<String, dynamic> message = json.decode(utf8.decode(event.data));
+        final Map<String, dynamic> message = json.decode(utf8.decode(event.data)) as Map<String, dynamic>;
         String prettyActionPayload = 'unknown action payload';
         String prettyState = 'unknown state';
         String action = 'unknown action';

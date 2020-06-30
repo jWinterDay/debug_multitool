@@ -48,7 +48,7 @@ class AppBackAnimManager {
   double _kRouteOffset;
   bool _disposed = false;
 
-  static final List<AppBackAnimManager> _list = [];
+  static final List<AppBackAnimManager> _list = <AppBackAnimManager>[];
   static double getRouteTopPadding(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return _kMaxZoomRemaining * size.height / 2 + _kAppAnimAndRouteOffset;
@@ -67,7 +67,7 @@ class AppBackAnimManager {
       return prevInstancesList;
     }
 
-    return [prevInstance];
+    return <AppBackAnimManager>[prevInstance];
   }
 
   static void animatePrevToInitialState() {

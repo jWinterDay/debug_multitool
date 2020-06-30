@@ -23,7 +23,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  GoFlutterUtils _goFlutterUtils = GoFlutterUtils();
+  final GoFlutterUtils _goFlutterUtils = GoFlutterUtils();
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         middle: Text(appTranslations.text('settings')),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
-          children: [
+          children: <Widget>[
             // delete all channels
             GestureDetector(
               child: const Icon(
@@ -66,7 +66,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _store.clearChannelState();
               },
             ),
-            SizedBox(
+            const SizedBox(
               width: 48.0,
             ),
             // add channel
@@ -77,7 +77,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               onTap: () async {
                 final Map<String, dynamic> info = await _goFlutterUtils.getInfo();
-                final String hostName = info['hostName'];
+                final String hostName = info['hostName'].toString();
 
                 await showCupertinoModalPopup<String>(
                   context: context,
@@ -151,7 +151,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 onTap: () {
                                   _store.removeChannel(channel);
                                 },
-                                child: Icon(
+                                child: const Icon(
                                   CupertinoIcons.delete_solid,
                                   size: 48.0,
                                 ),

@@ -31,7 +31,7 @@ class LogActions extends StatelessWidget {
         children: <Widget>[
           // only favorites
           Column(
-            children: [
+            children: <Widget>[
               Observer(builder: (_) {
                 return CupertinoSwitch(
                   value: channelStateStore.currentChannel.isFavoriteOnly,
@@ -49,7 +49,7 @@ class LogActions extends StatelessWidget {
 
           // follow to the end
           Column(
-            children: [
+            children: <Widget>[
               Observer(builder: (_) {
                 return CupertinoSwitch(
                   value: appSettingsState.scrollToEnd,

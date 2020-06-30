@@ -7,7 +7,6 @@ import 'package:debug_desktop_client/app_translations.dart';
 import 'package:debug_desktop_client/mobx/channel.dart';
 import 'package:debug_desktop_client/mobx/channel_state.dart';
 import 'package:debug_desktop_client/mobx/connect_status.dart';
-import 'package:debug_desktop_client/mobx/log.dart';
 import 'package:debug_desktop_client/structure/settings/widgets/channel_card.dart';
 import 'package:debug_desktop_client/structure/settings/widgets/channel_full_info.dart';
 import 'package:debug_desktop_client/tools/uikit.dart';
@@ -30,7 +29,7 @@ class ChannelScreen extends StatefulWidget {
 class _ChannelState extends State<ChannelScreen> {
   // url
   TextEditingController _urlEditingController;
-  String get _currentUrl => _urlEditingController.text;
+  // String get _currentUrl => _urlEditingController.text;
 
   // white list
   TextEditingController _whiteListEditingController;
@@ -139,7 +138,7 @@ class _ChannelState extends State<ChannelScreen> {
             return WhiteListInput(
               controller: _whiteListEditingController,
               isWhiteListUsed: channelStateStore.currentChannel.isWhiteListUsed,
-              callback: (val) => channelStateStore.currentChannel.useWhiteList(val),
+              callback: (bool val) => channelStateStore.currentChannel.useWhiteList(val),
             );
           }),
 
@@ -148,7 +147,7 @@ class _ChannelState extends State<ChannelScreen> {
             return BlackListInput(
               controller: _blackListEditingController,
               isBlackListUsed: channelStateStore.currentChannel.isBlackListUsed,
-              callback: (val) => channelStateStore.currentChannel.useBlackList(val),
+              callback: (bool val) => channelStateStore.currentChannel.useBlackList(val),
             );
           }),
 
@@ -232,7 +231,7 @@ class _ChannelState extends State<ChannelScreen> {
                                 // logs
                                 Observer(
                                   builder: (_) {
-                                    final scrollToEnd = appSettingsState.scrollToEnd;
+                                    final bool scrollToEnd = appSettingsState.scrollToEnd;
                                     final List<LogState> list = channelStateStore.currentChannel.filteredLogs;
 
                                     _setScrolling(scrollToEnd: scrollToEnd);

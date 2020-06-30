@@ -2,7 +2,7 @@ import 'package:debug_desktop_client/structure/components/input_text.dart';
 import 'package:debug_desktop_client/tools/uikit.dart';
 import 'package:flutter/cupertino.dart';
 
-typedef void UseBlackListCallback(bool val);
+typedef UseBlackListCallback = void Function(bool val);
 
 class BlackListInput extends StatelessWidget {
   const BlackListInput({

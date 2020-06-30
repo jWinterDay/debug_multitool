@@ -8,15 +8,15 @@ const int kScrollToEndDbId = 1;
 
 class AppSettingsState extends _AppSettingsState with _$AppSettingsState {
   static AppSettingsState fromList(List<Map<String, dynamic>> list) {
-    AppSettingsState result = AppSettingsState();
+    final AppSettingsState result = AppSettingsState();
 
     list.forEach((Map<String, dynamic> row) {
       final int id = int.parse(row['appSettingsId'].toString());
-      final String value = row['value'];
+      final String value = row['value'] as String;
 
       switch (id) {
         case 1:
-          result..scrollToEnd = value == '1';
+          result.scrollToEnd = value == '1';
           break;
 
         default:
@@ -34,7 +34,7 @@ class AppSettingsState extends _AppSettingsState with _$AppSettingsState {
 }
 
 abstract class _AppSettingsState with Store {
-  AppSettingsService _appSettingsService = di.get<AppSettingsService>();
+  final AppSettingsService _appSettingsService = di.get<AppSettingsService>();
 
   @observable
   bool scrollToEnd = false;

@@ -7,7 +7,7 @@ import 'package:debug_desktop_client/services/logger_service.dart';
 class AppDb {
   static Future<void> init() async {
     final DebugPrintLoggerServiceImpl loggerService = DebugPrintLoggerServiceImpl();
-    DbService dbService = di.get<DbService>();
+    final DbService dbService = di.get<DbService>();
 
     await dbService.init();
 

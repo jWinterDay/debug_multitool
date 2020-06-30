@@ -21,8 +21,8 @@ class UsedUrl {
 
   static UsedUrl fromMap(Map<String, dynamic> json) {
     return UsedUrl(
-      usedUrlId: json['usedUrlId'],
-      name: json['name'],
+      usedUrlId: int.tryParse(json['usedUrlId'].toString()),
+      name: json['name'].toString(),
       isPermanent: json['isPermanent'] == 1,
     );
   }

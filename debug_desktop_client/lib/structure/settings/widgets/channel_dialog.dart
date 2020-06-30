@@ -55,7 +55,7 @@ class _ChannelDialogState extends State<ChannelDialogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final host = widget.hostName ?? 'unknownHost';
+    final String host = widget.hostName ?? 'unknownHost';
     final ChannelState store = Provider.of<ChannelState>(context);
 
     return Center(
@@ -78,7 +78,7 @@ class _ChannelDialogState extends State<ChannelDialogScreen> {
 
             Text(
               'your computer name: $host',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
 
             // buttons

@@ -2,7 +2,7 @@ import 'package:debug_desktop_client/structure/components/input_text.dart';
 import 'package:debug_desktop_client/tools/uikit.dart';
 import 'package:flutter/cupertino.dart';
 
-typedef void UseWhiteListCallback(bool val);
+typedef UseWhiteListCallback = void Function(bool val);
 
 class WhiteListInput extends StatelessWidget {
   const WhiteListInput({

@@ -32,7 +32,7 @@ class UsedUrlService {
         from used_url
        where used_url_id = ?
       ''',
-      [usedUrlId],
+      <dynamic>[usedUrlId],
     );
 
     if (rawList.isEmpty) {
@@ -56,7 +56,7 @@ class UsedUrlService {
         select ?, 0
          where not exists(select 1 from used_url where name = ?)
       ''',
-      [name, name],
+      <dynamic>[name, name],
     );
 
     final UsedUrl usedUrl = await fetchSingle(usedUrlId);
@@ -71,7 +71,7 @@ class UsedUrlService {
         set name = ?
       where used_url_id = ?
       ''',
-      [
+      <dynamic>[
         usedUrl.name ?? '',
         usedUrl.usedUrlId,
       ],
@@ -85,7 +85,7 @@ class UsedUrlService {
        where used_url_id = ?
          and is_permanent = 0
       ''',
-      [usedUrl.usedUrlId],
+      <dynamic>[usedUrl.usedUrlId],
     );
 
     return count;

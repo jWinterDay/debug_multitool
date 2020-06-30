@@ -6,9 +6,9 @@ import 'package:debug_desktop_client/services/logger_service.dart';
 
 class AppLocalStorage {
   static Future<void> init() async {
-    LoggerService loggerService = di.get<LoggerService>();
+    final LoggerService loggerService = di.get<LoggerService>();
 
-    LocalStorageService localStorageService = di.get<LocalStorageService>();
+    final LocalStorageService localStorageService = di.get<LocalStorageService>();
     await localStorageService.init();
 
     loggerService.d('---local storage successfully initialized---');

@@ -1,6 +1,7 @@
 import 'package:debug_desktop_client/app_di.dart';
 import 'package:debug_desktop_client/mobx/app_settings_state.dart';
 import 'package:debug_desktop_client/services/custom/app_settings_service.dart';
+import 'package:debug_desktop_client/services/logger_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:debug_desktop_client/app_translations.dart';
 import 'package:debug_desktop_client/structure/back_animation/widgets/screen_back_animation.dart';
@@ -30,7 +31,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   CupertinoTabController _tabController;
   List<_TabProp> _tabPropList;
 
-  AppSettingsService _appSettingsService = di.get<AppSettingsService>();
+  final AppSettingsService _appSettingsService = di.get<AppSettingsService>();
+  final LoggerService _loggerService = di.get<LoggerService>();
 
   @override
   void initState() {
@@ -40,8 +42,8 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final AppSettingsState appSettingsState = Provider.of<AppSettingsState>(context, listen: false);
 
-      _appSettingsService.fetch().then((settings) {
-        print('app init state settings = $settings');
+      _appSettingsService.fetch().then((AppSettingsState settings) {
+        _loggerService.d('app init state settings = $settings');
 
         appSettingsState.setSettings(settings);
       });

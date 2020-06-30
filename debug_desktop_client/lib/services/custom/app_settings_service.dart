@@ -29,7 +29,7 @@ class AppSettingsService {
         set value = ?
       where app_settings_id = ?
       ''',
-      [
+      <dynamic>[
         value,
         id,
       ],

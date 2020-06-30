@@ -24,7 +24,7 @@ class ChannelState extends _ChannelState with _$ChannelState {
 }
 
 abstract class _ChannelState with Store {
-  ChannelService _channelService = di.get<ChannelService>();
+  final ChannelService _channelService = di.get<ChannelService>();
 
   @observable
   Channel currentChannel;
@@ -46,7 +46,7 @@ abstract class _ChannelState with Store {
   }
 
   Future<void> fetch() async {
-    List<Channel> list = await _channelService.fetch();
+    final List<Channel> list = await _channelService.fetch();
 
     addChannelState(list);
   }

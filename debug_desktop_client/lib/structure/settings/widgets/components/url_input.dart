@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class UrlInput extends StatefulWidget {
-  UrlInput({
+  const UrlInput({
     @required this.controller,
     @required this.channel,
   }) : assert(controller != null);
@@ -26,10 +26,10 @@ class UrlInput extends StatefulWidget {
 }
 
 class _UrlInputState extends State<UrlInput> {
-  UsedUrlService _usedUrlService = di.get<UsedUrlService>();
+  final UsedUrlService _usedUrlService = di.get<UsedUrlService>();
   // Future<List<UsedUrl>> _usedUrls;
-  BehaviorSubject<bool> _enableSubject = BehaviorSubject();
-  BehaviorSubject<List<UsedUrl>> _usedUrlsSubject = BehaviorSubject<List<UsedUrl>>();
+  final BehaviorSubject<bool> _enableSubject = BehaviorSubject<bool>();
+  final BehaviorSubject<List<UsedUrl>> _usedUrlsSubject = BehaviorSubject<List<UsedUrl>>();
 
   @override
   void initState() {
@@ -59,15 +59,16 @@ class _UrlInputState extends State<UrlInput> {
               _usedUrlsSubject.add(list);
             });
           },
-          child: Icon(CupertinoIcons.delete),
+          child: const Icon(CupertinoIcons.delete),
         ),
         previousPageTitle: appTranslations.text('common_back'),
       ),
       child: StreamBuilder<List<UsedUrl>>(
         stream: _usedUrlsSubject,
+        // ignore: always_specify_types
         builder: (_, snapshot) {
           if (!snapshot.hasData) {
-            return Center(
+            return const Center(
               child: CupertinoActivityIndicator(
                 radius: 32.0,
               ),
@@ -79,8 +80,8 @@ class _UrlInputState extends State<UrlInput> {
           return Container(
             margin: const EdgeInsets.all(16.0),
             child: CustomScrollView(
-              physics: ClampingScrollPhysics(),
-              slivers: [
+              physics: const ClampingScrollPhysics(),
+              slivers: <Widget>[
                 ...list.map((UsedUrl usedUrl) {
                   return SliverToBoxAdapter(
                     child: GestureDetector(
@@ -92,11 +93,11 @@ class _UrlInputState extends State<UrlInput> {
                         margin: const EdgeInsets.only(bottom: 8.0),
                         decoration: BoxDecoration(
                           color: usedUrl.isPermanent ? MyColors.green.withOpacity(0.1) : MyColors.gray_e5e5e5,
-                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                          borderRadius: const BorderRadius.all(Radius.circular(4.0)),
                         ),
                         child: Text(
                           usedUrl.name,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             decoration: TextDecoration.underline,
                           ),
@@ -129,7 +130,11 @@ class _UrlInputState extends State<UrlInput> {
 
     return Observer(builder: (_) {
       final ConnectStatus connectStatus = channelStateStore.currentChannel?.connectStatus;
-      final bool connected = [ConnectStatus.connected, ConnectStatus.connecting].contains(connectStatus);
+      final bool connected = <ConnectStatus>[
+        ConnectStatus.connected,
+        ConnectStatus.connecting,
+      ].contains(connectStatus);
+
       final String currentUrl = channelStateStore.currentChannel.wsUrl;
       widget.controller.text = currentUrl;
 
@@ -138,11 +143,12 @@ class _UrlInputState extends State<UrlInput> {
       return MyInputText(
         prefixWidget: GestureDetector(
           onTap: () async {
+            // ignore: unawaited_futures
             _usedUrlService.fetch().then((List<UsedUrl> list) {
               _usedUrlsSubject.add(list);
             });
 
-            String url = await showCupertinoDialog<String>(
+            final String url = await showCupertinoDialog<String>(
               context: context,
               barrierDismissible: true,
               builder: (_) {
@@ -162,7 +168,7 @@ class _UrlInputState extends State<UrlInput> {
           },
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: [
+            children: const <Widget>[
               Text('select url'),
               Icon(
                 CupertinoIcons.search,
@@ -176,6 +182,7 @@ class _UrlInputState extends State<UrlInput> {
         enabled: !connected,
         child: StreamBuilder<bool>(
           stream: _enableSubject,
+          // ignore: always_specify_types
           builder: (_, enabledSnapshot) {
             if (!enabledSnapshot.hasData) {
               return Container();

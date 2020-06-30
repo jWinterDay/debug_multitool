@@ -48,7 +48,7 @@ class ChannelService {
         from channel
        where name = ?
       ''',
-      [name],
+      <dynamic>[name],
     );
 
     if (rawList.isEmpty) {
@@ -80,12 +80,12 @@ class ChannelService {
           filter_black_list)
         values (?,?,?,?,?,?,?)
       ''',
-      [
+      <dynamic>[
         channel.wsUrl ?? '',
         channel.name ?? 'name_1',
         channel.description ?? '',
-        channel.isWhiteListUsed ? 1 : 0,
-        channel.isBlackListUsed ? 1 : 0,
+        if (channel.isWhiteListUsed) 1 else 0,
+        if (channel.isBlackListUsed) 1 else 0,
         channel.filterWhiteList ?? '',
         channel.filterBlackList ?? ''
       ],
@@ -106,11 +106,11 @@ class ChannelService {
             filter_black_list = ?
       where name = ?
       ''',
-      [
+      <dynamic>[
         channel.wsUrl ?? '',
         channel.description,
-        channel.isWhiteListUsed ? 1 : 0,
-        channel.isBlackListUsed ? 1 : 0,
+        if (channel.isWhiteListUsed) 1 else 0,
+        if (channel.isBlackListUsed) 1 else 0,
         channel.filterWhiteList ?? '',
         channel.filterBlackList ?? '',
         channel.name ?? 'name_1', // name is PK
@@ -121,18 +121,18 @@ class ChannelService {
   }
 
   Future<int> delete(Channel channel) async {
-    final count = await dbService.database.rawDelete(
+    final int count = await dbService.database.rawDelete(
       '''
       delete from channel where name = ?
       ''',
-      [channel.name ?? ''],
+      <dynamic>[channel.name ?? ''],
     );
 
     return count;
   }
 
   Future<int> deleteAll() async {
-    final count = await dbService.database.rawDelete(
+    final int count = await dbService.database.rawDelete(
       '''
       delete from channel
       ''',

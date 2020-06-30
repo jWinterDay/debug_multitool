@@ -1,12 +1,10 @@
-import 'dart:convert';
-
 import 'package:debug_desktop_client/mobx/log_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:debug_desktop_client/mobx/log.dart';
 import 'package:debug_desktop_client/tools/uikit.dart';
 
-final JsonEncoder _encoder = const JsonEncoder.withIndent('   ');
+// final JsonEncoder _encoder = const JsonEncoder.withIndent('   ');
 
 enum _TabInfoType {
   actionPayload,
@@ -43,7 +41,7 @@ class ChannelFullInfoScreen extends StatefulWidget {
 
 class _ChannelFullInfoState extends State<ChannelFullInfoScreen> {
   _TabInfoType _currentTabInfoType = _TabInfoType.actionPayload;
-  List<_TabInfo> _tabInfoList = [];
+  List<_TabInfo> _tabInfoList = <_TabInfo>[];
 
   @override
   void initState() {
@@ -92,7 +90,7 @@ class _ChannelFullInfoState extends State<ChannelFullInfoScreen> {
     //   Map<String, dynamic> result = <String, dynamic>{};
 
     //   uniqKeys.forEach((String uniqKey) {
-    //     // updated (may be) TODO
+    //     // updated (may be)
     //     if (logKeys.contains(uniqKey) && prevLogKeys.contains(uniqKey)) {
     //       if (logStateMap[uniqKey] != prevLogStateMap[uniqKey]) {
     //         result.putIfAbsent('upd  $uniqKey', () => logStateMap[uniqKey]);
@@ -125,7 +123,7 @@ class _ChannelFullInfoState extends State<ChannelFullInfoScreen> {
   }
 
   void _setTabList() {
-    _tabInfoList = [
+    _tabInfoList = <_TabInfo>[
       _TabInfo(
         title: 'action payload',
         iconData: CupertinoIcons.bell,
@@ -184,7 +182,9 @@ class _ChannelFullInfoState extends State<ChannelFullInfoScreen> {
                   activeColor: MyColors.warning,
                   onTap: (int index) {
                     setState(() {
-                      _currentTabInfoType = _TabInfoType.values.firstWhere((element) => element.index == index);
+                      _currentTabInfoType = _TabInfoType.values.firstWhere((_TabInfoType element) {
+                        return element.index == index;
+                      });
                     });
                   },
                   items: _tabInfoList.map((_TabInfo tabInfo) {
@@ -192,7 +192,7 @@ class _ChannelFullInfoState extends State<ChannelFullInfoScreen> {
                       icon: Icon(tabInfo.iconData),
                       title: Text(
                         tabInfo.title,
-                        style: TextStyle(fontSize: 18.0),
+                        style: const TextStyle(fontSize: 18.0),
                       ),
                     );
                   }).toList(),
@@ -204,7 +204,7 @@ class _ChannelFullInfoState extends State<ChannelFullInfoScreen> {
           // content
           SliverToBoxAdapter(
             child: Stack(
-              children: [
+              children: <Widget>[
                 Positioned(
                   child: Container(
                     width: double.infinity,
@@ -212,7 +212,7 @@ class _ChannelFullInfoState extends State<ChannelFullInfoScreen> {
                     child: SelectableText(
                       _tabTitle,
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-                      toolbarOptions: ToolbarOptions(
+                      toolbarOptions: const ToolbarOptions(
                         copy: true,
                         selectAll: true,
                         cut: false,
@@ -225,7 +225,7 @@ class _ChannelFullInfoState extends State<ChannelFullInfoScreen> {
                   right: 0.0,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: [
+                    children: const <Widget>[
                       Icon(CupertinoIcons.game_controller),
                       Text('copy all(TODO)'),
                     ],

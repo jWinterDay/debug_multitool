@@ -68,7 +68,9 @@ class CoolRoute<T> extends PopupRoute<T> {
 
   @override
   void dispose() {
-    if (callbackAfterClose != null) callbackAfterClose();
+    if (callbackAfterClose != null) {
+      callbackAfterClose();
+    }
 
     super.dispose();
   }
@@ -93,14 +95,14 @@ class CoolRoute<T> extends PopupRoute<T> {
 }
 
 class _BottomSheet<T> extends StatefulWidget {
-  _BottomSheet({
+  const _BottomSheet({
     Key key,
     this.prevWorkList,
     this.route,
     this.disableBodyScroll,
   }) : super(key: key);
 
-  List<AppBackAnimManager> prevWorkList;
+  final List<AppBackAnimManager> prevWorkList;
   final CoolRoute<T> route;
   final bool disableBodyScroll;
 

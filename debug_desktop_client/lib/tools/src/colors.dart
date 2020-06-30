@@ -42,7 +42,7 @@ class MyColors {
   // ignore: constant_identifier_names
   static const Color warning_light = Color(0xfff73e3e);
 
-  static const Color blue = Color(0xfff6e7afa);
+  static const Color blue = Color(0xfff6e7af);
 
   static const Color red = Color(0xffde1039);
 
