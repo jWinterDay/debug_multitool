@@ -24,10 +24,10 @@ class _ChannelCardState extends State<ChannelCardScreen> {
     Color cardColor;
     switch (widget.log.action) {
       case 'connect':
-        cardColor = MyColors.green.withOpacity(0.1);
+        cardColor = MyColors.primary.withOpacity(0.1);
         break;
       case 'disconnect':
-        cardColor = MyColors.blue.withOpacity(0.2);
+        cardColor = MyColors.blue.withOpacity(0.1);
         break;
       default:
         cardColor = MyColors.gray_e5e5e5;
@@ -46,6 +46,13 @@ class _ChannelCardState extends State<ChannelCardScreen> {
       ),
       child: Row(
         children: <Widget>[
+          Container(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: const Icon(
+              CupertinoIcons.heart_solid,
+              color: MyColors.red,
+            ),
+          ),
           Expanded(
             child: Text(
               widget.log.enabled
@@ -55,10 +62,6 @@ class _ChannelCardState extends State<ChannelCardScreen> {
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-          ),
-          const Icon(
-            CupertinoIcons.news,
-            color: MyColors.red,
           ),
         ],
       ),

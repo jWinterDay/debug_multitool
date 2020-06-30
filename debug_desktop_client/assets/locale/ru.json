@@ -15,5 +15,6 @@
     "channel_name": "Канал",
     "add_delimiter": "Добавить разделитель",
     "settings_no_channels": "Нет каналов",
-    "settings_select_url": "Сохраненные URL"
+    "settings_select_url": "Сохраненные URL",
+    "settings_follow_to_the_end": "Скроллить до конца"
 }

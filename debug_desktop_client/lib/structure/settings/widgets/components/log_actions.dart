@@ -1,9 +1,13 @@
 import 'package:debug_desktop_client/app_translations.dart';
+import 'package:debug_desktop_client/mobx/app_settings_state.dart';
 import 'package:debug_desktop_client/mobx/channel_state.dart';
 import 'package:debug_desktop_client/mobx/connect_status.dart';
 import 'package:debug_desktop_client/mobx/log.dart';
 import 'package:debug_desktop_client/tools/uikit.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
+import 'package:provider/provider.dart';
 
 class LogActions extends StatelessWidget {
   const LogActions({
@@ -16,6 +20,8 @@ class LogActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AppSettingsState appSettingsState = Provider.of<AppSettingsState>(context);
+
     return Container(
       decoration: const BoxDecoration(
         color: MyColors.gray_b3b3b3,
@@ -23,6 +29,24 @@ class LogActions extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
+          // follow to the end
+          Column(
+            children: [
+              Observer(builder: (_) {
+                return CupertinoSwitch(
+                  value: appSettingsState.scrollToEnd,
+                  onChanged: (bool val) {
+                    appSettingsState.setScrollToEnd(val);
+                  },
+                );
+              }),
+              Text(
+                appTranslations.text('settings_follow_to_the_end'),
+                style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+
           // clear
           GestureDetector(
             onTap: clearCallback == null ? null : () => clearCallback(),

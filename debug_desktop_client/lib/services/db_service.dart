@@ -37,7 +37,7 @@ class DbService implements Service {
   }
 
   Future<Database> open() async {
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    Directory documentsDirectory = await getApplicationDocumentsDirectory(); // getTemporaryDirectory
     final String path = join(documentsDirectory.path, dbName);
 
     loggerService..d('db.open.path = $path')..d('DATABASE. open');

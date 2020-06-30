@@ -147,7 +147,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   style: const TextStyle(fontSize: 18.0),
                                 ),
                               ),
-
                               GestureDetector(
                                 onTap: () {
                                   _store.removeChannel(channel);
@@ -157,21 +156,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   size: 48.0,
                                 ),
                               ),
-                              // CupertinoButton(
-                              //   child: Text(appTranslations.text('common_remove')),
-                              //   color: MyColors.red.withOpacity(0.5),
-                              //   onPressed: () {
-                              //     _store.removeChannel(channel);
-                              //   },
-                              // ),
-                              // CupertinoButton(
-                              //   child: Text('fetch'),
-                              //   color: MyColors.red.withOpacity(0.5),
-                              //   onPressed: () {
-                              //     _store.fetch();
-                              //     // _store.removeChannel(channel);
-                              //   },
-                              // ),
                             ],
                           ),
                         ),

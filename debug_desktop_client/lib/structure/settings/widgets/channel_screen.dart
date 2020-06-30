@@ -1,3 +1,4 @@
+import 'package:debug_desktop_client/mobx/app_settings_state.dart';
 import 'package:debug_desktop_client/structure/settings/widgets/components/log_actions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -89,8 +90,22 @@ class _ChannelState extends State<ChannelScreen> {
     });
   }
 
+  void _setScrolling({bool scrollToEnd}) {
+    final bool isExtentEmpty = _scrollController?.position?.maxScrollExtent == null;
+
+    if (scrollToEnd && !isExtentEmpty) {
+      _scrollController.animateTo(
+        _scrollController?.position?.maxScrollExtent,
+        curve: Curves.easeOut,
+        duration: const Duration(milliseconds: 500),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final AppSettingsState appSettingsState = Provider.of<AppSettingsState>(context);
+
     final ChannelState channelStateStore = Provider.of<ChannelState>(context);
     if (channelStateStore?.currentChannel == null) {
       return Container();
@@ -209,17 +224,17 @@ class _ChannelState extends State<ChannelScreen> {
                             ),
                             child: CustomScrollView(
                               controller: _scrollController,
+                              // reverse: true,
+                              // shrinkWrap: true,
                               physics: const ClampingScrollPhysics(),
                               slivers: <Widget>[
                                 // logs
                                 Observer(
                                   builder: (_) {
+                                    final scrollToEnd = appSettingsState.scrollToEnd;
                                     final List<Log> list = channelStateStore.currentChannel.filteredLogs;
-                                    if (list != null &&
-                                        list.isNotEmpty &&
-                                        (_scrollController?.position?.maxScrollExtent ?? 0) > 0) {
-                                      _scrollController.jumpTo(_scrollController.position?.maxScrollExtent ?? 0);
-                                    }
+
+                                    _setScrolling(scrollToEnd: scrollToEnd);
 
                                     return SliverList(
                                       delegate: SliverChildBuilderDelegate(
