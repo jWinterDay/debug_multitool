@@ -72,13 +72,13 @@ abstract class _Channel with Store {
     return logStates.where((LogState logState) {
       // white
       if (isWhiteListUsed) {
-        return logState.log.action.contains(filterWhiteList);
+        return whiteList.isEmpty || whiteList.contains(logState.log.action);
       }
 
       return true;
     }).where((LogState logState) {
       if (isBlackListUsed) {
-        return filterBlackList == '' || !logState.log.action.contains(filterBlackList);
+        return blackList.isEmpty || !blackList.contains(logState.log.action);
       }
 
       return true;
@@ -99,7 +99,7 @@ abstract class _Channel with Store {
   @observable
   String filterWhiteList = '';
   @observable
-  ObservableList<String> whiteList = ObservableList<String>();
+  ObservableSet<String> whiteList = ObservableSet<String>();
 
   // black list
   @observable
@@ -108,7 +108,7 @@ abstract class _Channel with Store {
   @observable
   String filterBlackList = '';
   @observable
-  ObservableList<String> blackList = ObservableList<String>();
+  ObservableSet<String> blackList = ObservableSet<String>();
 
   @action
   void setFavoriteOnly() {
@@ -144,24 +144,16 @@ abstract class _Channel with Store {
   }
 
   @action
-  void addWhiteListItem(String filter) {
-    whiteList.add(filter);
-  }
+  void addWhiteListItem(String filter) => whiteList.add(filter);
 
   @action
-  void removeWhiteListItem(String filter) {
-    whiteList.add(filter);
-  }
+  void removeWhiteListItem(String filter) => whiteList.remove(filter);
 
   @action
-  void addBlackListItem(String filter) {
-    blackList.add(filter);
-  }
+  void addBlackListItem(String filter) => blackList.add(filter);
 
   @action
-  void removeBlackListItem(String filter) {
-    blackList.add(filter);
-  }
+  void removeBlackListItem(String filter) => blackList.remove(filter);
 
   // ----------------- remove old
   @deprecated
@@ -190,13 +182,13 @@ abstract class _Channel with Store {
   @observable
   centrifuge.Subscription subscription;
 
-  @observable
+  // @observable
   StreamSubscription<centrifuge.ConnectEvent> _connectSub;
 
-  @observable
+  // @observable
   StreamSubscription<centrifuge.DisconnectEvent> _disconnectSub;
 
-  @observable
+  // @observable
   StreamSubscription<centrifuge.PublishEvent> _publishSub;
 
   final JsonEncoder _encoder = const JsonEncoder.withIndent('   ');

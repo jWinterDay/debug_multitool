@@ -26,6 +26,7 @@ abstract class _LogState with Store {
 
       case 'disconnect':
         return MyColors.blue.withOpacity(0.1);
+
       default:
         return MyColors.gray_e5e5e5;
     }

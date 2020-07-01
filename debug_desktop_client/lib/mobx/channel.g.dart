@@ -140,13 +140,13 @@ mixin _$Channel on _Channel, Store {
   final _$whiteListAtom = Atom(name: '_Channel.whiteList');
 
   @override
-  ObservableList<String> get whiteList {
+  ObservableSet<String> get whiteList {
     _$whiteListAtom.reportRead();
     return super.whiteList;
   }
 
   @override
-  set whiteList(ObservableList<String> value) {
+  set whiteList(ObservableSet<String> value) {
     _$whiteListAtom.reportWrite(value, super.whiteList, () {
       super.whiteList = value;
     });
@@ -185,13 +185,13 @@ mixin _$Channel on _Channel, Store {
   final _$blackListAtom = Atom(name: '_Channel.blackList');
 
   @override
-  ObservableList<String> get blackList {
+  ObservableSet<String> get blackList {
     _$blackListAtom.reportRead();
     return super.blackList;
   }
 
   @override
-  set blackList(ObservableList<String> value) {
+  set blackList(ObservableSet<String> value) {
     _$blackListAtom.reportWrite(value, super.blackList, () {
       super.blackList = value;
     });
@@ -239,51 +239,6 @@ mixin _$Channel on _Channel, Store {
   set subscription(centrifuge.Subscription value) {
     _$subscriptionAtom.reportWrite(value, super.subscription, () {
       super.subscription = value;
-    });
-  }
-
-  final _$_connectSubAtom = Atom(name: '_Channel._connectSub');
-
-  @override
-  StreamSubscription<centrifuge.ConnectEvent> get _connectSub {
-    _$_connectSubAtom.reportRead();
-    return super._connectSub;
-  }
-
-  @override
-  set _connectSub(StreamSubscription<centrifuge.ConnectEvent> value) {
-    _$_connectSubAtom.reportWrite(value, super._connectSub, () {
-      super._connectSub = value;
-    });
-  }
-
-  final _$_disconnectSubAtom = Atom(name: '_Channel._disconnectSub');
-
-  @override
-  StreamSubscription<centrifuge.DisconnectEvent> get _disconnectSub {
-    _$_disconnectSubAtom.reportRead();
-    return super._disconnectSub;
-  }
-
-  @override
-  set _disconnectSub(StreamSubscription<centrifuge.DisconnectEvent> value) {
-    _$_disconnectSubAtom.reportWrite(value, super._disconnectSub, () {
-      super._disconnectSub = value;
-    });
-  }
-
-  final _$_publishSubAtom = Atom(name: '_Channel._publishSub');
-
-  @override
-  StreamSubscription<centrifuge.PublishEvent> get _publishSub {
-    _$_publishSubAtom.reportRead();
-    return super._publishSub;
-  }
-
-  @override
-  set _publishSub(StreamSubscription<centrifuge.PublishEvent> value) {
-    _$_publishSubAtom.reportWrite(value, super._publishSub, () {
-      super._publishSub = value;
     });
   }
 
