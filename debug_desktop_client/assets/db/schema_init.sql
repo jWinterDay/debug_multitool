@@ -14,7 +14,8 @@ create index channel_name_idx on channel (name);--operation_end
 create table channel_filter (
     channel_filter_id integer primary key autoincrement,
     channel_id integer references channel (channel_id) on delete no action,
-    name text
+    name text,
+    is_white integer not null default (1)
 );--operation_end
 
 create trigger tad_channel after delete on channel for each row 

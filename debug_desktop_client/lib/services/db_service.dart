@@ -83,6 +83,7 @@ class DbService implements Service {
 
     schema.split(';--operation_end').forEach((String p) async {
       final String sql = p + ';';
+      print('sql: $sql');
       await db.execute(sql);
     });
   }

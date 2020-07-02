@@ -20,15 +20,24 @@ class ChannelService {
              is_black_list_used as isBlackListUsed,
              filter_white_list as filterWhiteList,
              filter_black_list as filterBlackList
-        from channel
+        from channel t
       ''',
     );
 
-    // rawList.forEach((Map<String, dynamic> element) {
-    //   Channel channel = Channel.fromMap(element);
-    //   print(' raw >>>>> channel = ${channel.name}');
-    //   print('----------------$element');
-    // });
+    // (select json_group_array(
+    //                    json_object('channel_filter_id', channel_filter_id,
+    //                                'channel_id', channel_id,
+    //                                'name', name,
+    //                                'is_white', is_white)
+    //                  ) as json_result
+    //             from (select * from channel_filter where channel_id = t.channel_id)
+    //          ) as filters_json,
+
+    rawList.forEach((Map<String, dynamic> element) {
+      Channel channel = Channel.fromMap(element);
+      print(' raw >>>>> channel = ${channel.name}');
+      print('----------------$element');
+    });
 
     // final t = ChannelState.fromList(rawList);
 
@@ -139,5 +148,29 @@ class ChannelService {
     );
 
     return count;
+  }
+
+  // filters
+  Future<List<Channel>> fetchFilters(Channel channel) async {
+    final List<Map<String, dynamic>> rawList = await dbService.database.rawQuery(
+      '''
+      select channel_filter_id as channelFilterId,
+             channel_id as channelId,
+             name as name,
+             is_white as isWhite
+        from channel_filter
+      ''',
+    );
+
+    // rawList.forEach((Map<String, dynamic> element) {
+    //   Channel channel = Channel.fromMap(element);
+    //   print(' raw >>>>> channel = ${channel.name}');
+    //   print('----------------$element');
+    // });
+
+    // final t = ChannelState.fromList(rawList);
+
+    return null;
+    //ChannelState.fromList(rawList);
   }
 }
