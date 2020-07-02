@@ -81,7 +81,7 @@ class DbService implements Service {
 
     final String schema = await rootBundle.loadString(schemaInitPath);
 
-    schema.split(';').forEach((String p) async {
+    schema.split(';--operation_end').forEach((String p) async {
       final String sql = p + ';';
       await db.execute(sql);
     });
@@ -97,5 +97,6 @@ class DbService implements Service {
 
   Future<void> _onConfigure(Database db) async {
     loggerService.d('DATABASE. onConfigure');
+    // await db.execute('PRAGMA foreign_keys = ON');
   }
 }
