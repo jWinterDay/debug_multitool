@@ -8,14 +8,16 @@ import 'package:provider/provider.dart';
 
 class ChannelCardScreen extends StatelessWidget {
   const ChannelCardScreen({
-    this.logState,
-    this.index,
-    this.selected,
+    @required this.logState,
+    @required this.index,
+    @required this.selected,
+    @required this.callback,
   });
 
   final LogState logState;
   final int index;
   final bool selected;
+  final VoidCallback callback;
 
   void _changeWhiteList(ChannelState channelStateStore, {bool inWhiteList}) {
     if (inWhiteList) {
@@ -33,6 +35,28 @@ class ChannelCardScreen extends StatelessWidget {
     }
 
     channelStateStore.currentChannel.addBlackListItem(logState.log.action);
+  }
+
+  Widget _actionIcon({
+    bool actionEnable = false,
+    bool val = false,
+    VoidCallback iconCallback,
+    IconData iconData,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        if (actionEnable) {
+          iconCallback();
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.only(right: 8.0),
+        child: Icon(
+          iconData,
+          color: val ? MyColors.red : MyColors.gray_666666,
+        ),
+      ),
+    );
   }
 
   @override
@@ -70,11 +94,14 @@ class ChannelCardScreen extends StatelessWidget {
               ),
             ),
           Expanded(
-            child: Text(
-              logState.viewedText,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+            child: GestureDetector(
+              onTap: callback == null ? null : () => callback(),
+              child: Text(
+                logState.viewedText,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ),
 
@@ -85,15 +112,11 @@ class ChannelCardScreen extends StatelessWidget {
                 final bool inWhiteList = channelStateStore.currentChannel.whiteList.contains(logState.log.action);
                 final bool inBlackList = channelStateStore.currentChannel.blackList.contains(logState.log.action);
 
-                return GestureDetector(
-                  onTap: inWhiteList ? null : () => _changeWhiteList(channelStateStore, inWhiteList: inWhiteList),
-                  child: Container(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Icon(
-                      CupertinoIcons.eye_solid,
-                      color: inWhiteList ? MyColors.red : MyColors.gray_666666,
-                    ),
-                  ),
+                return _actionIcon(
+                  actionEnable: !inBlackList,
+                  val: inWhiteList,
+                  iconData: CupertinoIcons.eye_solid,
+                  iconCallback: () => _changeWhiteList(channelStateStore, inWhiteList: inWhiteList),
                 );
               },
             ),
@@ -104,12 +127,11 @@ class ChannelCardScreen extends StatelessWidget {
               final bool inWhiteList = channelStateStore.currentChannel.whiteList.contains(logState.log.action);
               final bool inBlackList = channelStateStore.currentChannel.blackList.contains(logState.log.action);
 
-              return GestureDetector(
-                onTap: inBlackList ? null : () => _changeBlackList(channelStateStore, inBlackList: inBlackList),
-                child: Icon(
-                  CupertinoIcons.minus_circled,
-                  color: inBlackList ? MyColors.red : MyColors.gray_666666,
-                ),
+              return _actionIcon(
+                actionEnable: !inWhiteList,
+                val: inBlackList,
+                iconData: CupertinoIcons.clear_thick,
+                iconCallback: () => _changeBlackList(channelStateStore, inBlackList: inBlackList),
               );
             }),
         ],

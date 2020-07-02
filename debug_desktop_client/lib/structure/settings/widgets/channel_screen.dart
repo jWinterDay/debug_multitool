@@ -84,6 +84,15 @@ class _ChannelState extends State<ChannelScreen> {
   int _currentIndex = -1;
   LogState _currentLogState;
   void _showDetails(LogState logState, int index) {
+    if (_currentIndex == index) {
+      setState(() {
+        _currentLogState = null;
+        _currentIndex = -1;
+      });
+
+      return;
+    }
+
     setState(() {
       _currentLogState = logState;
       _currentIndex = index;
@@ -249,17 +258,15 @@ class _ChannelState extends State<ChannelScreen> {
 
                                           final LogState logState = list[index];
 
-                                          return GestureDetector(
-                                            onTap: logState.log.enabled
+                                          return ChannelCardScreen(
+                                            logState: list[index],
+                                            index: index,
+                                            selected: index == _currentIndex,
+                                            callback: logState.log.enabled
                                                 ? () {
                                                     _showDetails(logState, index);
                                                   }
                                                 : null,
-                                            child: ChannelCardScreen(
-                                              logState: list[index],
-                                              index: index,
-                                              selected: index == _currentIndex,
-                                            ),
                                           );
                                         },
                                         childCount: list.length + 1,
