@@ -7,36 +7,56 @@ typedef UseBlackListCallback = void Function(bool val);
 class BlackListInput extends StatelessWidget {
   const BlackListInput({
     @required this.callback,
-    @required this.controller,
+    @required this.text,
     @required this.isBlackListUsed,
   })  : assert(callback != null),
-        assert(controller != null),
+        assert(text != null),
         assert(isBlackListUsed != null);
 
-  final TextEditingController controller;
+  final String text;
   final UseBlackListCallback callback;
   final bool isBlackListUsed;
 
   @override
   Widget build(BuildContext context) {
-    return MyInputText(
-      textEditingController: controller,
-      placeholder: 'black list',
-      decoration: BoxDecoration(color: isBlackListUsed ? MyColors.white : MyColors.gray_d8d8d8),
-      child: Container(
-        padding: const EdgeInsets.only(left: 24.0, right: 16.0),
-        child: Row(
-          children: <Widget>[
-            const Text(
-              'Black list',
-              style: TextStyle(fontWeight: FontWeight.bold),
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: MyColors.gray_b3b3b3,
+        border: Border.all(color: MyColors.blue),
+      ),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              text,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
+              ),
             ),
-            CupertinoSwitch(
-              value: isBlackListUsed,
-              onChanged: callback,
+          ),
+
+          //
+          Container(
+            padding: const EdgeInsets.only(left: 24.0, right: 16.0),
+            child: Row(
+              children: <Widget>[
+                const Text(
+                  'Black list',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                CupertinoSwitch(
+                  value: isBlackListUsed,
+                  onChanged: callback,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          //
+        ],
       ),
     );
   }

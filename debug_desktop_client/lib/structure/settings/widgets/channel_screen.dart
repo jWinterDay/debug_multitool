@@ -31,12 +31,6 @@ class _ChannelState extends State<ChannelScreen> {
   TextEditingController _urlEditingController;
   // String get _currentUrl => _urlEditingController.text;
 
-  // white list
-  TextEditingController _whiteListEditingController;
-
-  // black list
-  TextEditingController _blackListEditingController;
-
   ScrollController _scrollController;
 
   @override
@@ -44,9 +38,6 @@ class _ChannelState extends State<ChannelScreen> {
     super.initState();
 
     _urlEditingController = TextEditingController(text: '');
-    _whiteListEditingController = TextEditingController(text: '');
-    _blackListEditingController = TextEditingController(text: '');
-
     _scrollController = ScrollController();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -59,18 +50,6 @@ class _ChannelState extends State<ChannelScreen> {
       // _urlEditingController.addListener(() {
       //   channelStateStore.setChannelUrl(widget.channel, _currentUrl);
       // });
-
-      // filter white list
-      _whiteListEditingController.text = channelStateStore.currentChannel.filterWhiteList;
-      _whiteListEditingController.addListener(() {
-        channelStateStore.currentChannel.setFilterWhite(_whiteListEditingController.text);
-      });
-
-      // filter black list
-      _blackListEditingController.text = channelStateStore.currentChannel.filterBlackList;
-      _blackListEditingController.addListener(() {
-        channelStateStore.currentChannel.setFilterBlack(_blackListEditingController.text);
-      });
     });
   }
 
@@ -144,18 +123,24 @@ class _ChannelState extends State<ChannelScreen> {
 
           // filter white list
           Observer(builder: (_) {
+            final bool isWhiteListUsed = channelStateStore.currentChannel.isWhiteListUsed;
+            final String text = channelStateStore.currentChannel.whiteList.join('; ');
+
             return WhiteListInput(
-              controller: _whiteListEditingController,
-              isWhiteListUsed: channelStateStore.currentChannel.isWhiteListUsed,
+              text: text,
+              isWhiteListUsed: isWhiteListUsed,
               callback: (bool val) => channelStateStore.currentChannel.useWhiteList(val),
             );
           }),
 
           // filter black list
           Observer(builder: (_) {
+            final bool isBlackListUsed = channelStateStore.currentChannel.isBlackListUsed;
+            final String text = channelStateStore.currentChannel.blackList.join('; ');
+
             return BlackListInput(
-              controller: _blackListEditingController,
-              isBlackListUsed: channelStateStore.currentChannel.isBlackListUsed,
+              text: text,
+              isBlackListUsed: isBlackListUsed,
               callback: (bool val) => channelStateStore.currentChannel.useBlackList(val),
             );
           }),
