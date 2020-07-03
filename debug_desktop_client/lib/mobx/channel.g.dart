@@ -16,6 +16,20 @@ mixin _$Channel on _Channel, Store {
           Computed<List<LogState>>(() => super.filteredLogs,
               name: '_Channel.filteredLogs'))
       .value;
+  Computed<Set<String>> _$whiteListTypedComputed;
+
+  @override
+  Set<String> get whiteListTyped => (_$whiteListTypedComputed ??=
+          Computed<Set<String>>(() => super.whiteListTyped,
+              name: '_Channel.whiteListTyped'))
+      .value;
+  Computed<Set<String>> _$blackListTypedComputed;
+
+  @override
+  Set<String> get blackListTyped => (_$blackListTypedComputed ??=
+          Computed<Set<String>>(() => super.blackListTyped,
+              name: '_Channel.blackListTyped'))
+      .value;
 
   final _$datetimeAtom = Atom(name: '_Channel.datetime');
 
@@ -322,6 +336,17 @@ mixin _$Channel on _Channel, Store {
   }
 
   @override
+  void addWhiteList(List<String> list) {
+    final _$actionInfo =
+        _$_ChannelActionController.startAction(name: '_Channel.addWhiteList');
+    try {
+      return super.addWhiteList(list);
+    } finally {
+      _$_ChannelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void removeWhiteListItem(String filter) {
     final _$actionInfo = _$_ChannelActionController.startAction(
         name: '_Channel.removeWhiteListItem');
@@ -338,6 +363,17 @@ mixin _$Channel on _Channel, Store {
         name: '_Channel.addBlackListItem');
     try {
       return super.addBlackListItem(filter);
+    } finally {
+      _$_ChannelActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addBlackList(List<String> list) {
+    final _$actionInfo =
+        _$_ChannelActionController.startAction(name: '_Channel.addBlackList');
+    try {
+      return super.addBlackList(list);
     } finally {
       _$_ChannelActionController.endAction(_$actionInfo);
     }
@@ -405,7 +441,9 @@ blackList: ${blackList},
 connectStatus: ${connectStatus},
 client: ${client},
 subscription: ${subscription},
-filteredLogs: ${filteredLogs}
+filteredLogs: ${filteredLogs},
+whiteListTyped: ${whiteListTyped},
+blackListTyped: ${blackListTyped}
     ''';
   }
 }

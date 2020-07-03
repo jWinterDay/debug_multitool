@@ -89,6 +89,16 @@ abstract class _Channel with Store {
     }).toList();
   }
 
+  @computed
+  Set<String> get whiteListTyped {
+    return whiteList.toSet();
+  }
+
+  @computed
+  Set<String> get blackListTyped {
+    return blackList.toSet();
+  }
+
   @observable
   ObservableList<LogState> logStates = ObservableList<LogState>();
 

@@ -17,5 +17,6 @@
     "settings_no_channels": "Нет каналов",
     "settings_select_url": "Сохраненные URL",
     "settings_follow_to_the_end": "Скроллить до конца",
-    "settings_favorite_only": "Только избранные"
+    "settings_favorite_only": "Только избранные",
+    "channel_filter_dialog_title": "Фильтр"
 }

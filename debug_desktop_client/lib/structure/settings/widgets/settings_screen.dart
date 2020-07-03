@@ -38,7 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _navigateToChannel(Channel channel) async {
     await AppConfig.rootNavigator.push<dynamic>(
       CoolRoute<dynamic>(
-        barrierColor: Colors.black.withOpacity(0.5),
+        barrierColor: MyColors.black.withOpacity(0.5),
         builder: (_) => ChannelScreen(channel),
       ),
     );
