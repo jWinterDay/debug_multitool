@@ -3,9 +3,7 @@ import 'package:debug_desktop_client/app_translations.dart';
 import 'package:debug_desktop_client/mobx/channel_state.dart';
 import 'package:debug_desktop_client/tools/uikit.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/src/api/observable_collections.dart';
 import 'package:provider/provider.dart';
-import 'package:rxdart/rxdart.dart';
 
 class ChannelFilterDialogScreen extends StatelessWidget {
   const ChannelFilterDialogScreen({

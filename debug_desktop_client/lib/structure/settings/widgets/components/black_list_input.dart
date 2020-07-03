@@ -1,6 +1,5 @@
 import 'package:debug_desktop_client/app_config.dart';
 import 'package:debug_desktop_client/structure/back_animation/utils/cool_route.dart';
-import 'package:debug_desktop_client/structure/components/input_text.dart';
 import 'package:debug_desktop_client/structure/settings/widgets/channel_filter_dialog.dart';
 import 'package:debug_desktop_client/tools/uikit.dart';
 import 'package:flutter/cupertino.dart';
