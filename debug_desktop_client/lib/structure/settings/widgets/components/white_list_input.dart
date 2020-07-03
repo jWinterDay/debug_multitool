@@ -1,4 +1,5 @@
 import 'package:debug_desktop_client/app_config.dart';
+import 'package:debug_desktop_client/app_translations.dart';
 import 'package:debug_desktop_client/structure/back_animation/utils/cool_route.dart';
 import 'package:debug_desktop_client/structure/settings/widgets/channel_filter_dialog.dart';
 import 'package:debug_desktop_client/tools/uikit.dart';
@@ -49,7 +50,7 @@ class WhiteListInput extends StatelessWidget {
 
           Expanded(
             child: Text(
-              text,
+              text == '' ? appTranslations.text('channel_no_filters') : text,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
