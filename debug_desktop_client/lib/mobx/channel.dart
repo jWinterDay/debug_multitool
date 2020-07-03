@@ -22,6 +22,7 @@ class Channel extends _Channel with _$Channel {
 
   static Channel fromMap(Map<String, dynamic> json) {
     return Channel()
+      ..channelId = int.tryParse(json['channelId'].toString())
       ..wsUrl = json['wsUrl'].toString()
       ..name = json['name'].toString()
       ..description = json['description'].toString()
@@ -33,6 +34,7 @@ class Channel extends _Channel with _$Channel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'channelId': channelId,
       'wsUrl': wsUrl,
       'name': name,
       'description': description,
@@ -47,6 +49,8 @@ class Channel extends _Channel with _$Channel {
 abstract class _Channel with Store {
   final ChannelService _channelService = di.get<ChannelService>();
   final LoggerService _loggerService = di.get<LoggerService>();
+
+  int channelId;
 
   @observable
   DateTime datetime;
@@ -144,16 +148,38 @@ abstract class _Channel with Store {
   }
 
   @action
-  void addWhiteListItem(String filter) => whiteList.add(filter);
+  void addWhiteListItem(String filter) {
+    whiteList.add(filter);
+
+    _channelService.addFilter(name, filter, isWhite: true);
+  }
 
   @action
-  void removeWhiteListItem(String filter) => whiteList.remove(filter);
+  void addWhiteList(List<String> list) => whiteList.addAll(list);
 
   @action
-  void addBlackListItem(String filter) => blackList.add(filter);
+  void removeWhiteListItem(String filter) {
+    whiteList.remove(filter);
+
+    _channelService.removeFilter(name, filter, isWhite: true);
+  }
 
   @action
-  void removeBlackListItem(String filter) => blackList.remove(filter);
+  void addBlackListItem(String filter) {
+    blackList.add(filter);
+
+    _channelService.addFilter(name, filter, isWhite: false);
+  }
+
+  @action
+  void addBlackList(List<String> list) => blackList.addAll(list);
+
+  @action
+  void removeBlackListItem(String filter) {
+    blackList.remove(filter);
+
+    _channelService.removeFilter(name, filter, isWhite: false);
+  }
 
   // ----------------- remove old
   @deprecated

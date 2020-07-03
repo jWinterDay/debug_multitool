@@ -1,4 +1,5 @@
 import 'package:debug_desktop_client/mobx/channel.dart';
+import 'package:debug_desktop_client/mobx/channel_filter.dart';
 import 'package:debug_desktop_client/mobx/channel_state.dart';
 import 'package:debug_desktop_client/services/db_service.dart';
 import 'package:flutter/foundation.dart';
@@ -11,9 +12,11 @@ class ChannelService {
   final DbService dbService;
 
   Future<List<Channel>> fetch() async {
-    final List<Map<String, dynamic>> rawList = await dbService.database.rawQuery(
+    // channels
+    final List<Map<String, dynamic>> rawChannelList = await dbService.database.rawQuery(
       '''
-      select ws_url as wsUrl,
+      select channel_id as channelId,
+             ws_url as wsUrl,
              name as name,
              description as description,
              is_white_list_used as isWhiteListUsed,
@@ -24,24 +27,42 @@ class ChannelService {
       ''',
     );
 
-    // (select json_group_array(
-    //                    json_object('channel_filter_id', channel_filter_id,
-    //                                'channel_id', channel_id,
-    //                                'name', name,
-    //                                'is_white', is_white)
-    //                  ) as json_result
-    //             from (select * from channel_filter where channel_id = t.channel_id)
-    //          ) as filters_json,
+    final List<Channel> channelList = ChannelState.fromList(rawChannelList);
 
-    rawList.forEach((Map<String, dynamic> element) {
-      Channel channel = Channel.fromMap(element);
-      print(' raw >>>>> channel = ${channel.name}');
-      print('----------------$element');
+    // filters
+    final List<Map<String, dynamic>> rawFilterList = await dbService.database.rawQuery(
+      '''
+      select channel_filter_id as channelFilterId,
+             channel_id as channelId,
+             name as name,
+             is_white as isWhite
+        from channel_filter t
+      ''',
+    );
+
+    final List<ChannelFilter> filterList = rawFilterList.map((Map<String, dynamic> filter) {
+      return ChannelFilter.fromMap(filter);
+    }).toList();
+
+    channelList.forEach((Channel channel) {
+      // white
+      final List<String> whiteList = filterList
+          .where((ChannelFilter filter) => filter.isWhite && filter.channelId == channel.channelId)
+          .map((ChannelFilter filter) => filter.name)
+          .toList();
+
+      // black
+      final List<String> blackList = filterList
+          .where((ChannelFilter filter) => !filter.isWhite && filter.channelId == channel.channelId)
+          .map((ChannelFilter filter) => filter.name)
+          .toList();
+
+      channel
+        ..addWhiteList(whiteList)
+        ..addBlackList(blackList);
     });
 
-    // final t = ChannelState.fromList(rawList);
-
-    return ChannelState.fromList(rawList);
+    return channelList;
   }
 
   Future<Channel> fetchSingle(String name) async {
@@ -151,26 +172,47 @@ class ChannelService {
   }
 
   // filters
-  Future<List<Channel>> fetchFilters(Channel channel) async {
-    final List<Map<String, dynamic>> rawList = await dbService.database.rawQuery(
+  Future<int> addFilter(String channelName, String filter, {@required bool isWhite}) async {
+    final int count = await dbService.database.rawUpdate(
       '''
-      select channel_filter_id as channelFilterId,
-             channel_id as channelId,
-             name as name,
-             is_white as isWhite
-        from channel_filter
+      insert into channel_filter (
+        channel_id,
+        name,
+        is_white
+      )
+      select channel_id,
+             ?,
+             ?
+        from channel
+       where name = ?
       ''',
+      <dynamic>[
+        filter,
+        if (isWhite) 1 else 0,
+        channelName,
+      ],
     );
 
-    // rawList.forEach((Map<String, dynamic> element) {
-    //   Channel channel = Channel.fromMap(element);
-    //   print(' raw >>>>> channel = ${channel.name}');
-    //   print('----------------$element');
-    // });
+    return count;
+  }
 
-    // final t = ChannelState.fromList(rawList);
+  Future<int> removeFilter(String channelName, String filter, {@required bool isWhite}) async {
+    final int count = await dbService.database.rawDelete(
+      '''
+      delete from channel_filter
+       where name = ?
+         and is_white = ?
+         and channel_id = (select channel_id
+                             from channel
+                            where name = ?)
+      ''',
+      <dynamic>[
+        filter,
+        if (isWhite) 1 else 0,
+        channelName,
+      ],
+    );
 
-    return null;
-    //ChannelState.fromList(rawList);
+    return count;
   }
 }
