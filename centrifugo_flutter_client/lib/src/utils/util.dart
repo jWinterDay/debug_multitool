@@ -28,3 +28,17 @@ Future<void> setStringToLocalStorage(String key, String val) async {
     debugPrint('SharedPreferences exc: $exc');
   }
 }
+
+String urlFieldValidator(String val) {
+  if (val.isEmpty) {
+    return 'Enter url';
+  }
+  return null;
+}
+
+String channelFieldValidator(String val) {
+  if (val.isEmpty) {
+    return 'Enter channel name';
+  }
+  return null;
+}

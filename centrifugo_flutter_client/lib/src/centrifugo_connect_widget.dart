@@ -1,3 +1,4 @@
+import 'package:centrifugo_flutter_client/src/utils/util.dart';
 import 'package:flutter/material.dart';
 
 import 'centrifugo_connect_bloc.dart';
@@ -32,6 +33,18 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
     super.dispose();
   }
 
+  void _connect() {
+    if (!_formKey.currentState.validate()) {
+      Scaffold.of(context).showSnackBar(
+        const SnackBar(content: Text('Incorrect data. Check "url" and "channel" fields')),
+      );
+
+      return;
+    }
+
+    //
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -58,6 +71,7 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
                     children: <Widget>[
                       Container(
                         width: 100.0,
+                        padding: const EdgeInsets.only(right: 8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: const <Widget>[
@@ -72,12 +86,7 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
                       Expanded(
                         child: TextFormField(
                           controller: _bloc.centrifugoUrlTextController,
-                          validator: (String value) {
-                            if (value.isEmpty) {
-                              return 'Please enter some text';
-                            }
-                            return null;
-                          },
+                          validator: urlFieldValidator,
                         ),
                       ),
                     ],
@@ -88,6 +97,7 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
                     children: <Widget>[
                       Container(
                         width: 100.0,
+                        padding: const EdgeInsets.only(right: 8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: const <Widget>[
@@ -102,31 +112,35 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
                       Expanded(
                         child: TextFormField(
                           controller: _bloc.centrifugoChannelTextController,
-                          validator: (String value) {
-                            if (value.isEmpty) {
-                              return 'Please enter some text';
-                            }
-                            return null;
-                          },
+                          validator: channelFieldValidator,
                         ),
                       ),
                     ],
                   ),
 
                   // connect
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: RaisedButton(
-                      onPressed: connected
-                          ? null
-                          : () {
-                              if (_formKey.currentState.validate()) {
-                                Scaffold.of(context).showSnackBar(SnackBar(content: Text('Processing Data')));
-                              }
-                            },
-                      child: const Text('Connect'),
-                    ),
-                  ),
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        padding: const EdgeInsets.only(top: 8.0, right: 16.0),
+                        child: RaisedButton(
+                          onPressed: connected ? null : () => _connect(),
+                          child: const Text('Connect'),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(top: 8.0, right: 16.0),
+                        child: Text(
+                          formatEnumToStr(status.toString()),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0,
+                          ),
+                        ),
+                      ),
+                      if (status == CentrifugoConnectStatus.connecting) const CircularProgressIndicator(),
+                    ],
+                  )
                 ],
               ),
             );

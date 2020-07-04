@@ -7,9 +7,14 @@ import 'package:centrifuge/centrifuge.dart' as centrifuge;
 import 'centrifugo_connect_status.dart';
 import 'utils/util.dart';
 
+// ws://172.16.55.141:8001/connection/websocket?format=protobuf
 class CentrifugoConnectBloc {
   CentrifugoConnectBloc() {
+    centrifugoUrlTextController = TextEditingController(text: '');
+    centrifugoChannelTextController = TextEditingController(text: '');
+
     _centrifugoStatusSubject = BehaviorSubject<CentrifugoConnectStatus>.seeded(CentrifugoConnectStatus.disconnected);
+    _formCorrectSubject = BehaviorSubject<bool>.seeded(false);
   }
 
   centrifuge.Client client;
@@ -18,8 +23,8 @@ class CentrifugoConnectBloc {
   StreamSubscription<centrifuge.DisconnectEvent> _disconnectSub;
   StreamSubscription<centrifuge.PublishEvent> _publishSub;
 
-  TextEditingController centrifugoUrlTextController = TextEditingController(text: '');
-  TextEditingController centrifugoChannelTextController = TextEditingController(text: '');
+  TextEditingController centrifugoUrlTextController;
+  TextEditingController centrifugoChannelTextController;
 
   // status
   BehaviorSubject<CentrifugoConnectStatus> _centrifugoStatusSubject;
@@ -29,6 +34,10 @@ class CentrifugoConnectBloc {
 
   // publish
   BehaviorSubject<String> _publishSubject;
+
+  // ui fields
+  BehaviorSubject<bool> _formCorrectSubject;
+  Stream<bool> get formCorrectStream => _formCorrectSubject.stream;
 
   /// init bloc
   Future<void> init({
@@ -146,5 +155,6 @@ class CentrifugoConnectBloc {
   void dispose() {
     centrifugoUrlTextController.dispose();
     centrifugoChannelTextController.dispose();
+    _formCorrectSubject.close();
   }
 }
