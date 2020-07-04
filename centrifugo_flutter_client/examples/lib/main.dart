@@ -10,11 +10,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'centrifugo flutter client',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const CentrifugoConnectWidget(),
+      home: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('centrifugo flutter client example'),
+        ),
+        body: const CentrifugoConnectWidget(),
+      ),
     );
   }
 }

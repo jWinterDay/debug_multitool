@@ -13,6 +13,7 @@ class CentrifugoConnectWidget extends StatefulWidget {
 }
 
 class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   CentrifugoConnectBloc _bloc;
 
   @override
@@ -33,10 +34,137 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      width: 100,
-      color: Colors.blue,
+    return Material(
+      child: Container(
+        color: Colors.blue.withOpacity(0.3),
+        padding: const EdgeInsets.all(8.0),
+        child: StreamBuilder<CentrifugoConnectStatus>(
+          stream: _bloc.centrifugoStatusSubject,
+          initialData: _bloc.currentConnectStatus,
+          // ignore: always_specify_types
+          builder: (_, snapshot) {
+            final CentrifugoConnectStatus status = snapshot.data;
+            final bool connected = status == CentrifugoConnectStatus.connected;
+
+            return Form(
+              key: _formKey,
+              autovalidate: true,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  // url
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        width: 100.0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const <Widget>[
+                            Icon(Icons.link),
+                            Text(
+                              'Url',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: TextFormField(
+                          controller: _bloc.centrifugoUrlTextController,
+                          validator: (String value) {
+                            if (value.isEmpty) {
+                              return 'Please enter some text';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // channel
+                  Row(
+                    children: <Widget>[
+                      Container(
+                        width: 100.0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const <Widget>[
+                            Icon(Icons.chat_bubble_outline),
+                            Text(
+                              'Channel',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: TextFormField(
+                          controller: _bloc.centrifugoChannelTextController,
+                          validator: (String value) {
+                            if (value.isEmpty) {
+                              return 'Please enter some text';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // connect
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: RaisedButton(
+                      onPressed: connected
+                          ? null
+                          : () {
+                              if (_formKey.currentState.validate()) {
+                                Scaffold.of(context).showSnackBar(SnackBar(content: Text('Processing Data')));
+                              }
+                            },
+                      child: const Text('Connect'),
+                    ),
+                  ),
+                ],
+              ),
+            );
+
+            //             return Column(
+            //   children: [
+            //     Container(
+            //       // padding: CustomDimensions.edgeInsetsHorizontal4,
+            //       child:   CupertinoTextField(
+            //         readOnly: true,
+            //         controller: _bloc.centrifugoUrlTextController,
+            //         padding: CustomDimensions.edgeInsets8,
+            //         placeholder: 'ws://172.16.55.141:8001/connection/websocket?format=protobuf',
+            //         cursorColor: Colors.blue,
+            //         decoration: BoxDecoration(color: Colors.grey.withOpacity(0.2)),
+            //       ),
+            //     ),
+            //     Container(
+            //       padding: CustomDimensions.edgeInsetsHorizontal4,
+            //       child: CupertinoTextField(
+            //         readOnly: status == CentrifugoConnectStatus.connected,
+            //         controller: _bloc.centrifugoChannelTextController,
+            //         padding: CustomDimensions.edgeInsets8,
+            //         placeholder: 'centrifugo channel',
+            //         cursorColor: Colors.blue,
+            //         clearButtonMode: OverlayVisibilityMode.always,
+            //         // decoration: status == CentrifugoConnectStatus.connected
+            //         //     ? BoxDecoration(color: Colors.grey.withOpacity(0.2))
+            //         //     : BoxDecoration(color: Colors.white),
+            //       ),
+            //     ),
+            //   ],
+            // );
+
+            // return Text('fds');
+          },
+        ),
+      ),
     );
   }
 }
@@ -61,93 +189,6 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
 //       ),
 //     );
 //   }
-
-//   // Widget _windowSizeItem(DesktopDeviceName device, String currentDevice) {
-//   //   final String str = _bloc.formatEnumToStr(device.toString());
-//   //   final Color color = str == currentDevice ? Colors.red[200] : Colors.grey[300];
-
-//   //   return Container(
-//   //     padding: CustomDimensions.edgeInsets8,
-//   //     color: color,
-//   //     // color: Colors.red.withOpacity(0.1),
-//   //     child: InkWell(
-//   //       onTap: () {
-//   //         _bloc.setDeviceSize(device);
-//   //       },
-//   //       splashColor: Colors.red,
-//   //       child: Text(str),
-//   //     ),
-//   //   );
-//   // }
-
-//   /// window size. go_flutter plugin
-//   // Widget _windowSize() {
-//   //   return Container(
-//   //     padding: CustomDimensions.edgeInsets16,
-//   //     child: Column(
-//   //       crossAxisAlignment: CrossAxisAlignment.start,
-//   //       children: [
-//   //         Container(
-//   //           padding: const EdgeInsets.only(bottom: 16.0),
-//   //           child: Center(
-//   //             child: Text(
-//   //               'window size (go_flutter)',
-//   //               style: TextStyle(color: Colors.red, fontSize: 18.0),
-//   //             ),
-//   //           ),
-//   //         ),
-//   //         StreamBuilder<String>(
-//   //           stream: _bloc.currentDeviceSizeStream,
-//   //           builder: (context, snapshot) {
-//   //             if (!snapshot.hasData) {
-//   //               return Container();
-//   //             }
-
-//   //             final String currentDevice = snapshot.data;
-
-//   //             return Wrap(
-//   //               children: [
-//   //                 Text('todo window size'),
-//   //                 // resize
-//   //                 // _windowSizeItem(DesktopDeviceName.resize, currentDevice),
-//   //                 // // iphone
-//   //                 // _windowSizeItem(DesktopDeviceName.iPhone5SE, currentDevice),
-//   //                 // _windowSizeItem(DesktopDeviceName.iPhone8, currentDevice),
-//   //                 // _windowSizeItem(DesktopDeviceName.iPhone8Plus, currentDevice),
-//   //                 // _windowSizeItem(DesktopDeviceName.iPhoneX, currentDevice),
-//   //                 // // android
-//   //                 // _windowSizeItem(DesktopDeviceName.nexus10, currentDevice),
-//   //                 // _windowSizeItem(DesktopDeviceName.pixel3, currentDevice),
-//   //                 // _windowSizeItem(DesktopDeviceName.nexus5, currentDevice),
-//   //               ],
-//   //             );
-//   //           },
-//   //         ),
-//   //       ],
-//   //     ),
-//   //   );
-//   // }
-
-//   // log to file go_flutter plugin
-//   // Widget _logToFile() {
-//   //   return Container(
-//   //       // padding: CustomDimensions.edgeInsets16,
-//   //       // child: Column(
-//   //       //   crossAxisAlignment: CrossAxisAlignment.start,
-//   //       //   children: [
-//   //       //     Container(
-//   //       //       padding: const EdgeInsets.only(bottom: 16.0),
-//   //       //       child: Center(
-//   //       //         child: const Text(
-//   //       //           'log to file (go_flutter)',
-//   //       //           style: TextStyle(color: Colors.red, fontSize: 18.0),
-//   //       //         ),
-//   //       //       ),
-//   //       //     ),
-//   //       //   ],
-//   //       // ),
-//   //       );
-//   // }
 
 //   Widget _content() {
 //     return SliverToBoxAdapter(
