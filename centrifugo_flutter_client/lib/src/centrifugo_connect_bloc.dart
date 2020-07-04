@@ -16,16 +16,19 @@ class CentrifugoConnectBloc {
   centrifuge.Subscription subscription;
   StreamSubscription<centrifuge.ConnectEvent> _connectSub;
   StreamSubscription<centrifuge.DisconnectEvent> _disconnectSub;
-  // StreamSubscription<centrifuge.PublishEvent> _publishSub;
+  StreamSubscription<centrifuge.PublishEvent> _publishSub;
 
   TextEditingController centrifugoUrlTextController = TextEditingController(text: '');
   TextEditingController centrifugoChannelTextController = TextEditingController(text: '');
-  StreamSubscription _storeSub;
 
+  // status
   BehaviorSubject<CentrifugoConnectStatus> _centrifugoStatusSubject;
   StreamSubscription<CentrifugoConnectStatus> _centrifugoStatusSubscription;
   Stream<CentrifugoConnectStatus> get centrifugoStatusSubject => _centrifugoStatusSubject.stream;
   CentrifugoConnectStatus get currentConnectStatus => _centrifugoStatusSubject.value;
+
+  // publish
+  BehaviorSubject<String> _publishSubject;
 
   /// init bloc
   Future<void> init({
@@ -52,17 +55,17 @@ class CentrifugoConnectBloc {
     }
 
     try {
-      final output = jsonEncode({
+      final String output = jsonEncode(<String, dynamic>{
         'action': action,
         'payload': payload.toString(),
         'state': state.toString(),
       });
 
-      final data = utf8.encode(output);
+      final List<int> data = utf8.encode(output);
 
-      subscription?.publish(data);
+      await subscription?.publish(data);
     } catch (exc) {
-      print('[centrifugo] send data exc: $exc');
+      debugPrint('[centrifugo] send data exc: $exc');
     }
   }
 
@@ -89,10 +92,11 @@ class CentrifugoConnectBloc {
     _disconnectSub = client.disconnectStream.listen((centrifuge.DisconnectEvent event) {
       _centrifugoStatusSubject.add(CentrifugoConnectStatus.disconnected);
     });
-    // // publish sub
-    // _publishSub = subscription.publishStream.listen((centrifuge.PublishEvent event) {
-    //   // final dynamic message = json.decode(utf8.decode(event.data));
-    // });
+    // publish sub
+    _publishSub = subscription.publishStream.listen((centrifuge.PublishEvent event) {
+      final dynamic message = json.decode(utf8.decode(event.data));
+      _publishSubject.add(message.toString());
+    });
 
     subscription.subscribe();
     client.connect();
@@ -114,29 +118,29 @@ class CentrifugoConnectBloc {
   }
 
   /// ws connect
-  List<CentrifugoConnectStatus> _disconnectStatuses = [
+  final List<CentrifugoConnectStatus> _disconnectStatuses = <CentrifugoConnectStatus>[
     CentrifugoConnectStatus.disconnected,
-    CentrifugoConnectStatus.connecting
+    CentrifugoConnectStatus.connecting,
   ];
 
   Future<void> connect() async {
     if (_disconnectStatuses.contains(currentConnectStatus)) {
-      _connect();
+      await _connect();
       return;
     }
 
-    _disconnect();
+    await _disconnect();
   }
 
   /// dont close subscriptions in dispose
   /// need for transmitting data in background
   void unsubscribe() {
-    _storeSub?.cancel();
     _connectSub?.cancel();
     _disconnectSub?.cancel();
-    // _publishSub?.cancel();
+    _publishSub?.cancel();
     _centrifugoStatusSubscription?.cancel();
     _centrifugoStatusSubject.close();
+    _publishSubject.close();
   }
 
   void dispose() {

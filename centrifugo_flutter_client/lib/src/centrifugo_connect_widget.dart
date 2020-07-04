@@ -1,39 +1,45 @@
-// import 'package:flutter/cupertino.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/widgets.dart';
-// import 'package:ligastavok/components/liga_app_bar.dart';
-// import 'package:ligastavok/design/dimensions.dart';
-// import 'package:ligastavok/feature/debug_tools/debug_tools_bloc.dart';
+import 'package:flutter/material.dart';
 
-// import 'centrifugo_connect_status.dart';
+import 'centrifugo_connect_bloc.dart';
+import 'centrifugo_connect_status.dart';
 
-// class DebugToolsView extends StatefulWidget {
-//   DebugToolsView({
-//     Key key,
-//   }) : super(key: key);
+class CentrifugoConnectWidget extends StatefulWidget {
+  const CentrifugoConnectWidget({
+    Key key,
+  }) : super(key: key);
 
-//   @override
-//   _DebugToolsState createState() => _DebugToolsState();
-// }
+  @override
+  _CentrifugoConnectState createState() => _CentrifugoConnectState();
+}
 
-// class _DebugToolsState extends State<DebugToolsView> {
-//   DebugToolsBloc _bloc;
+class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
+  CentrifugoConnectBloc _bloc;
 
-//   @override
-//   void initState() {
-//     super.initState();
+  @override
+  void initState() {
+    super.initState();
 
-//     _bloc = DebugToolsBloc();
+    _bloc = CentrifugoConnectBloc();
 
-//     _bloc.init().then((value) => null);
-//   }
+    // _bloc.init().then((value) => null);
+  }
 
-//   @override
-//   void dispose() {
-//     _bloc.dispose();
+  @override
+  void dispose() {
+    _bloc.dispose();
 
-//     super.dispose();
-//   }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 100,
+      width: 100,
+      color: Colors.blue,
+    );
+  }
+}
 
 //   Widget _header() {
 //     return SliverList(

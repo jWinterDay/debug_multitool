@@ -11,6 +11,12 @@
             "program": "examples/lib/main.dart"
         },
         {
+            "name": "desktop_debug",
+            "request": "launch",
+            "type": "dart",
+            "program": "examples/lib/main_desktop.dart"
+        },
+        {
             "name": "go-flutter_desktop",
             "request": "attach",
             "deviceId": "flutter-tester",
