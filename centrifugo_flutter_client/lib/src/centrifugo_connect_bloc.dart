@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/widgets.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:centrifuge/centrifuge.dart' as centrifuge;
 
@@ -10,12 +13,27 @@ import 'utils/util.dart';
 // ws://172.16.55.141:8001/connection/websocket?format=protobuf
 class CentrifugoConnectBloc {
   CentrifugoConnectBloc() {
+    _isInitialized = BehaviorSubject<bool>.seeded(false);
+
     centrifugoUrlTextController = TextEditingController(text: '');
     centrifugoChannelTextController = TextEditingController(text: '');
 
     _centrifugoStatusSubject = BehaviorSubject<CentrifugoConnectStatus>.seeded(CentrifugoConnectStatus.disconnected);
     _formCorrectSubject = BehaviorSubject<bool>.seeded(false);
+
+    init().then((_) {
+      _isInitialized.add(true);
+    });
+
+    // Hive.openBox<String>('used_url').then((_) {
+    //   _isInitialized.add(true);
+    // });
   }
+
+  // all parts is bloc initialized
+  BehaviorSubject<bool> _isInitialized;
+  Stream<bool> get isInitializedStream => _isInitialized.stream;
+  //
 
   centrifuge.Client client;
   centrifuge.Subscription subscription;
@@ -40,12 +58,12 @@ class CentrifugoConnectBloc {
   Stream<bool> get formCorrectStream => _formCorrectSubject.stream;
 
   /// init bloc
-  Future<void> init({
-    @required String url,
-    @required String channel,
-  }) async {
-    centrifugoUrlTextController.text = url;
-    centrifugoChannelTextController.text = channel;
+  Future<void> init() async {
+    final Directory appDocDir = await getApplicationDocumentsDirectory();
+
+    debugPrint('hive path: ${appDocDir.path}');
+
+    Hive.init(appDocDir.path);
   }
 
   /// send data to centrifugo server
@@ -153,6 +171,8 @@ class CentrifugoConnectBloc {
   }
 
   void dispose() {
+    _isInitialized.close();
+
     centrifugoUrlTextController.dispose();
     centrifugoChannelTextController.dispose();
     _formCorrectSubject.close();
