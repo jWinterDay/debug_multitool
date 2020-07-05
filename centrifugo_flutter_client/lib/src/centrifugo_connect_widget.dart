@@ -49,161 +49,211 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Container(
-        color: Colors.blue.withOpacity(0.3),
-        padding: const EdgeInsets.all(8.0),
-        child: StreamBuilder<bool>(
-          stream: _bloc.isInitializedStream,
-          initialData: false,
-          // ignore: always_specify_types
-          builder: (_, isInitializedSnapshot) {
-            final bool isInitialized = isInitializedSnapshot.data;
+      child: StreamBuilder<bool>(
+        stream: _bloc.isInitializedStream,
+        initialData: false,
+        // ignore: always_specify_types
+        builder: (_, isInitializedSnapshot) {
+          final bool isInitialized = isInitializedSnapshot.data;
 
-            if (!isInitialized) {
-              return Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const CircularProgressIndicator(),
-                    Container(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: const Text(
-                        'Loading...',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
+          return Stack(
+            children: <Widget>[
+              // content
+              Container(
+                padding: const EdgeInsets.all(8.0),
+                color: Colors.blue.withOpacity(0.3),
+                child: StreamBuilder<CentrifugoConnectStatus>(
+                  stream: _bloc.centrifugoStatusSubject,
+                  initialData: _bloc.currentConnectStatus,
+                  // ignore: always_specify_types
+                  builder: (_, snapshot) {
+                    final CentrifugoConnectStatus status = snapshot.data;
+                    final bool connected = status == CentrifugoConnectStatus.connected;
 
-            return StreamBuilder<CentrifugoConnectStatus>(
-              stream: _bloc.centrifugoStatusSubject,
-              initialData: _bloc.currentConnectStatus,
-              // ignore: always_specify_types
-              builder: (_, snapshot) {
-                final CentrifugoConnectStatus status = snapshot.data;
-                final bool connected = status == CentrifugoConnectStatus.connected;
-
-                return Form(
-                  key: _formKey,
-                  autovalidate: true,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      // url
-                      Row(
+                    return Form(
+                      key: _formKey,
+                      autovalidate: true,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          Container(
-                            width: 100.0,
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const <Widget>[
-                                Icon(Icons.link),
-                                Text(
-                                  'Url',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                          // url
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                width: 100.0,
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: const <Widget>[
+                                    Icon(Icons.link),
+                                    Text(
+                                      'Url',
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: TextFormField(
-                              controller: _bloc.centrifugoUrlTextController,
-                              validator: urlFieldValidator,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () async {
-                              final String url = await showGeneralDialog<String>(
-                                barrierLabel: 'urlDialog',
-                                barrierDismissible: true,
-                                barrierColor: Colors.black.withOpacity(0.5),
-                                transitionDuration: const Duration(milliseconds: 300),
-                                context: context,
-                                pageBuilder: (_, __, ___) {
-                                  return const UrlDialogWidget();
-                                },
-                                transitionBuilder: (_, Animation<double> anim, __, Widget child) {
-                                  return SlideTransition(
-                                    position: Tween<Offset>(
-                                      begin: const Offset(0, 1),
-                                      end: const Offset(0, 0),
-                                    ).animate(anim),
-                                    child: child,
-                                  );
-                                },
-                              );
-                              //
-                              print('url = $url');
-                            },
-                            child: Container(
-                              child: const Icon(Icons.search),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      // channel
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            width: 100.0,
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: const <Widget>[
-                                Icon(Icons.chat_bubble_outline),
-                                Text(
-                                  'Channel',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: TextFormField(
-                              controller: _bloc.centrifugoChannelTextController,
-                              validator: channelFieldValidator,
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      // connect
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            padding: const EdgeInsets.only(top: 8.0, right: 16.0),
-                            child: RaisedButton(
-                              onPressed: connected ? null : () => _connect(),
-                              child: const Text('Connect'),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 8.0, right: 16.0),
-                            child: Text(
-                              formatEnumToStr(status.toString()),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18.0,
                               ),
+                              Expanded(
+                                child: TextFormField(
+                                  controller: _bloc.centrifugoUrlTextController,
+                                  validator: urlFieldValidator,
+                                ),
+                              ),
+
+                              // search
+                              GestureDetector(
+                                onTap: () async {
+                                  final String url = await showGeneralDialog<String>(
+                                    barrierLabel: 'urlDialog',
+                                    barrierDismissible: true,
+                                    barrierColor: Colors.black.withOpacity(0.5),
+                                    transitionDuration: const Duration(milliseconds: 300),
+                                    context: context,
+                                    pageBuilder: (_, __, ___) {
+                                      return const UrlDialogWidget();
+                                    },
+                                    transitionBuilder: (_, Animation<double> anim, __, Widget child) {
+                                      return SlideTransition(
+                                        position: Tween<Offset>(
+                                          begin: const Offset(0, 1),
+                                          end: const Offset(0, 0),
+                                        ).animate(anim),
+                                        child: child,
+                                      );
+                                    },
+                                  );
+                                  //
+                                  print('url = $url');
+                                },
+                                child: Container(
+                                  child: const Icon(
+                                    Icons.search,
+                                    size: 36.0,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          // channel
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                width: 100.0,
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: const <Widget>[
+                                    Icon(Icons.chat_bubble_outline),
+                                    Text(
+                                      'Channel',
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: TextFormField(
+                                  controller: _bloc.centrifugoChannelTextController,
+                                  validator: channelFieldValidator,
+                                ),
+                              ),
+
+                              // search
+                              GestureDetector(
+                                onTap: () async {
+                                  final String url = await showGeneralDialog<String>(
+                                    barrierLabel: 'urlDialog',
+                                    barrierDismissible: true,
+                                    barrierColor: Colors.black.withOpacity(0.5),
+                                    transitionDuration: const Duration(milliseconds: 300),
+                                    context: context,
+                                    pageBuilder: (_, __, ___) {
+                                      return const UrlDialogWidget();
+                                    },
+                                    transitionBuilder: (_, Animation<double> anim, __, Widget child) {
+                                      return SlideTransition(
+                                        position: Tween<Offset>(
+                                          begin: const Offset(0, 1),
+                                          end: const Offset(0, 0),
+                                        ).animate(anim),
+                                        child: child,
+                                      );
+                                    },
+                                  );
+                                  //
+                                  print('url = $url');
+                                },
+                                child: Container(
+                                  child: const Icon(
+                                    Icons.search,
+                                    size: 36.0,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          // connect
+                          Row(
+                            children: <Widget>[
+                              Container(
+                                padding: const EdgeInsets.only(top: 8.0, right: 16.0),
+                                child: RaisedButton(
+                                  onPressed: connected ? null : () => _connect(),
+                                  child: const Text('Connect'),
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(top: 8.0, right: 16.0),
+                                child: Text(
+                                  formatEnumToStr(status.toString()),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                              ),
+                              if (status == CentrifugoConnectStatus.connecting) const CircularProgressIndicator(),
+                            ],
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              // loading
+              if (!isInitialized)
+                Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: Colors.blue.withOpacity(0.6),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        const CircularProgressIndicator(
+                          backgroundColor: Colors.red,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: const Text(
+                            'Loading...',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          if (status == CentrifugoConnectStatus.connecting) const CircularProgressIndicator(),
-                        ],
-                      )
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
-                );
-              },
-            );
-          },
-        ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }

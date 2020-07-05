@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:centrifugo_flutter_client/src/models/used_url.dart';
+import 'package:centrifugo_flutter_client/src/utils/hive_boxes.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -64,6 +66,7 @@ class CentrifugoConnectBloc {
     debugPrint('hive path: ${appDocDir.path}');
 
     Hive.init(appDocDir.path);
+    await Hive.openBox<UsedUrl>(HiveBoxes.usedUrl);
   }
 
   /// send data to centrifugo server
@@ -172,6 +175,7 @@ class CentrifugoConnectBloc {
 
   void dispose() {
     _isInitialized.close();
+    Hive.close();
 
     centrifugoUrlTextController.dispose();
     centrifugoChannelTextController.dispose();
