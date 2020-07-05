@@ -12,7 +12,6 @@ import 'package:rxdart/rxdart.dart';
 import 'package:centrifuge/centrifuge.dart' as centrifuge;
 
 import 'centrifugo_connect_status.dart';
-import 'utils/util.dart';
 
 // ws://172.16.55.141:8001/connection/websocket?format=protobuf
 class CentrifugoConnectBloc {
@@ -78,10 +77,12 @@ class CentrifugoConnectBloc {
     _usedUrlBox = await Hive.openBox<UsedUrl>(HiveBoxes.usedUrl);
     _channelBox = await Hive.openBox<Channel>(HiveBoxes.channel);
 
+    // last url and channel
     final AppState appState = _appStateBox.get(0);
-
     centrifugoUrlTextController.text = appState?.currentUrl ?? '';
     centrifugoChannelTextController.text = appState?.currentChannel ?? '';
+
+    // persistent data
   }
 
   /// send data to centrifugo server
