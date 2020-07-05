@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'centrifugo_connect_bloc.dart';
 import 'centrifugo_connect_status.dart';
+import 'dialogs/url_dialog.dart';
 
 class CentrifugoConnectWidget extends StatefulWidget {
   const CentrifugoConnectWidget({
@@ -87,6 +88,34 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
                         child: TextFormField(
                           controller: _bloc.centrifugoUrlTextController,
                           validator: urlFieldValidator,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          final String url = await showGeneralDialog<String>(
+                            barrierLabel: 'urlDialog',
+                            barrierDismissible: true,
+                            barrierColor: Colors.black.withOpacity(0.5),
+                            transitionDuration: const Duration(milliseconds: 300),
+                            context: context,
+                            pageBuilder: (_, __, ___) {
+                              return const UrlDialogWidget();
+                            },
+                            transitionBuilder: (_, Animation<double> anim, __, Widget child) {
+                              return SlideTransition(
+                                position: Tween<Offset>(
+                                  begin: const Offset(0, 1),
+                                  end: const Offset(0, 0),
+                                ).animate(anim),
+                                child: child,
+                              );
+                            },
+                          );
+                          //
+                          print('url = $url');
+                        },
+                        child: Container(
+                          child: const Icon(Icons.search),
                         ),
                       ),
                     ],
