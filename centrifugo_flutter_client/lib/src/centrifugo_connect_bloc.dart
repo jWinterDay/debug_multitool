@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:centrifugo_flutter_client/src/models/app_state.dart';
+import 'package:centrifugo_flutter_client/src/models/channel.dart';
 import 'package:centrifugo_flutter_client/src/models/used_url.dart';
 import 'package:centrifugo_flutter_client/src/utils/hive_boxes.dart';
 import 'package:flutter/widgets.dart';
@@ -28,7 +30,9 @@ class CentrifugoConnectBloc {
     });
   }
 
+  Box<AppState> _appStateBox;
   Box<UsedUrl> _usedUrlBox;
+  Box<Channel> _channelBox;
 
   // all parts is bloc initialized
   BehaviorSubject<bool> _isInitialized;
@@ -61,12 +65,23 @@ class CentrifugoConnectBloc {
   Future<void> init() async {
     // hive adapter
     Hive.registerAdapter<UsedUrl>(UsedUrlAdapter());
+    Hive.registerAdapter<Channel>(ChannelAdapter());
+    Hive.registerAdapter<AppState>(AppStateAdapter());
 
     // hive init
     final Directory appDocDir = await getApplicationDocumentsDirectory();
+    // getTemporaryDirectory();
     debugPrint('hive path: ${appDocDir.path}');
     Hive.init(appDocDir.path);
+
+    _appStateBox = await Hive.openBox<AppState>(HiveBoxes.appState);
     _usedUrlBox = await Hive.openBox<UsedUrl>(HiveBoxes.usedUrl);
+    _channelBox = await Hive.openBox<Channel>(HiveBoxes.channel);
+
+    final AppState appState = _appStateBox.get(0);
+
+    centrifugoUrlTextController.text = appState?.currentUrl ?? '';
+    centrifugoChannelTextController.text = appState?.currentChannel ?? '';
   }
 
   /// send data to centrifugo server
@@ -104,11 +119,13 @@ class CentrifugoConnectBloc {
 
     // url
     final String url = centrifugoUrlTextController.text;
-    await setStringToLocalStorage(kUrlKey, url);
+    // ignore: unawaited_futures
+    _saveUsedUrl(url);
 
     // channel
     final String channel = centrifugoChannelTextController.text;
-    await setStringToLocalStorage(kChannelKey, channel);
+    // ignore: unawaited_futures
+    _saveChannel(channel);
 
     // connect
     client = centrifuge.createClient(url);
@@ -133,14 +150,16 @@ class CentrifugoConnectBloc {
   }
 
   Future<void> _disconnect() async {
-    _centrifugoStatusSubject.add(CentrifugoConnectStatus.disconnected);
+    if (currentConnectStatus == CentrifugoConnectStatus.connected) {
+      client?.disconnect();
+    }
 
-    client?.disconnect();
+    _centrifugoStatusSubject.add(CentrifugoConnectStatus.disconnected);
 
     Future<void>.delayed(const Duration(milliseconds: 200), () {
       _connectSub?.cancel();
       _disconnectSub?.cancel();
-      // _publishSub?.cancel();
+      _publishSub?.cancel();
     });
 
     subscription?.unsubscribe();
@@ -148,28 +167,56 @@ class CentrifugoConnectBloc {
   }
 
   /// ws connect
-  final List<CentrifugoConnectStatus> _disconnectStatuses = <CentrifugoConnectStatus>[
-    CentrifugoConnectStatus.disconnected,
+  final List<CentrifugoConnectStatus> connectStatuses = <CentrifugoConnectStatus>[
     CentrifugoConnectStatus.connecting,
+    CentrifugoConnectStatus.connected,
   ];
 
-  Future<void> addUsedUrl(String url) async {
-    final UsedUrl usedUrl = UsedUrl(
+  Future<void> _saveUsedUrl(String url) async {
+    // add to url list
+    final int key = await _usedUrlBox.add(UsedUrl(
       name: url,
       isPermanent: true,
-    );
-
-    final int key = await _usedUrlBox.add(usedUrl);
+    ));
     debugPrint('key: $key');
+
+    // update state
+    if (_appStateBox.isEmpty) {
+      await _appStateBox.add(
+        AppState(currentUrl: url),
+      );
+    } else {
+      final AppState appState = _appStateBox.getAt(0);
+      appState.currentUrl = url;
+      await appState.save();
+    }
+  }
+
+  Future<void> _saveChannel(String channel) async {
+    final int key = await _channelBox.add(Channel(
+      name: channel,
+    ));
+    debugPrint('key: $key');
+
+    // update state
+    if (_appStateBox.isEmpty) {
+      await _appStateBox.add(AppState(
+        currentChannel: channel,
+      ));
+    } else {
+      final AppState appState = _appStateBox.getAt(0);
+      appState.currentChannel = channel;
+      await appState.save();
+    }
   }
 
   Future<void> connect() async {
-    if (_disconnectStatuses.contains(currentConnectStatus)) {
-      await _connect();
+    if (connectStatuses.contains(currentConnectStatus)) {
+      await _disconnect();
       return;
     }
 
-    await _disconnect();
+    await _connect();
   }
 
   /// dont close subscriptions in dispose
@@ -185,6 +232,11 @@ class CentrifugoConnectBloc {
 
   void dispose() {
     _isInitialized.close();
+
+    // _usedUrlBox.compact();
+    _usedUrlBox.close();
+    _channelBox.close();
+    _appStateBox.close();
     Hive.close();
 
     centrifugoUrlTextController.dispose();

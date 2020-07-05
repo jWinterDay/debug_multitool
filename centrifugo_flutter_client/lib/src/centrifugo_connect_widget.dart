@@ -1,7 +1,5 @@
-import 'package:centrifugo_flutter_client/src/models/used_url.dart';
 import 'package:centrifugo_flutter_client/src/utils/util.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 
 import 'centrifugo_connect_bloc.dart';
 import 'centrifugo_connect_status.dart';
@@ -25,8 +23,6 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
     super.initState();
 
     _bloc = CentrifugoConnectBloc();
-
-    // _bloc.init().then((value) => null);
   }
 
   @override
@@ -37,14 +33,15 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
   }
 
   void _connect() {
-    _bloc.addUsedUrl('tttttttt');
-    // if (!_formKey.currentState.validate()) {
-    //   Scaffold.of(context).showSnackBar(
-    //     const SnackBar(content: Text('Incorrect data. Check "url" and "channel" fields')),
-    //   );
+    if (!_formKey.currentState.validate()) {
+      Scaffold.of(context).showSnackBar(
+        const SnackBar(content: Text('Incorrect data. Check "url" and "channel" fields')),
+      );
 
-    //   return;
-    // }
+      return;
+    }
+
+    _bloc.connect();
   }
 
   Future<void> _openUrlDialog() async {
@@ -150,13 +147,14 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
                               Expanded(
                                 child: TextFormField(
                                   controller: _bloc.centrifugoUrlTextController,
+                                  enabled: !_bloc.connectStatuses.contains(status),
                                   validator: urlFieldValidator,
                                 ),
                               ),
 
                               // search
                               GestureDetector(
-                                onTap: () async => _openUrlDialog(),
+                                onTap: _bloc.connectStatuses.contains(status) ? null : () async => _openUrlDialog(),
                                 child: Container(
                                   child: const Icon(
                                     Icons.search,
@@ -187,13 +185,14 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
                               Expanded(
                                 child: TextFormField(
                                   controller: _bloc.centrifugoChannelTextController,
+                                  enabled: !_bloc.connectStatuses.contains(status),
                                   validator: channelFieldValidator,
                                 ),
                               ),
 
                               // search
                               GestureDetector(
-                                onTap: () async => _openChannelDialog(),
+                                onTap: _bloc.connectStatuses.contains(status) ? null : () async => _openChannelDialog(),
                                 child: Container(
                                   child: const Icon(
                                     Icons.search,
@@ -210,17 +209,24 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
                               Container(
                                 padding: const EdgeInsets.only(top: 8.0, right: 16.0),
                                 child: RaisedButton(
-                                  onPressed: connected ? null : () => _connect(),
-                                  child: const Text('Connect'),
+                                  onPressed: () => _connect(),
+                                  child: Text(
+                                    _bloc.connectStatuses.contains(status) ? 'Disconnect' : 'Connect',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
                                 ),
                               ),
                               Container(
                                 padding: const EdgeInsets.only(top: 8.0, right: 16.0),
                                 child: Text(
                                   formatEnumToStr(status.toString()),
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18.0,
+                                    color: connected ? Colors.green : Colors.black,
                                   ),
                                 ),
                               ),

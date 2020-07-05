@@ -1,34 +1,31 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'used_url.dart';
+part of 'channel.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class UsedUrlAdapter extends TypeAdapter<UsedUrl> {
+class ChannelAdapter extends TypeAdapter<Channel> {
   @override
-  final typeId = 2;
+  final typeId = 1;
 
   @override
-  UsedUrl read(BinaryReader reader) {
+  Channel read(BinaryReader reader) {
     var numOfFields = reader.readByte();
     var fields = <int, dynamic>{
       for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return UsedUrl(
+    return Channel(
       name: fields[0] as String,
-      isPermanent: fields[1] as bool,
     );
   }
 
   @override
-  void write(BinaryWriter writer, UsedUrl obj) {
+  void write(BinaryWriter writer, Channel obj) {
     writer
-      ..writeByte(2)
-      ..writeByte(0)
-      ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.isPermanent);
+      ..writeByte(0)
+      ..write(obj.name);
   }
 }

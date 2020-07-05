@@ -37,7 +37,7 @@ class _UrlDialogState extends State<UrlDialogWidget> {
     );
   }
 
-  Widget _sliveItem(UsedUrl usedUrl) {
+  Widget _sliveItem(UsedUrl usedUrl, int index) {
     return SliverToBoxAdapter(
       child: Row(
         children: <Widget>[
@@ -64,18 +64,51 @@ class _UrlDialogState extends State<UrlDialogWidget> {
           ),
 
           // delete
-          GestureDetector(
-            onTap: () {
-              //delete
-            },
-            child: const Icon(
-              Icons.delete_sweep,
-              color: Colors.red,
+          if (!usedUrl.isPermanent)
+            GestureDetector(
+              onTap: () {
+                //delete
+              },
+              child: const Icon(
+                Icons.delete_sweep,
+                color: Colors.red,
+              ),
             ),
-          ),
         ],
       ),
     );
+  }
+
+  List<Widget> _sliverItems(Map<dynamic, UsedUrl> rawMap) {
+    return <Widget>[
+      // persistent
+      if (rawMap.values.any((UsedUrl usedUrl) => usedUrl.isPermanent)) _sliveTitle('Persistent values'),
+
+      ...rawMap.entries.where((MapEntry<dynamic, UsedUrl> item) {
+        return item.value.isPermanent;
+      }).map<Widget>((MapEntry<dynamic, UsedUrl> item) {
+        final int index = int.tryParse(item.key.toString());
+
+        return _sliveItem(
+          item.value,
+          index,
+        );
+      }).toList(),
+
+      // custom
+      if (rawMap.values.any((UsedUrl usedUrl) => !usedUrl.isPermanent)) _sliveTitle('Custom values'),
+
+      ...rawMap.entries.where((MapEntry<dynamic, UsedUrl> item) {
+        return !item.value.isPermanent;
+      }).map<Widget>((MapEntry<dynamic, UsedUrl> item) {
+        final int index = int.tryParse(item.key.toString());
+
+        return _sliveItem(
+          item.value,
+          index,
+        );
+      }).toList(),
+    ];
   }
 
   @override
@@ -83,53 +116,36 @@ class _UrlDialogState extends State<UrlDialogWidget> {
     final Size size = MediaQuery.of(context).size;
 
     return ValueListenableBuilder<Box<UsedUrl>>(
-        valueListenable: Hive.box<UsedUrl>(HiveBoxes.usedUrl).listenable(),
-        builder: (_, Box<UsedUrl> box, __) {
-          final Map<dynamic, UsedUrl> rawMap = box.toMap();
-          final List<UsedUrl> list = rawMap.values.toList();
+      valueListenable: Hive.box<UsedUrl>(HiveBoxes.usedUrl).listenable(),
+      builder: (_, Box<UsedUrl> box, __) {
+        final Map<dynamic, UsedUrl> rawMap = box.toMap();
+        // final List<UsedUrl> list = rawMap.values.toList();
 
-          return Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 0.9 * size.height,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            height: 0.9 * size.height,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
+            ),
+            child: Scaffold(
+              appBar: AppBar(
+                centerTitle: true,
+                title: const Text('select url'),
               ),
-              child: Scaffold(
-                appBar: AppBar(
-                  centerTitle: true,
-                  title: const Text('select url'),
-                ),
-                body: Container(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SizedBox.expand(
-                    child: CustomScrollView(
-                      slivers: <Widget>[
-                        // persistent
-                        _sliveTitle('Persistent values'),
-
-                        ...list.where((UsedUrl usedUrl) {
-                          return usedUrl.isPermanent;
-                        }).map((UsedUrl usedUrl) {
-                          return _sliveItem(usedUrl);
-                        }),
-
-                        // custom
-                        _sliveTitle('Custom values'),
-
-                        ...list.where((UsedUrl usedUrl) {
-                          return !usedUrl.isPermanent;
-                        }).map((UsedUrl usedUrl) {
-                          return _sliveItem(usedUrl);
-                        }),
-                      ],
-                    ),
+              body: Container(
+                padding: const EdgeInsets.all(16.0),
+                child: SizedBox.expand(
+                  child: CustomScrollView(
+                    slivers: _sliverItems(rawMap),
                   ),
                 ),
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }
