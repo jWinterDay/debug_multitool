@@ -1,5 +1,7 @@
+import 'package:centrifugo_flutter_client/src/models/used_url.dart';
 import 'package:centrifugo_flutter_client/src/utils/util.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 import 'centrifugo_connect_bloc.dart';
 import 'centrifugo_connect_status.dart';
@@ -35,15 +37,66 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
   }
 
   void _connect() {
-    if (!_formKey.currentState.validate()) {
-      Scaffold.of(context).showSnackBar(
-        const SnackBar(content: Text('Incorrect data. Check "url" and "channel" fields')),
-      );
+    _bloc.addUsedUrl('tttttttt');
+    // if (!_formKey.currentState.validate()) {
+    //   Scaffold.of(context).showSnackBar(
+    //     const SnackBar(content: Text('Incorrect data. Check "url" and "channel" fields')),
+    //   );
 
-      return;
+    //   return;
+    // }
+  }
+
+  Future<void> _openUrlDialog() async {
+    final String url = await showGeneralDialog<String>(
+      barrierLabel: 'urlDialog',
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: const Duration(milliseconds: 300),
+      context: context,
+      pageBuilder: (_, __, ___) {
+        return const UrlDialogWidget();
+      },
+      transitionBuilder: (_, Animation<double> anim, __, Widget child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 1),
+            end: const Offset(0, 0),
+          ).animate(anim),
+          child: child,
+        );
+      },
+    );
+
+    if (url != null) {
+      _bloc.centrifugoUrlTextController.text = url;
     }
+  }
 
-    //
+  Future<void> _openChannelDialog() async {
+    final String url = await showGeneralDialog<String>(
+      barrierLabel: 'channelDialog',
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: const Duration(milliseconds: 300),
+      context: context,
+      pageBuilder: (_, __, ___) {
+        return const UrlDialogWidget();
+      },
+      transitionBuilder: (_, Animation<double> anim, __, Widget child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 1),
+            end: const Offset(0, 0),
+          ).animate(anim),
+          child: child,
+        );
+      },
+    );
+
+    if (url != null) {
+      _bloc.centrifugoChannelTextController.text = url;
+    }
   }
 
   @override
@@ -103,29 +156,7 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
 
                               // search
                               GestureDetector(
-                                onTap: () async {
-                                  final String url = await showGeneralDialog<String>(
-                                    barrierLabel: 'urlDialog',
-                                    barrierDismissible: true,
-                                    barrierColor: Colors.black.withOpacity(0.5),
-                                    transitionDuration: const Duration(milliseconds: 300),
-                                    context: context,
-                                    pageBuilder: (_, __, ___) {
-                                      return const UrlDialogWidget();
-                                    },
-                                    transitionBuilder: (_, Animation<double> anim, __, Widget child) {
-                                      return SlideTransition(
-                                        position: Tween<Offset>(
-                                          begin: const Offset(0, 1),
-                                          end: const Offset(0, 0),
-                                        ).animate(anim),
-                                        child: child,
-                                      );
-                                    },
-                                  );
-                                  //
-                                  print('url = $url');
-                                },
+                                onTap: () async => _openUrlDialog(),
                                 child: Container(
                                   child: const Icon(
                                     Icons.search,
@@ -162,29 +193,7 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
 
                               // search
                               GestureDetector(
-                                onTap: () async {
-                                  final String url = await showGeneralDialog<String>(
-                                    barrierLabel: 'urlDialog',
-                                    barrierDismissible: true,
-                                    barrierColor: Colors.black.withOpacity(0.5),
-                                    transitionDuration: const Duration(milliseconds: 300),
-                                    context: context,
-                                    pageBuilder: (_, __, ___) {
-                                      return const UrlDialogWidget();
-                                    },
-                                    transitionBuilder: (_, Animation<double> anim, __, Widget child) {
-                                      return SlideTransition(
-                                        position: Tween<Offset>(
-                                          begin: const Offset(0, 1),
-                                          end: const Offset(0, 0),
-                                        ).animate(anim),
-                                        child: child,
-                                      );
-                                    },
-                                  );
-                                  //
-                                  print('url = $url');
-                                },
+                                onTap: () async => _openChannelDialog(),
                                 child: Container(
                                   child: const Icon(
                                     Icons.search,

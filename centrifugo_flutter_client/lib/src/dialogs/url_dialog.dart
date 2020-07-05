@@ -25,33 +25,68 @@ class _UrlDialogState extends State<UrlDialogWidget> {
     super.dispose();
   }
 
+  Widget _sliveTitle(String title) {
+    return SliverToBoxAdapter(
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.red,
+        ),
+      ),
+    );
+  }
+
+  Widget _sliveItem(UsedUrl usedUrl) {
+    return SliverToBoxAdapter(
+      child: Row(
+        children: <Widget>[
+          const Icon(Icons.ac_unit),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop(usedUrl.name);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.1),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                margin: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Text(
+                  usedUrl.toString(),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          // delete
+          GestureDetector(
+            onTap: () {
+              //delete
+            },
+            child: const Icon(
+              Icons.delete_sweep,
+              color: Colors.red,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
-    // Hive.box('settings').listenable(),
-
-    // return ValueListenableBuilder<List<String>>(
-    //   // valueListenable: Hive.box('settings').listenable(),
-    //   builder: (_, List<String> value, Widget child) {
-    //     return Text('fds');
-    //   },
-    //   // valueListenable: Hive.box('settings').listenable(),
-    //   // builder: (context, box, widget) {
-    //   //   return Switch(
-    //   //       value: box.get('darkMode'),
-    //   //       onChanged: (val) {
-    //   //         box.put('darkMode', val);
-    //   //       });
-    //   // },
-    // );
-
     return ValueListenableBuilder<Box<UsedUrl>>(
         valueListenable: Hive.box<UsedUrl>(HiveBoxes.usedUrl).listenable(),
         builder: (_, Box<UsedUrl> box, __) {
-          print(box.length);
-          // final t = snapshot.data;
-          // print('t = $t');
+          final Map<dynamic, UsedUrl> rawMap = box.toMap();
+          final List<UsedUrl> list = rawMap.values.toList();
 
           return Align(
             alignment: Alignment.bottomCenter,
@@ -70,10 +105,24 @@ class _UrlDialogState extends State<UrlDialogWidget> {
                   padding: const EdgeInsets.all(16.0),
                   child: SizedBox.expand(
                     child: CustomScrollView(
-                      slivers: [
-                        SliverToBoxAdapter(
-                          child: Text('fsdfds'),
-                        )
+                      slivers: <Widget>[
+                        // persistent
+                        _sliveTitle('Persistent values'),
+
+                        ...list.where((UsedUrl usedUrl) {
+                          return usedUrl.isPermanent;
+                        }).map((UsedUrl usedUrl) {
+                          return _sliveItem(usedUrl);
+                        }),
+
+                        // custom
+                        _sliveTitle('Custom values'),
+
+                        ...list.where((UsedUrl usedUrl) {
+                          return !usedUrl.isPermanent;
+                        }).map((UsedUrl usedUrl) {
+                          return _sliveItem(usedUrl);
+                        }),
                       ],
                     ),
                   ),

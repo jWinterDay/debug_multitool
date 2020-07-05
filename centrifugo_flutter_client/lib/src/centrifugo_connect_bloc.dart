@@ -26,11 +26,9 @@ class CentrifugoConnectBloc {
     init().then((_) {
       _isInitialized.add(true);
     });
-
-    // Hive.openBox<String>('used_url').then((_) {
-    //   _isInitialized.add(true);
-    // });
   }
+
+  Box<UsedUrl> _usedUrlBox;
 
   // all parts is bloc initialized
   BehaviorSubject<bool> _isInitialized;
@@ -61,12 +59,14 @@ class CentrifugoConnectBloc {
 
   /// init bloc
   Future<void> init() async {
+    // hive adapter
+    Hive.registerAdapter<UsedUrl>(UsedUrlAdapter());
+
+    // hive init
     final Directory appDocDir = await getApplicationDocumentsDirectory();
-
     debugPrint('hive path: ${appDocDir.path}');
-
     Hive.init(appDocDir.path);
-    await Hive.openBox<UsedUrl>(HiveBoxes.usedUrl);
+    _usedUrlBox = await Hive.openBox<UsedUrl>(HiveBoxes.usedUrl);
   }
 
   /// send data to centrifugo server
@@ -152,6 +152,16 @@ class CentrifugoConnectBloc {
     CentrifugoConnectStatus.disconnected,
     CentrifugoConnectStatus.connecting,
   ];
+
+  Future<void> addUsedUrl(String url) async {
+    final UsedUrl usedUrl = UsedUrl(
+      name: url,
+      isPermanent: true,
+    );
+
+    final int key = await _usedUrlBox.add(usedUrl);
+    debugPrint('key: $key');
+  }
 
   Future<void> connect() async {
     if (_disconnectStatuses.contains(currentConnectStatus)) {

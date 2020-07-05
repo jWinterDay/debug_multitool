@@ -4,6 +4,11 @@ part 'used_url.g.dart';
 
 @HiveType(typeId: 1)
 class UsedUrl extends HiveObject {
+  UsedUrl({
+    this.name,
+    this.isPermanent = false,
+  });
+
   @HiveField(0)
   String name;
 
