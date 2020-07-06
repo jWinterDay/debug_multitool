@@ -2,7 +2,7 @@ import 'package:centrifugo_flutter_client/src/app_di.dart';
 import 'package:centrifugo_flutter_client/src/dialogs/components/item_sliver_title.dart';
 import 'package:centrifugo_flutter_client/src/models/used_url.dart';
 import 'package:centrifugo_flutter_client/src/repositories/local_storage_repository.dart';
-import 'package:centrifugo_flutter_client/src/repositories/logger_repository.dart';
+// import 'package:centrifugo_flutter_client/src/repositories/logger_repository.dart';
 import 'package:centrifugo_flutter_client/src/utils/hive_boxes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,10 +17,13 @@ class UrlDialogWidget extends StatelessWidget {
   }) : super(key: key);
 
   final LocalStorageRepository _localStorageRepository = di.get<LocalStorageRepository>();
-  final LoggerRepository _loggerRepository = di.get<LoggerRepository>();
+  // final LoggerRepository _loggerRepository = di.get<LoggerRepository>();
 
   List<Widget> _sliverItems(Map<dynamic, UsedUrl> rawMap) {
     return <Widget>[
+      // empty
+      if (rawMap.isEmpty) const ItemSliverTitle(title: 'No data'),
+
       // persistent
       if (rawMap.values.any((UsedUrl commonDialogItem) => commonDialogItem.isPermanent))
         const ItemSliverTitle(title: 'Persistent values'),
@@ -31,9 +34,6 @@ class UrlDialogWidget extends StatelessWidget {
         return ItemSliverContent(
           name: item.value.name,
           isPermanent: item.value.isPermanent,
-          onDeleteCallback: () {
-            _localStorageRepository.deleteUsedUrl(item.key);
-          },
         );
       }).toList(),
 
@@ -48,9 +48,7 @@ class UrlDialogWidget extends StatelessWidget {
           name: item.value.name,
           isPermanent: item.value.isPermanent,
           onDeleteCallback: () {
-            final dynamic key = item.key;
-            _loggerRepository.d('key = $key');
-            // _localStorageRepository.
+            _localStorageRepository.deleteUsedUrl(item.key);
           },
         );
       }).toList(),
@@ -78,6 +76,22 @@ class UrlDialogWidget extends StatelessWidget {
               appBar: AppBar(
                 centerTitle: true,
                 title: const Text('select url'),
+                actions: <Widget>[
+                  GestureDetector(
+                    onTap: () {
+                      _localStorageRepository.deleteAllUsedUrls();
+                    },
+                    child: Container(
+                      width: 80.0,
+                      color: Colors.transparent,
+                      child: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                        size: 36.0,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               body: Container(
                 padding: const EdgeInsets.all(16.0),

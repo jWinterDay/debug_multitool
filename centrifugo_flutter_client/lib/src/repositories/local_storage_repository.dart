@@ -97,6 +97,17 @@ class LocalStorageRepository {
     await _usedUrlBox.delete(key);
   }
 
+  Future<void> deleteAllUsedUrls() async {
+    final Map<dynamic, UsedUrl> rawMap = _usedUrlBox.toMap();
+    final List<dynamic> keys = rawMap.values.where((UsedUrl usedUrl) {
+      return !usedUrl.isPermanent;
+    }).map<dynamic>((UsedUrl usedUrl) {
+      return usedUrl.key;
+    }).toList();
+
+    await _usedUrlBox.deleteAll(keys);
+  }
+
   Future<void> saveChannel(Channel channel) async {
     // check exists
     final bool exists = _channelBox.values.any(
@@ -123,6 +134,10 @@ class LocalStorageRepository {
 
   Future<void> deleteChannel(dynamic key) async {
     await _channelBox.delete(key);
+  }
+
+  Future<void> deleteAllChannels() async {
+    await _channelBox.clear();
   }
 
   void close() {

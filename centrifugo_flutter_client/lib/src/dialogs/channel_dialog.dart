@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'components/item_sliver_content.dart';
+import 'components/item_sliver_title.dart';
 
 class ChannelDialogWidget extends StatelessWidget {
   ChannelDialogWidget({
@@ -18,6 +19,10 @@ class ChannelDialogWidget extends StatelessWidget {
 
   List<Widget> _sliverItems(Map<dynamic, Channel> rawMap) {
     return <Widget>[
+      // empty
+      if (rawMap.isEmpty) const ItemSliverTitle(title: 'No data'),
+
+      // items
       ...rawMap.entries.map<Widget>((MapEntry<dynamic, Channel> item) {
         return ItemSliverContent(
           name: item.value.name,
@@ -51,6 +56,22 @@ class ChannelDialogWidget extends StatelessWidget {
               appBar: AppBar(
                 centerTitle: true,
                 title: const Text('select channel'),
+                actions: <Widget>[
+                  GestureDetector(
+                    onTap: () {
+                      _localStorageRepository.deleteAllChannels();
+                    },
+                    child: Container(
+                      width: 80.0,
+                      color: Colors.transparent,
+                      child: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                        size: 36.0,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               body: Container(
                 padding: const EdgeInsets.all(16.0),
