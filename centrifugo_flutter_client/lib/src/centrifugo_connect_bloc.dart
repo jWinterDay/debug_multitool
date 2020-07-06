@@ -10,7 +10,6 @@ import 'centrifugo_connect_status.dart';
 import 'repositories/local_storage_repository.dart';
 import 'repositories/logger_repository.dart';
 
-// ws://172.16.55.141:8001/connection/websocket?format=protobuf
 class CentrifugoConnectBloc {
   CentrifugoConnectBloc() {
     _isInitialized = BehaviorSubject<bool>.seeded(false);

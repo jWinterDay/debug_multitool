@@ -30,6 +30,11 @@ class LocalStorageRepository {
     _usedUrlBox = await Hive.openBox<UsedUrl>(HiveBoxes.usedUrl);
     _channelBox = await Hive.openBox<Channel>(HiveBoxes.channel);
 
+    _usedUrlBox.watch().listen((BoxEvent event) {
+      //
+      print('>> ${event.deleted} ${event.key} > ${event.value}');
+    });
+
     await _saveInitialValues();
   }
 
@@ -69,8 +74,12 @@ class LocalStorageRepository {
   }
 
   Future<void> saveUsedUrl(UsedUrl usedUrl) async {
-    final int key = await _usedUrlBox.add(usedUrl);
-    _logger.d('key: $key');
+    // check exists
+    final bool exists = _usedUrlBox.values.any((UsedUrl usedUrlItem) => usedUrlItem.name == usedUrl.name);
+    if (!exists) {
+      final int key = await _usedUrlBox.add(usedUrl);
+      _logger.d('key: $key');
+    }
 
     // update state
     if (_appStateBox.isEmpty) {
@@ -85,10 +94,14 @@ class LocalStorageRepository {
   }
 
   Future<void> saveChannel(Channel channel) async {
-    final int key = await _channelBox.add(Channel(
-      name: channel.name,
-    ));
-    _logger.d('key: $key');
+    // check exists
+    final bool exists = _channelBox.values.any((Channel channelItem) => channelItem.name == channel.name);
+    if (!exists) {
+      final int key = await _channelBox.add(Channel(
+        name: channel.name,
+      ));
+      _logger.d('key: $key');
+    }
 
     // update state
     if (_appStateBox.isEmpty) {

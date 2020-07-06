@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'centrifugo_connect_bloc.dart';
 import 'centrifugo_connect_status.dart';
+import 'dialogs/channel_dialog.dart';
 import 'dialogs/url_dialog.dart';
 
 class CentrifugoConnectWidget extends StatefulWidget {
@@ -78,7 +79,7 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
       transitionDuration: const Duration(milliseconds: 300),
       context: context,
       pageBuilder: (_, __, ___) {
-        return const UrlDialogWidget();
+        return const ChannelDialogWidget();
       },
       transitionBuilder: (_, Animation<double> anim, __, Widget child) {
         return SlideTransition(
