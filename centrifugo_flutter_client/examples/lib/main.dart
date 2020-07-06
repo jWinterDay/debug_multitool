@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
                     state: '{"state":"example_state"}',
                   );
                 } catch (exc) {
-                  print('exc = $exc');
+                  debugPrint('exc = $exc');
                 }
               },
               child: const Text('send data'),
