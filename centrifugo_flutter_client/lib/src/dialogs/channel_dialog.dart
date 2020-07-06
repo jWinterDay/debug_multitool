@@ -1,4 +1,6 @@
+import 'package:centrifugo_flutter_client/src/app_di.dart';
 import 'package:centrifugo_flutter_client/src/models/channel.dart';
+import 'package:centrifugo_flutter_client/src/repositories/local_storage_repository.dart';
 import 'package:centrifugo_flutter_client/src/utils/hive_boxes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -7,22 +9,22 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'components/item_sliver_content.dart';
 
-class ChannelDialogWidget extends StatefulWidget {
-  const ChannelDialogWidget({
+class ChannelDialogWidget extends StatelessWidget {
+  ChannelDialogWidget({
     Key key,
   }) : super(key: key);
 
-  @override
-  _ChannelDialogState createState() => _ChannelDialogState();
-}
+  final LocalStorageRepository _localStorageRepository = di.get<LocalStorageRepository>();
 
-class _ChannelDialogState extends State<ChannelDialogWidget> {
   List<Widget> _sliverItems(Map<dynamic, Channel> rawMap) {
     return <Widget>[
       ...rawMap.entries.map<Widget>((MapEntry<dynamic, Channel> item) {
         return ItemSliverContent(
           name: item.value.name,
           isPermanent: false,
+          onDeleteCallback: () {
+            _localStorageRepository.deleteChannel(item.key);
+          },
         );
       }).toList(),
     ];

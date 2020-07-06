@@ -9,12 +9,15 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
 class LocalStorageRepository {
-  final LoggerRepository _logger = LoggerRepository();
+  LocalStorageRepository(this.loggerRepository);
+
+  final LoggerRepository loggerRepository;
 
   Box<AppState> _appStateBox;
   Box<UsedUrl> _usedUrlBox;
   Box<Channel> _channelBox;
 
+  /// init local storage repository
   Future<void> init() async {
     // hive adapter
     Hive.registerAdapter<UsedUrl>(UsedUrlAdapter());
@@ -23,17 +26,12 @@ class LocalStorageRepository {
 
     // hive init
     final Directory appDocDir = await getApplicationDocumentsDirectory(); // getTemporaryDirectory();
-    _logger.d('hive path: ${appDocDir.path}');
+    loggerRepository.d('hive path: ${appDocDir.path}');
     Hive.init(appDocDir.path);
 
     _appStateBox = await Hive.openBox<AppState>(HiveBoxes.appState);
     _usedUrlBox = await Hive.openBox<UsedUrl>(HiveBoxes.usedUrl);
     _channelBox = await Hive.openBox<Channel>(HiveBoxes.channel);
-
-    _usedUrlBox.watch().listen((BoxEvent event) {
-      //
-      print('>> ${event.deleted} ${event.key} > ${event.value}');
-    });
 
     await _saveInitialValues();
   }
@@ -75,10 +73,12 @@ class LocalStorageRepository {
 
   Future<void> saveUsedUrl(UsedUrl usedUrl) async {
     // check exists
-    final bool exists = _usedUrlBox.values.any((UsedUrl usedUrlItem) => usedUrlItem.name == usedUrl.name);
+    final bool exists = _usedUrlBox.values.any(
+      (UsedUrl usedUrlItem) => usedUrlItem.name == usedUrl.name,
+    );
     if (!exists) {
       final int key = await _usedUrlBox.add(usedUrl);
-      _logger.d('key: $key');
+      loggerRepository.d('key: $key');
     }
 
     // update state
@@ -93,14 +93,20 @@ class LocalStorageRepository {
     }
   }
 
+  Future<void> deleteUsedUrl(dynamic key) async {
+    await _usedUrlBox.delete(key);
+  }
+
   Future<void> saveChannel(Channel channel) async {
     // check exists
-    final bool exists = _channelBox.values.any((Channel channelItem) => channelItem.name == channel.name);
+    final bool exists = _channelBox.values.any(
+      (Channel channelItem) => channelItem.name == channel.name,
+    );
     if (!exists) {
       final int key = await _channelBox.add(Channel(
         name: channel.name,
       ));
-      _logger.d('key: $key');
+      loggerRepository.d('key: $key');
     }
 
     // update state
@@ -113,6 +119,10 @@ class LocalStorageRepository {
       appState.currentChannel = channel.name;
       await appState.save();
     }
+  }
+
+  Future<void> deleteChannel(dynamic key) async {
+    await _channelBox.delete(key);
   }
 
   void close() {

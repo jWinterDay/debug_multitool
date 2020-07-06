@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:centrifugo_flutter_client/src/app_di.dart';
 import 'package:centrifugo_flutter_client/src/models/channel.dart';
 import 'package:centrifugo_flutter_client/src/models/used_url.dart';
 import 'package:flutter/widgets.dart';
@@ -26,8 +27,8 @@ class CentrifugoConnectBloc {
   }
 
   // repository
-  final LocalStorageRepository _localStorageRepository = LocalStorageRepository();
-  final LoggerRepository _logger = LoggerRepository();
+  LocalStorageRepository _localStorageRepository;
+  LoggerRepository _logger;
 
   // all parts is bloc initialized
   BehaviorSubject<bool> _isInitialized;
@@ -58,7 +59,12 @@ class CentrifugoConnectBloc {
 
   /// init bloc
   Future<void> init() async {
+    // di init
+    await AppDI.init();
+
     // repository
+    _localStorageRepository = di.get<LocalStorageRepository>();
+    _logger = di.get<LoggerRepository>();
     await _localStorageRepository.init();
 
     // last used url and channel
@@ -104,7 +110,7 @@ class CentrifugoConnectBloc {
     // ignore: unawaited_futures
     _localStorageRepository.saveUsedUrl(UsedUrl(
       name: url,
-      isPermanent: true,
+      isPermanent: false,
     ));
 
     // channel

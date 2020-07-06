@@ -53,7 +53,7 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
       transitionDuration: const Duration(milliseconds: 300),
       context: context,
       pageBuilder: (_, __, ___) {
-        return const UrlDialogWidget();
+        return UrlDialogWidget();
       },
       transitionBuilder: (_, Animation<double> anim, __, Widget child) {
         return SlideTransition(
@@ -79,7 +79,7 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
       transitionDuration: const Duration(milliseconds: 300),
       context: context,
       pageBuilder: (_, __, ___) {
-        return const ChannelDialogWidget();
+        return ChannelDialogWidget();
       },
       transitionBuilder: (_, Animation<double> anim, __, Widget child) {
         return SlideTransition(

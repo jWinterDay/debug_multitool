@@ -1,5 +1,8 @@
+import 'package:centrifugo_flutter_client/src/app_di.dart';
 import 'package:centrifugo_flutter_client/src/dialogs/components/item_sliver_title.dart';
 import 'package:centrifugo_flutter_client/src/models/used_url.dart';
+import 'package:centrifugo_flutter_client/src/repositories/local_storage_repository.dart';
+import 'package:centrifugo_flutter_client/src/repositories/logger_repository.dart';
 import 'package:centrifugo_flutter_client/src/utils/hive_boxes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,16 +11,14 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'components/item_sliver_content.dart';
 
-class UrlDialogWidget extends StatefulWidget {
-  const UrlDialogWidget({
+class UrlDialogWidget extends StatelessWidget {
+  UrlDialogWidget({
     Key key,
   }) : super(key: key);
 
-  @override
-  _UrlDialogState createState() => _UrlDialogState();
-}
+  final LocalStorageRepository _localStorageRepository = di.get<LocalStorageRepository>();
+  final LoggerRepository _loggerRepository = di.get<LoggerRepository>();
 
-class _UrlDialogState extends State<UrlDialogWidget> {
   List<Widget> _sliverItems(Map<dynamic, UsedUrl> rawMap) {
     return <Widget>[
       // persistent
@@ -30,6 +31,9 @@ class _UrlDialogState extends State<UrlDialogWidget> {
         return ItemSliverContent(
           name: item.value.name,
           isPermanent: item.value.isPermanent,
+          onDeleteCallback: () {
+            _localStorageRepository.deleteUsedUrl(item.key);
+          },
         );
       }).toList(),
 
@@ -43,6 +47,11 @@ class _UrlDialogState extends State<UrlDialogWidget> {
         return ItemSliverContent(
           name: item.value.name,
           isPermanent: item.value.isPermanent,
+          onDeleteCallback: () {
+            final dynamic key = item.key;
+            _loggerRepository.d('key = $key');
+            // _localStorageRepository.
+          },
         );
       }).toList(),
     ];
