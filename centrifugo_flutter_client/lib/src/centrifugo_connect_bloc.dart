@@ -11,6 +11,8 @@ import 'centrifugo_connect_status.dart';
 import 'repositories/local_storage_repository.dart';
 import 'repositories/logger_repository.dart';
 
+centrifuge.Subscription subscription;
+
 class CentrifugoConnectBloc {
   CentrifugoConnectBloc() {
     _isInitialized = BehaviorSubject<bool>.seeded(false);
@@ -36,7 +38,7 @@ class CentrifugoConnectBloc {
   //
 
   centrifuge.Client client;
-  centrifuge.Subscription subscription;
+  // centrifuge.Subscription subscription;
   StreamSubscription<centrifuge.ConnectEvent> _connectSub;
   StreamSubscription<centrifuge.DisconnectEvent> _disconnectSub;
   StreamSubscription<centrifuge.PublishEvent> _publishSub;
@@ -82,7 +84,11 @@ class CentrifugoConnectBloc {
   /// },
   /// state: state
   /// ```
-  Future<void> sendData({String action, Object payload, Object state}) async {
+  Future<void> sendData({
+    @required String action,
+    @required Object payload,
+    @required Object state,
+  }) async {
     if (currentConnectStatus != CentrifugoConnectStatus.connected) {
       return;
     }
@@ -134,8 +140,8 @@ class CentrifugoConnectBloc {
     });
     // publish sub
     _publishSub = subscription.publishStream.listen((centrifuge.PublishEvent event) {
-      final dynamic message = json.decode(utf8.decode(event.data));
-      _publishSubject.add(message.toString());
+      // final dynamic message = json.decode(utf8.decode(event.data));
+      // _publishSubject.add(message.toString());
     });
 
     subscription.subscribe();

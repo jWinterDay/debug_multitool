@@ -244,8 +244,8 @@ class _CentrifugoConnectState extends State<CentrifugoConnectWidget> {
               // loading
               if (!isInitialized)
                 Container(
-                  width: double.infinity,
-                  height: double.infinity,
+                  // width: double.infinity,
+                  // height: double.infinity,
                   color: Colors.blue.withOpacity(0.6),
                   child: Center(
                     child: Column(

@@ -1,10 +1,7 @@
 import 'dart:async';
 
 import 'package:centrifugo_flutter_client/centrifugo_flutter_client.dart';
-import 'package:centrifugo_flutter_client/src/repositories/logger_repository.dart';
 import 'package:flutter/material.dart';
-
-LoggerRepository _loggerRepository = LoggerRepository();
 
 Future<void> _run() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +17,7 @@ void main() {
   runZonedGuarded<void>(
     () => _run(),
     (Object error, StackTrace stackTrace) {
-      _loggerRepository.e('unexpected error: $error, tacktrace: $stackTrace');
+      debugPrint('unexpected error: $error, tacktrace: $stackTrace');
     },
   );
 }
@@ -40,7 +37,25 @@ class MyApp extends StatelessWidget {
           centerTitle: true,
           title: const Text('centrifugo flutter client example'),
         ),
-        body: const CentrifugoConnectWidget(),
+        body: Column(
+          children: <Widget>[
+            const CentrifugoConnectWidget(),
+            RaisedButton(
+              onPressed: () {
+                try {
+                  DataSender.sendData(
+                    action: 'example_action',
+                    payload: '{"payload:"example_payload"}',
+                    state: '{"state":"example_state"}',
+                  );
+                } catch (exc) {
+                  print('exc = $exc');
+                }
+              },
+              child: const Text('send data'),
+            ),
+          ],
+        ),
       ),
     );
   }
