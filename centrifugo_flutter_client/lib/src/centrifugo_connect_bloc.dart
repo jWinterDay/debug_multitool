@@ -1,17 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-import 'package:centrifugo_flutter_client/src/models/app_state.dart';
 import 'package:centrifugo_flutter_client/src/models/channel.dart';
 import 'package:centrifugo_flutter_client/src/models/used_url.dart';
-import 'package:centrifugo_flutter_client/src/utils/hive_boxes.dart';
 import 'package:flutter/widgets.dart';
-import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:centrifuge/centrifuge.dart' as centrifuge;
 
 import 'centrifugo_connect_status.dart';
+import 'repositories/local_storage_repository.dart';
+import 'repositories/logger_repository.dart';
 
 // ws://172.16.55.141:8001/connection/websocket?format=protobuf
 class CentrifugoConnectBloc {
@@ -29,9 +26,9 @@ class CentrifugoConnectBloc {
     });
   }
 
-  Box<AppState> _appStateBox;
-  Box<UsedUrl> _usedUrlBox;
-  Box<Channel> _channelBox;
+  // repository
+  final LocalStorageRepository _localStorageRepository = LocalStorageRepository();
+  final LoggerRepository _logger = LoggerRepository();
 
   // all parts is bloc initialized
   BehaviorSubject<bool> _isInitialized;
@@ -62,27 +59,12 @@ class CentrifugoConnectBloc {
 
   /// init bloc
   Future<void> init() async {
-    // hive adapter
-    Hive.registerAdapter<UsedUrl>(UsedUrlAdapter());
-    Hive.registerAdapter<Channel>(ChannelAdapter());
-    Hive.registerAdapter<AppState>(AppStateAdapter());
+    // repository
+    await _localStorageRepository.init();
 
-    // hive init
-    final Directory appDocDir = await getApplicationDocumentsDirectory();
-    // getTemporaryDirectory();
-    debugPrint('hive path: ${appDocDir.path}');
-    Hive.init(appDocDir.path);
-
-    _appStateBox = await Hive.openBox<AppState>(HiveBoxes.appState);
-    _usedUrlBox = await Hive.openBox<UsedUrl>(HiveBoxes.usedUrl);
-    _channelBox = await Hive.openBox<Channel>(HiveBoxes.channel);
-
-    // last url and channel
-    final AppState appState = _appStateBox.get(0);
-    centrifugoUrlTextController.text = appState?.currentUrl ?? '';
-    centrifugoChannelTextController.text = appState?.currentChannel ?? '';
-
-    // persistent data
+    // last used url and channel
+    centrifugoUrlTextController.text = _localStorageRepository.lastUsedUrl;
+    centrifugoChannelTextController.text = _localStorageRepository.lastUsedChannel;
   }
 
   /// send data to centrifugo server
@@ -111,7 +93,7 @@ class CentrifugoConnectBloc {
 
       await subscription?.publish(data);
     } catch (exc) {
-      debugPrint('[centrifugo] send data exc: $exc');
+      _logger.e('[centrifugo] send data exc: $exc');
     }
   }
 
@@ -121,12 +103,17 @@ class CentrifugoConnectBloc {
     // url
     final String url = centrifugoUrlTextController.text;
     // ignore: unawaited_futures
-    _saveUsedUrl(url);
+    _localStorageRepository.saveUsedUrl(UsedUrl(
+      name: url,
+      isPermanent: true,
+    ));
 
     // channel
     final String channel = centrifugoChannelTextController.text;
     // ignore: unawaited_futures
-    _saveChannel(channel);
+    _localStorageRepository.saveChannel(Channel(
+      name: channel,
+    ));
 
     // connect
     client = centrifuge.createClient(url);
@@ -173,44 +160,6 @@ class CentrifugoConnectBloc {
     CentrifugoConnectStatus.connected,
   ];
 
-  Future<void> _saveUsedUrl(String url) async {
-    // add to url list
-    final int key = await _usedUrlBox.add(UsedUrl(
-      name: url,
-      isPermanent: true,
-    ));
-    debugPrint('key: $key');
-
-    // update state
-    if (_appStateBox.isEmpty) {
-      await _appStateBox.add(
-        AppState(currentUrl: url),
-      );
-    } else {
-      final AppState appState = _appStateBox.getAt(0);
-      appState.currentUrl = url;
-      await appState.save();
-    }
-  }
-
-  Future<void> _saveChannel(String channel) async {
-    final int key = await _channelBox.add(Channel(
-      name: channel,
-    ));
-    debugPrint('key: $key');
-
-    // update state
-    if (_appStateBox.isEmpty) {
-      await _appStateBox.add(AppState(
-        currentChannel: channel,
-      ));
-    } else {
-      final AppState appState = _appStateBox.getAt(0);
-      appState.currentChannel = channel;
-      await appState.save();
-    }
-  }
-
   Future<void> connect() async {
     if (connectStatuses.contains(currentConnectStatus)) {
       await _disconnect();
@@ -222,7 +171,8 @@ class CentrifugoConnectBloc {
 
   /// dont close subscriptions in dispose
   /// need for transmitting data in background
-  void unsubscribe() {
+  // ignore: unused_element
+  void _unsubscribe() {
     _connectSub?.cancel();
     _disconnectSub?.cancel();
     _publishSub?.cancel();
@@ -234,11 +184,7 @@ class CentrifugoConnectBloc {
   void dispose() {
     _isInitialized.close();
 
-    // _usedUrlBox.compact();
-    _usedUrlBox.close();
-    _channelBox.close();
-    _appStateBox.close();
-    Hive.close();
+    _localStorageRepository.close();
 
     centrifugoUrlTextController.dispose();
     centrifugoChannelTextController.dispose();

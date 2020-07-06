@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:centrifugo_flutter_client/centrifugo_flutter_client.dart';
+import 'package:centrifugo_flutter_client/src/repositories/logger_repository.dart';
 import 'package:flutter/material.dart';
+
+LoggerRepository _loggerRepository = LoggerRepository();
 
 Future<void> _run() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +20,7 @@ void main() {
   runZonedGuarded<void>(
     () => _run(),
     (Object error, StackTrace stackTrace) {
-      debugPrint('unexpected error: $error, tacktrace: $stackTrace');
+      _loggerRepository.e('unexpected error: $error, tacktrace: $stackTrace');
     },
   );
 }
