@@ -19,6 +19,9 @@ class DebugPrintLoggerServiceImpl implements LoggerService {
   Future<void> init() async {}
 
   @override
+  Future<void> dispose() async {}
+
+  @override
   void e(Object message) {
     debugPrint(message.toString());
   }

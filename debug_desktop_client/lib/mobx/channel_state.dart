@@ -76,7 +76,8 @@ abstract class _ChannelState with Store {
 
   @action
   void removeChannel(Channel channel) {
-    getChannelByName(channel.name).setConnected(isConnected: false);
+    channel.setConnected(isConnected: false);
+    channel.dispose();
     channelList.removeWhere((Channel ch) {
       return ch.name == channel.name;
     });

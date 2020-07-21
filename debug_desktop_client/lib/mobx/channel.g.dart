@@ -31,6 +31,21 @@ mixin _$Channel on _Channel, Store {
               name: '_Channel.blackListTyped'))
       .value;
 
+  final _$connectStatusAtom = Atom(name: '_Channel.connectStatus');
+
+  @override
+  ConnectStatus get connectStatus {
+    _$connectStatusAtom.reportRead();
+    return super.connectStatus;
+  }
+
+  @override
+  set connectStatus(ConnectStatus value) {
+    _$connectStatusAtom.reportWrite(value, super.connectStatus, () {
+      super.connectStatus = value;
+    });
+  }
+
   final _$datetimeAtom = Atom(name: '_Channel.datetime');
 
   @override
@@ -211,51 +226,6 @@ mixin _$Channel on _Channel, Store {
     });
   }
 
-  final _$connectStatusAtom = Atom(name: '_Channel.connectStatus');
-
-  @override
-  ConnectStatus get connectStatus {
-    _$connectStatusAtom.reportRead();
-    return super.connectStatus;
-  }
-
-  @override
-  set connectStatus(ConnectStatus value) {
-    _$connectStatusAtom.reportWrite(value, super.connectStatus, () {
-      super.connectStatus = value;
-    });
-  }
-
-  final _$clientAtom = Atom(name: '_Channel.client');
-
-  @override
-  centrifuge.Client get client {
-    _$clientAtom.reportRead();
-    return super.client;
-  }
-
-  @override
-  set client(centrifuge.Client value) {
-    _$clientAtom.reportWrite(value, super.client, () {
-      super.client = value;
-    });
-  }
-
-  final _$subscriptionAtom = Atom(name: '_Channel.subscription');
-
-  @override
-  centrifuge.Subscription get subscription {
-    _$subscriptionAtom.reportRead();
-    return super.subscription;
-  }
-
-  @override
-  set subscription(centrifuge.Subscription value) {
-    _$subscriptionAtom.reportWrite(value, super.subscription, () {
-      super.subscription = value;
-    });
-  }
-
   final _$_ChannelActionController = ActionController(name: '_Channel');
 
   @override
@@ -391,28 +361,6 @@ mixin _$Channel on _Channel, Store {
   }
 
   @override
-  void setFilterWhite(String filter) {
-    final _$actionInfo =
-        _$_ChannelActionController.startAction(name: '_Channel.setFilterWhite');
-    try {
-      return super.setFilterWhite(filter);
-    } finally {
-      _$_ChannelActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setFilterBlack(String filter) {
-    final _$actionInfo =
-        _$_ChannelActionController.startAction(name: '_Channel.setFilterBlack');
-    try {
-      return super.setFilterBlack(filter);
-    } finally {
-      _$_ChannelActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void setConnected({bool isConnected}) {
     final _$actionInfo =
         _$_ChannelActionController.startAction(name: '_Channel.setConnected');
@@ -426,6 +374,7 @@ mixin _$Channel on _Channel, Store {
   @override
   String toString() {
     return '''
+connectStatus: ${connectStatus},
 datetime: ${datetime},
 wsUrl: ${wsUrl},
 name: ${name},
@@ -438,9 +387,6 @@ whiteList: ${whiteList},
 isBlackListUsed: ${isBlackListUsed},
 filterBlackList: ${filterBlackList},
 blackList: ${blackList},
-connectStatus: ${connectStatus},
-client: ${client},
-subscription: ${subscription},
 filteredLogs: ${filteredLogs},
 whiteListTyped: ${whiteListTyped},
 blackListTyped: ${blackListTyped}

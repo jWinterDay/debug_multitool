@@ -29,6 +29,9 @@ class DbService implements Service {
     _database = await open();
   }
 
+  @override
+  Future<void> dispose() async {}
+
   Future<void> close() async {
     loggerService.d('DATABASE. close');
     if (_database != null) {
