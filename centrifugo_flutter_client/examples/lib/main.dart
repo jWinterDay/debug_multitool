@@ -45,8 +45,11 @@ class MyApp extends StatelessWidget {
                 try {
                   DataSender.sendData(
                     action: 'example_action',
-                    payload: '{"payload:"example_payload"}',
-                    state: '{"state":"example_state"}',
+                    payload: <String, dynamic>{'payloadKey1': 1, 'payloadKey2': 2},
+                    state: <String, dynamic>{
+                      'stateKey1': 'test123',
+                      'stateKey2': [1, 2, 3, 4, 5]
+                    },
                   );
                 } catch (exc) {
                   debugPrint('exc = $exc');

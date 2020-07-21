@@ -221,16 +221,16 @@ class _ChannelFullInfoState extends State<ChannelFullInfoScreen> {
                     ),
                   ),
                 ),
-                Positioned(
-                  right: 0.0,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const <Widget>[
-                      Icon(CupertinoIcons.game_controller),
-                      Text('copy all(TODO)'),
-                    ],
-                  ),
-                ),
+                // Positioned(
+                //   right: 0.0,
+                //   child: Row(
+                //     mainAxisSize: MainAxisSize.min,
+                //     children: const <Widget>[
+                //       Icon(CupertinoIcons.game_controller),
+                //       Text('copy all(TODO)'),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),

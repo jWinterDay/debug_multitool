@@ -54,6 +54,8 @@ class CentrifugoService implements Service {
         action: 'connect',
         actionPayload: 'client: ${event.client}, version: ${event.version}',
         prevLog: _prevLog,
+        canSend: false,
+        rawData: null,
       );
 
       channel.addLog(LogState(log));
@@ -68,6 +70,8 @@ class CentrifugoService implements Service {
         action: 'disconnect',
         actionPayload: 'reason: ${event.reason}, shouldReconnect: ${event.shouldReconnect}',
         prevLog: _prevLog,
+        canSend: false,
+        rawData: null,
       );
 
       channel.addLog(LogState(log));
@@ -97,6 +101,7 @@ class CentrifugoService implements Service {
         actionPayload: prettyActionPayload,
         state: prettyState,
         prevLog: _prevLog,
+        rawData: event.data,
       );
 
       channel.addLog(LogState(log));
@@ -122,5 +127,15 @@ class CentrifugoService implements Service {
     _subscription?.unsubscribe();
     _connectStatusSubject.add(ConnectStatus.disconnected);
     _client = null;
+  }
+
+  /// send custom data to centrifugo
+  Future<void> sendCustomData(List<int> data) async {
+    await _subscription.publish(data);
+  }
+
+  /// send log back to centrifugo
+  Future<void> sendLogState(LogState logState) async {
+    await sendCustomData(logState.log.rawData);
   }
 }

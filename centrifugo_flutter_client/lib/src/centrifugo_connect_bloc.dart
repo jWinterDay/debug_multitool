@@ -140,7 +140,8 @@ class CentrifugoConnectBloc {
     });
     // publish sub
     _publishSub = subscription.publishStream.listen((centrifuge.PublishEvent event) {
-      // final dynamic message = json.decode(utf8.decode(event.data));
+      final dynamic message = json.decode(utf8.decode(event.data));
+      _logger.d(message);
       // _publishSubject.add(message.toString());
     });
 

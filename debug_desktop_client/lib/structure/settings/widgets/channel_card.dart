@@ -66,7 +66,7 @@ class ChannelCardScreen extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
       decoration: BoxDecoration(
-        color: selected ? MyColors.primary : logState.color,
+        color: selected ? MyColors.primary.withOpacity(0.3) : logState.color,
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
         border: Border.all(
           width: 1.0,
@@ -75,10 +75,11 @@ class ChannelCardScreen extends StatelessWidget {
       ),
       child: Row(
         children: <Widget>[
+          // favorite
           if (logState.log.enabled)
             Container(
               color: MyColors.transparent,
-              padding: const EdgeInsets.only(right: 16.0),
+              padding: const EdgeInsets.only(right: 4.0),
               child: GestureDetector(
                 onTap: () {
                   logState.setFavorite();
@@ -93,6 +94,24 @@ class ChannelCardScreen extends StatelessWidget {
                 ),
               ),
             ),
+
+          // send back
+          if (logState.log.canSend)
+            Container(
+              color: MyColors.transparent,
+              padding: const EdgeInsets.only(right: 4.0),
+              child: GestureDetector(
+                onTap: () {
+                  channelStateStore.currentChannel.sendLogStateBack(logState);
+                },
+                child: const Icon(
+                  CupertinoIcons.reply_all,
+                  color: MyColors.red,
+                ),
+              ),
+            ),
+
+          // content
           Expanded(
             child: GestureDetector(
               onTap: callback == null ? null : () => callback(),

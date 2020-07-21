@@ -17,16 +17,16 @@ class DataSender {
   /// ```
   static Future<void> sendData({
     @required String action,
-    @required Object payload,
-    @required Object state,
+    @required Map<String, dynamic> payload,
+    @required Map<String, dynamic> state,
   }) async {
-    final String output = jsonEncode(<String, dynamic>{
+    final Map<String, dynamic> dataMap = <String, dynamic>{
       'action': action,
-      'payload': payload.toString(),
-      'state': state.toString(),
-    });
+      'payload': payload,
+      'state': state,
+    };
 
-    final List<int> data = utf8.encode(output);
+    final List<int> data = utf8.encode(jsonEncode(dataMap));
 
     await subscription?.publish(data);
   }

@@ -100,6 +100,8 @@ class LogActions extends StatelessWidget {
                       prevLog: channelStateStore.currentChannel.logStates.isEmpty
                           ? null
                           : channelStateStore.currentChannel.logStates.last.log,
+                      canSend: false,
+                      rawData: null,
                     );
                     channelStateStore.currentChannel.addLog(LogState(log));
                   },

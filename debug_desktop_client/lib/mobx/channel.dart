@@ -208,6 +208,12 @@ abstract class _Channel with Store {
     _centrifugoService.disconnect();
   }
 
+  /// send log state back to centrifugo
+  @action
+  void sendLogStateBack(LogState logState) {
+    _centrifugoService.sendLogState(logState);
+  }
+
   void dispose() {
     _connectStatusSub.cancel();
     _centrifugoService.dispose();
