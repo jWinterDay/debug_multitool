@@ -14,9 +14,7 @@ class AppDI {
     // logger
     final DebugPrintLoggerServiceImpl loggerService = DebugPrintLoggerServiceImpl();
     di.map<LoggerService>(
-      (Injector di) {
-        return loggerService;
-      },
+      (Injector di) => loggerService,
       isSingleton: true,
     );
 
@@ -34,41 +32,21 @@ class AppDI {
 
     // channel service
     di.map<ChannelService>(
-      (Injector di) {
-        return ChannelService(
-          dbService: di.get<DbService>(),
-        );
-      },
+      (Injector di) => ChannelService(dbService: di.get<DbService>()),
       isSingleton: true,
     );
 
     // used url service
     di.map<UsedUrlService>(
-      (Injector di) {
-        return UsedUrlService(
-          dbService: di.get<DbService>(),
-        );
-      },
+      (Injector di) => UsedUrlService(dbService: di.get<DbService>()),
       isSingleton: true,
     );
 
     // app settings service
     di.map<AppSettingsService>(
-      (Injector di) {
-        return AppSettingsService(
-          dbService: di.get<DbService>(),
-        );
-      },
+      (Injector di) => AppSettingsService(dbService: di.get<DbService>()),
       isSingleton: true,
     );
-
-    // local storage
-    // di.map<LocalStorageService>(
-    //   (Injector di) {
-    //     return LocalStorageServiceImpl();
-    //   },
-    //   isSingleton: true,
-    // );
 
     loggerService.d('---di successfully initialized---');
   }
