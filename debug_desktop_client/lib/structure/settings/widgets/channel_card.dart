@@ -64,7 +64,6 @@ class ChannelCardScreen extends StatelessWidget {
     final ChannelState channelStateStore = Provider.of<ChannelState>(context);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
       margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
       decoration: BoxDecoration(
         color: selected ? MyColors.primary : logState.color,
@@ -78,6 +77,7 @@ class ChannelCardScreen extends StatelessWidget {
         children: <Widget>[
           if (logState.log.enabled)
             Container(
+              color: MyColors.transparent,
               padding: const EdgeInsets.only(right: 16.0),
               child: GestureDetector(
                 onTap: () {
@@ -96,11 +96,17 @@ class ChannelCardScreen extends StatelessWidget {
           Expanded(
             child: GestureDetector(
               onTap: callback == null ? null : () => callback(),
-              child: Text(
-                logState.viewedText,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+              child: Container(
+                color: MyColors.transparent,
+                height: 25.0,
+                padding: const EdgeInsets.only(left: 4.0, top: 4.0),
+                child: Text(
+                  logState.viewedText,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.start,
+                ),
               ),
             ),
           ),
