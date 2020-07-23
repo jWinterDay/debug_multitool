@@ -205,7 +205,7 @@ class _ChannelState extends State<ChannelScreen> {
 
                         // content
                         Expanded(
-                          flex: 1,
+                          flex: 3,
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                             decoration: BoxDecoration(
@@ -267,7 +267,7 @@ class _ChannelState extends State<ChannelScreen> {
                         // full info
                         if (_currentLogState != null)
                           Expanded(
-                            flex: 2,
+                            flex: 5,
                             child: ChannelFullInfoScreen(
                               logState: _currentLogState,
                               // index: _currentIndex,

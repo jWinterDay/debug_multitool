@@ -65,6 +65,7 @@ class ChannelCardScreen extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+      // padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
       decoration: BoxDecoration(
         color: selected ? MyColors.primary.withOpacity(0.3) : logState.color,
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
@@ -117,7 +118,7 @@ class ChannelCardScreen extends StatelessWidget {
               onTap: callback == null ? null : () => callback(),
               child: Container(
                 color: MyColors.transparent,
-                height: 25.0,
+                // height: 25.0,
                 padding: const EdgeInsets.only(left: 4.0, top: 4.0),
                 child: Text(
                   logState.viewedText,
