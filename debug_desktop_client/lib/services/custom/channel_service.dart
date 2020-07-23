@@ -36,7 +36,7 @@ class ChannelService {
              channel_id as channelId,
              name as name,
              is_white as isWhite
-        from channel_filter t
+        from channel_filter
       ''',
     );
 

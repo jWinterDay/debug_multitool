@@ -84,9 +84,20 @@ class DbService implements Service {
 
     final String schema = await rootBundle.loadString(schemaInitPath);
 
-    schema.split(';--operation_end').forEach((String p) async {
-      final String sql = p + ';';
-      // loggerService.d('sql: $sql');
+    final List<String> rawSqlList = schema.split(';--operation_end');
+
+    await Future.forEach(rawSqlList, (String rawSql) async {
+      final String trimmed = rawSql.trim();
+
+      if (trimmed.isEmpty) {
+        return;
+      }
+
+      //
+      final String sql = trimmed + ';';
+
+      loggerService.d('sql: $sql');
+
       await db.execute(sql);
     });
   }
