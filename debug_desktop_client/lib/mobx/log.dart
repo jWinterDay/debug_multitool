@@ -6,7 +6,8 @@ final DateFormat kFormatter = DateFormat('H:m:s');
 @immutable
 class Log {
   Log({
-    @required this.id,
+    this.id = 'none',
+    @required this.count,
     @required this.action,
     this.actionPayload = '',
     this.state = '',
@@ -14,20 +15,23 @@ class Log {
     @required this.prevLog,
     this.canSend = true,
     @required this.rawData,
-  })  : assert(id != null),
+    @required this.backAction,
+  })  : assert(count != null),
         assert(action != null),
         assert(actionPayload != null),
         assert(state != null),
         assert(enabled != null),
         _datetime = DateTime.now();
 
-  final int id; // List<Log> length as ID
+  final String id;
+  final int count; // List<Log> length as ID
   final String action;
   final String actionPayload;
   final String state;
   final bool enabled;
   final Log prevLog;
   final List<int> rawData;
+  final bool backAction;
 
   /// this event can be sent back with centrifugo
   final bool canSend;

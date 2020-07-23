@@ -77,7 +77,7 @@ class ChannelCardScreen extends StatelessWidget {
       child: Row(
         children: <Widget>[
           // favorite
-          if (logState.log.enabled)
+          if (logState.showFavorite)
             Container(
               color: MyColors.transparent,
               padding: const EdgeInsets.only(right: 4.0),
@@ -97,7 +97,7 @@ class ChannelCardScreen extends StatelessWidget {
             ),
 
           // send back
-          if (logState.log.canSend)
+          if (logState.canSendBack)
             Container(
               color: MyColors.transparent,
               padding: const EdgeInsets.only(right: 4.0),
@@ -132,7 +132,7 @@ class ChannelCardScreen extends StatelessWidget {
           ),
 
           // add to white list
-          if (logState.log.enabled)
+          if (logState.canAddToWhiteList)
             Observer(
               builder: (_) {
                 final bool inWhiteList = channelStateStore.currentChannel.whiteList.contains(logState.log.action);
@@ -148,7 +148,7 @@ class ChannelCardScreen extends StatelessWidget {
             ),
 
           // add to black list
-          if (logState.log.enabled)
+          if (logState.canAddToBlackList)
             Observer(builder: (_) {
               final bool inWhiteList = channelStateStore.currentChannel.whiteList.contains(logState.log.action);
               final bool inBlackList = channelStateStore.currentChannel.blackList.contains(logState.log.action);

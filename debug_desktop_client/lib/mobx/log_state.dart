@@ -15,8 +15,20 @@ abstract class _LogState with Store {
   @observable
   bool isFavorite = false;
 
+  bool get showFavorite => log.enabled && !log.backAction;
+
+  bool get canSendBack => log.canSend && !log.backAction;
+
+  bool get canAddToWhiteList => log.canSend && !log.backAction;
+
+  bool get canAddToBlackList => log.canSend && !log.backAction;
+
   String get viewedText {
-    return log.enabled ? '${log.id}) ${log.datetime} > ${log.action}' : log.action;
+    if (log.backAction) {
+      return 'BACK: ' + log.action;
+    }
+
+    return log.enabled ? '${log.count}) ${log.datetime} > ${log.action}' : log.action;
   }
 
   Color get color {

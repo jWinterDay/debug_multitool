@@ -92,7 +92,8 @@ class LogActions extends StatelessWidget {
                 ? null
                 : () {
                     final Log log = Log(
-                      id: channelStateStore.currentChannel.logStates.length,
+                      id: 'none',
+                      count: channelStateStore.currentChannel.logStates.length,
                       action: '------------------------',
                       actionPayload: '',
                       state: '',
@@ -102,6 +103,7 @@ class LogActions extends StatelessWidget {
                           : channelStateStore.currentChannel.logStates.last.log,
                       canSend: false,
                       rawData: null,
+                      backAction: false,
                     );
                     channelStateStore.currentChannel.addLog(LogState(log));
                   },

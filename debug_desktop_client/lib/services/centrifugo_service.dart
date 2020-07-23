@@ -50,12 +50,14 @@ class CentrifugoService implements Service {
       _connectStatusSubject.add(ConnectStatus.connected);
 
       final Log log = Log(
-        id: _logId,
+        id: 'none',
+        count: _logId,
         action: 'connect',
         actionPayload: 'client: ${event.client}, version: ${event.version}',
         prevLog: _prevLog,
         canSend: false,
         rawData: null,
+        backAction: false,
       );
 
       channel.addLog(LogState(log));
@@ -66,12 +68,14 @@ class CentrifugoService implements Service {
       _connectStatusSubject.add(ConnectStatus.disconnected);
 
       final Log log = Log(
-        id: _logId,
+        id: 'none',
+        count: _logId,
         action: 'disconnect',
         actionPayload: 'reason: ${event.reason}, shouldReconnect: ${event.shouldReconnect}',
         prevLog: _prevLog,
         canSend: false,
         rawData: null,
+        backAction: false,
       );
 
       channel.addLog(LogState(log));
@@ -80,14 +84,19 @@ class CentrifugoService implements Service {
     // publish sub
     _publishSub = _subscription.publishStream.listen((centrifuge.PublishEvent event) {
       final Map<String, dynamic> message = json.decode(utf8.decode(event.data)) as Map<String, dynamic>;
+
+      String rawId;
       String prettyActionPayload = 'unknown action payload';
       String prettyState = 'unknown state';
       String action = 'unknown action';
+      bool backAction = false;
 
       try {
         action = message['action']?.toString() ?? 'unknown action';
         final dynamic rawPayload = message['payload'];
         final dynamic rawState = message['state'];
+        rawId = message['id'].toString();
+        backAction = (message['back'] ?? false) as bool;
 
         prettyActionPayload = _encoder.convert(rawPayload);
         prettyState = _encoder.convert(rawState);
@@ -96,12 +105,14 @@ class CentrifugoService implements Service {
       }
 
       final Log log = Log(
-        id: _logId,
+        id: rawId,
+        count: _logId,
         action: action,
         actionPayload: prettyActionPayload,
         state: prettyState,
         prevLog: _prevLog,
         rawData: event.data,
+        backAction: backAction,
       );
 
       channel.addLog(LogState(log));
@@ -130,12 +141,20 @@ class CentrifugoService implements Service {
   }
 
   /// send custom data to centrifugo
-  Future<void> sendCustomData(List<int> data) async {
+  Future<void> _sendRawData(List<int> data) async {
     await _subscription.publish(data);
   }
 
   /// send log back to centrifugo
   Future<void> sendLogState(LogState logState) async {
-    await sendCustomData(logState.log.rawData);
+    final Map<String, dynamic> dataMap = <String, dynamic>{
+      'back': true,
+      'action': logState.log.action,
+      'id': logState.log.id,
+    };
+
+    final List<int> data = utf8.encode(jsonEncode(dataMap));
+
+    await _sendRawData(data);
   }
 }

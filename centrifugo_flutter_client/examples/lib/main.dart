@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
                     payload: <String, dynamic>{'payloadKey1': 1, 'payloadKey2': 2},
                     state: <String, dynamic>{
                       'stateKey1': 'test123',
-                      'stateKey2': [1, 2, 3, 4, 5]
+                      'stateKey2': <dynamic>[1, 2, 3, 4, 5]
                     },
                   );
                 } catch (exc) {
