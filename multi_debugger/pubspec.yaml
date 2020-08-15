@@ -19,6 +19,7 @@ dependencies:
   cupertino_icons: ^0.1.3
   flutter_simple_dependency_injection: ^1.0.3
   hive: ^1.4.3
+  logger_flutter: ^0.7.1
   path_provider: ^1.6.11
   path_provider_linux: ^0.0.1+2
   path_provider_macos: ^0.0.4+3
