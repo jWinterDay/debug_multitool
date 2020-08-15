@@ -1,0 +1,24 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug",
+      // "preLaunchTask": "prepare_app",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "debug",
+      "program": "lib/main.dart"
+    },
+    {
+      "name": "Debug Hover",
+      "preLaunchTask": "prepare_app_hover",
+      "request": "attach",
+      "type": "dart",
+      "deviceId": "flutter-tester",
+      "vmServiceUri": "http://127.0.0.1:50300/" // "${command:dart.promptForVmService}",
+    },
+  ]
+}

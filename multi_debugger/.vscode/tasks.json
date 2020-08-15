@@ -1,0 +1,30 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "prepare_app",
+      "type": "shell",
+      "command": "bash scripts/app.sh"
+    },
+    {
+      "label": "prepare_app_hover",
+      "type": "shell",
+      "command": "bash scripts/app_hover.sh",
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "owner": "custom",
+          "pattern": { "regexp": "" },
+          "background": {
+              "activeOnStart": true,
+              "beginsPattern": "start creating links for app type",
+              "endsPattern": "An Observatory debugger and profiler on Flutter test device is available at"
+          }
+        }
+      ],
+    },
+  ],
+  
+}

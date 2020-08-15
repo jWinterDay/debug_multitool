@@ -1,0 +1,15 @@
+targets:
+  $default:
+    sources:
+      include:
+        - lib/presentation/**
+        - lib/data/**
+        - lib/di/**
+        - lib/domain/**
+        - lib/feature/**
+        - lib/repository/**
+        - lib/utilities/**
+        - lib/blocs/**
+        - lib/components/**
+      exclude:
+        - test/**
