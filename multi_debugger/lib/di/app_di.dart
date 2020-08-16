@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_simple_dependency_injection/injector.dart';
+import 'package:multi_debugger/app_globals.dart';
 import 'package:multi_debugger/domain/epics/remote_epic.dart';
 import 'package:multi_debugger/services/local_storage_service/local_storage_service.dart';
 import 'package:multi_debugger/services/local_storage_service/local_storage_service_impl.dart';
@@ -46,8 +47,14 @@ class AppDI {
       ..map<RemoteEpic>(
         (Injector injector) => RemoteEpic(),
         isSingleton: true,
+      )
+
+      // app globals
+      ..map<AppGlobals>(
+        (Injector di) => AppGlobals(loggerService: loggerService),
+        isSingleton: true,
       );
 
-    loggerService.d('---di successfully initialized---');
+    loggerService.i('di successfully initialized');
   }
 }

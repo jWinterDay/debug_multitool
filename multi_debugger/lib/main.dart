@@ -1,7 +1,25 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:multi_debugger/app_globals.dart';
+import 'package:multi_debugger/di/app_di.dart';
+import 'package:multi_debugger/services/logger_service/logger_service.dart';
 
 Future<void> main() async {
-  runApp(MyApp());
+  runZonedGuarded<void>(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+
+      await AppDI.init();
+      await di.get<AppGlobals>().init();
+
+      runApp(MyApp());
+    },
+    (error, stackTrace) async {
+      di.get<LoggerService>().e('Unexpected error: $error', error.runtimeType, stackTrace);
+    },
+  );
+  // runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -61,6 +79,11 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override

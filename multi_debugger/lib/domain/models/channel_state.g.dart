@@ -17,47 +17,21 @@ class _$ChannelStateSerializer implements StructuredSerializer<ChannelState> {
   @override
   Iterable<Object> serialize(Serializers serializers, ChannelState object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
-      'name',
-      serializers.serialize(object.name, specifiedType: const FullType(String)),
-    ];
-
-    return result;
+    return <Object>[];
   }
 
   @override
   ChannelState deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new ChannelStateBuilder();
-
-    final iterator = serialized.iterator;
-    while (iterator.moveNext()) {
-      final key = iterator.current as String;
-      iterator.moveNext();
-      final dynamic value = iterator.current;
-      switch (key) {
-        case 'name':
-          result.name = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
-          break;
-      }
-    }
-
-    return result.build();
+    return new ChannelStateBuilder().build();
   }
 }
 
 class _$ChannelState extends ChannelState {
-  @override
-  final String name;
-
   factory _$ChannelState([void Function(ChannelStateBuilder) updates]) =>
       (new ChannelStateBuilder()..update(updates)).build();
 
-  _$ChannelState._({this.name}) : super._() {
-    if (name == null) {
-      throw new BuiltValueNullFieldError('ChannelState', 'name');
-    }
-  }
+  _$ChannelState._() : super._();
 
   @override
   ChannelState rebuild(void Function(ChannelStateBuilder) updates) => (toBuilder()..update(updates)).build();
@@ -68,36 +42,24 @@ class _$ChannelState extends ChannelState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ChannelState && name == other.name;
+    return other is ChannelState;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, name.hashCode));
+    return 843593885;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('ChannelState')..add('name', name)).toString();
+    return newBuiltValueToStringHelper('ChannelState').toString();
   }
 }
 
 class ChannelStateBuilder implements Builder<ChannelState, ChannelStateBuilder> {
   _$ChannelState _$v;
 
-  String _name;
-  String get name => _$this._name;
-  set name(String name) => _$this._name = name;
-
   ChannelStateBuilder();
-
-  ChannelStateBuilder get _$this {
-    if (_$v != null) {
-      _name = _$v.name;
-      _$v = null;
-    }
-    return this;
-  }
 
   @override
   void replace(ChannelState other) {
@@ -114,7 +76,7 @@ class ChannelStateBuilder implements Builder<ChannelState, ChannelStateBuilder> 
 
   @override
   _$ChannelState build() {
-    final _$result = _$v ?? new _$ChannelState._(name: name);
+    final _$result = _$v ?? new _$ChannelState._();
     replace(_$result);
     return _$result;
   }

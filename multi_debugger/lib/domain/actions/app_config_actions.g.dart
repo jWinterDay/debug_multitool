@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'actions.dart';
+part of 'app_config_actions.dart';
 
 // **************************************************************************
 // BuiltReduxGenerator
@@ -11,18 +11,18 @@ part of 'actions.dart';
 // ignore_for_file: overridden_fields
 // ignore_for_file: type_annotate_public_apis
 
-class _$AppActions extends AppActions {
-  factory _$AppActions() => _$AppActions._();
-  _$AppActions._() : super._();
+class _$AppConfigActions extends AppConfigActions {
+  factory _$AppConfigActions() => _$AppConfigActions._();
+  _$AppConfigActions._() : super._();
 
-  final channelActions = ChannelActions();
-  final appConfigActions = AppConfigActions();
+  final setLocalSettings = ActionDispatcher<LocalSettingsState>('AppConfigActions-setLocalSettings');
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
-    channelActions.setDispatcher(dispatcher);
-    appConfigActions.setDispatcher(dispatcher);
+    setLocalSettings.setDispatcher(dispatcher);
   }
 }
 
-class AppActionsNames {}
+class AppConfigActionsNames {
+  static final setLocalSettings = ActionName<LocalSettingsState>('AppConfigActions-setLocalSettings');
+}

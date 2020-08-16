@@ -9,12 +9,17 @@ part of 'app_state.dart';
 class _$AppState extends AppState {
   @override
   final ChannelState channelState;
+  @override
+  final AppConfigState appConfigState;
 
   factory _$AppState([void Function(AppStateBuilder) updates]) => (new AppStateBuilder()..update(updates)).build();
 
-  _$AppState._({this.channelState}) : super._() {
+  _$AppState._({this.channelState, this.appConfigState}) : super._() {
     if (channelState == null) {
       throw new BuiltValueNullFieldError('AppState', 'channelState');
+    }
+    if (appConfigState == null) {
+      throw new BuiltValueNullFieldError('AppState', 'appConfigState');
     }
   }
 
@@ -27,17 +32,20 @@ class _$AppState extends AppState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is AppState && channelState == other.channelState;
+    return other is AppState && channelState == other.channelState && appConfigState == other.appConfigState;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, channelState.hashCode));
+    return $jf($jc($jc(0, channelState.hashCode), appConfigState.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('AppState')..add('channelState', channelState)).toString();
+    return (newBuiltValueToStringHelper('AppState')
+          ..add('channelState', channelState)
+          ..add('appConfigState', appConfigState))
+        .toString();
   }
 }
 
@@ -48,11 +56,16 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   ChannelStateBuilder get channelState => _$this._channelState ??= new ChannelStateBuilder();
   set channelState(ChannelStateBuilder channelState) => _$this._channelState = channelState;
 
+  AppConfigStateBuilder _appConfigState;
+  AppConfigStateBuilder get appConfigState => _$this._appConfigState ??= new AppConfigStateBuilder();
+  set appConfigState(AppConfigStateBuilder appConfigState) => _$this._appConfigState = appConfigState;
+
   AppStateBuilder();
 
   AppStateBuilder get _$this {
     if (_$v != null) {
       _channelState = _$v.channelState?.toBuilder();
+      _appConfigState = _$v.appConfigState?.toBuilder();
       _$v = null;
     }
     return this;
@@ -75,12 +88,14 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   _$AppState build() {
     _$AppState _$result;
     try {
-      _$result = _$v ?? new _$AppState._(channelState: channelState.build());
+      _$result = _$v ?? new _$AppState._(channelState: channelState.build(), appConfigState: appConfigState.build());
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'channelState';
         channelState.build();
+        _$failedField = 'appConfigState';
+        appConfigState.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError('AppState', _$failedField, e.toString());
       }

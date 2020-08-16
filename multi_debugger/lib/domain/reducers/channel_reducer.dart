@@ -8,6 +8,6 @@ NestedReducerBuilder<AppState, AppStateBuilder, ChannelState, ChannelStateBuilde
     NestedReducerBuilder<AppState, AppStateBuilder, ChannelState, ChannelStateBuilder>(
       (state) => state.channelState,
       (builder) => builder.channelState,
-    )..add<String>(ChannelActionsNames.setName, _setName);
+    ); //..add<String>(ChannelActionsNames.setName, _setName);
 
-void _setName(ChannelState state, Action<String> action, ChannelStateBuilder builder) => builder..name = action.payload;
+// void _setName(ChannelState state, Action<String> action, ChannelStateBuilder builder) => builder..name = action.payload;
