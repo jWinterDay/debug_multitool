@@ -1,4 +1,6 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:built_redux/built_redux.dart';
+import 'package:multi_debugger/domain/models/models.dart';
 
 part 'channel_actions.g.dart';
 
@@ -7,5 +9,13 @@ abstract class ChannelActions extends ReduxActions {
 
   factory ChannelActions() = _$ChannelActions;
 
-  ActionDispatcher<String> get setName;
+  ActionDispatcher<ChannelModel> get addChannel;
+
+  ActionDispatcher<ChannelModel> get removeChannel;
+
+  ActionDispatcher<ChannelModel> get updateChannel;
+
+  ActionDispatcher<BuiltMap<ChannelModel, bool>> get setServiceInProgress;
+
+  ActionDispatcher<BuiltMap<ChannelModel, ServerConnectStatus>> get setChannelConnected;
 }

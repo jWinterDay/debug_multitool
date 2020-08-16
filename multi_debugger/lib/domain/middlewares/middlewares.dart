@@ -3,7 +3,7 @@ import 'package:built_redux/built_redux.dart';
 import 'package:multi_debugger/domain/actions/actions.dart';
 // import 'package:multi_debugger/domain/built_redux_rx.dart';
 // import 'package:multi_debugger/domain/epics/remote_epic.dart';
-import 'package:multi_debugger/domain/models/app_state.dart';
+import 'package:multi_debugger/domain/states/states.dart';
 
 import 'channel_middleware.dart';
 

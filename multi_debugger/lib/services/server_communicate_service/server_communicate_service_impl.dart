@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:centrifuge/centrifuge.dart' as centrifuge;
 import 'package:flutter/foundation.dart';
-import 'package:multi_debugger/domain/models/server_connect_status.dart';
+import 'package:multi_debugger/domain/models/models.dart' show ServerConnectStatus;
 import 'package:multi_debugger/services/logger_service/logger_service.dart';
 import 'package:rxdart/rxdart.dart';
 

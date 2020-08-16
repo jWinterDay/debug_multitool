@@ -11,5 +11,7 @@ targets:
         - lib/utilities/**
         - lib/blocs/**
         - lib/components/**
+        - $package$
+        - lib/$lib$
       exclude:
         - test/**

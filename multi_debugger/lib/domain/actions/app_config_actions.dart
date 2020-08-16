@@ -1,5 +1,5 @@
 import 'package:built_redux/built_redux.dart';
-import 'package:multi_debugger/domain/models/models.dart';
+import 'package:multi_debugger/domain/states/states.dart';
 
 part 'app_config_actions.g.dart';
 

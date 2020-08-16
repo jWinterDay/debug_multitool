@@ -3,9 +3,10 @@ import 'dart:convert';
 import 'package:built_redux/built_redux.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:multi_debugger/domain/actions/actions.dart';
 import 'package:multi_debugger/domain/middlewares/middlewares.dart';
-import 'package:multi_debugger/domain/models/models.dart';
+import 'package:multi_debugger/domain/states/states.dart';
 import 'package:multi_debugger/domain/reducers/reducer_builder.dart';
 import 'package:multi_debugger/domain/serializers.dart';
 import 'package:multi_debugger/services/logger_service/logger_service.dart';
@@ -17,6 +18,7 @@ class AppGlobals {
 
   final LoggerService loggerService;
 
+  final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
   Store<AppState, AppStateBuilder, AppActions> _store;
   Store<AppState, AppStateBuilder, AppActions> get store => _store;
 
@@ -44,7 +46,11 @@ class AppGlobals {
   Future<void> _initLocalSettingsState() async {
     final LocalSettingsState localSettingsState = await _loadLocalSettingsState();
 
+    print('before = ${store.state}');
+
     store.actions.appConfigActions.setLocalSettings(localSettingsState);
+
+    print('after = ${store.state}');
   }
 
   /// load local user settings

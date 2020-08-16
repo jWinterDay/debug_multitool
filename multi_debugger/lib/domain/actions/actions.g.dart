@@ -15,14 +15,20 @@ class _$AppActions extends AppActions {
   factory _$AppActions() => _$AppActions._();
   _$AppActions._() : super._();
 
+  final routeTo = ActionDispatcher<AppRoute>('AppActions-routeTo');
+
   final channelActions = ChannelActions();
   final appConfigActions = AppConfigActions();
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
+    routeTo.setDispatcher(dispatcher);
+
     channelActions.setDispatcher(dispatcher);
     appConfigActions.setDispatcher(dispatcher);
   }
 }
 
-class AppActionsNames {}
+class AppActionsNames {
+  static final routeTo = ActionName<AppRoute>('AppActions-routeTo');
+}
