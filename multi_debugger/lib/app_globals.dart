@@ -46,11 +46,7 @@ class AppGlobals {
   Future<void> _initLocalSettingsState() async {
     final LocalSettingsState localSettingsState = await _loadLocalSettingsState();
 
-    print('before = ${store.state}');
-
     store.actions.appConfigActions.setLocalSettings(localSettingsState);
-
-    print('after = ${store.state}');
   }
 
   /// load local user settings

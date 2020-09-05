@@ -1,7 +1,7 @@
 import 'package:built_redux/built_redux.dart';
 import 'package:flutter/widgets.dart' hide Action;
 import 'package:multi_debugger/domain/actions/actions.dart';
-import 'package:multi_debugger/domain/models/app_routes.dart';
+import 'package:multi_debugger/app_routes.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/app_state.dart';
 

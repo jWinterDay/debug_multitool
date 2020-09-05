@@ -22,7 +22,7 @@ abstract class ChannelModel implements Built<ChannelModel, ChannelModelBuilder> 
 
   bool get isBlackListUsed;
 
-  bool get favoriteOnly;
+  bool get showFavoriteOnly;
 
   ServerConnectStatus get serverConnectStatus;
 

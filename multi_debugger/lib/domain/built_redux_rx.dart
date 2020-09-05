@@ -5,7 +5,9 @@ import 'package:built_value/built_value.dart';
 import 'package:rxdart/rxdart.dart';
 
 typedef Epic<V extends Built<V, B>, B extends Builder<V, B>, A extends ReduxActions> = Stream Function(
-    Stream<Action<dynamic>> action, MiddlewareApi<V, B, A> mwApi);
+  Stream<Action<dynamic>> action,
+  MiddlewareApi<V, B, A> mwApi,
+);
 
 Middleware<V, B, A> createEpicMiddleware<V extends Built<V, B>, B extends Builder<V, B>, A extends ReduxActions>(
   Iterable<Epic<V, B, A>> epics,
@@ -15,7 +17,7 @@ Middleware<V, B, A> createEpicMiddleware<V extends Built<V, B>, B extends Builde
   // ignore: close_sinks
   final StreamController<Epic<V, B, A>> _epics = StreamController.broadcast(sync: true);
 
-  var _isSubscribed = false;
+  bool _isSubscribed = false;
   final Epic<V, B, A> combined = (Stream<Action<dynamic>> action, MiddlewareApi<V, B, A> mwApi) {
     return Rx.merge<dynamic>(epics.map((epic) => epic(action, mwApi)));
   };
@@ -39,7 +41,9 @@ Middleware<V, B, A> createEpicMiddleware<V extends Built<V, B>, B extends Builde
 }
 
 typedef EpicHandler<V extends Built<V, B>, B extends Builder<V, B>, A extends ReduxActions, P> = Stream Function(
-    Stream<Action<P>> stream, MiddlewareApi<V, B, A> mwApi);
+  Stream<Action<P>> stream,
+  MiddlewareApi<V, B, A> mwApi,
+);
 
 class EpicBuilder<V extends Built<V, B>, B extends Builder<V, B>, A extends ReduxActions> {
   final _epics = <Epic<V, B, A>>[];

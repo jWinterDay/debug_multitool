@@ -12,13 +12,6 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(ChannelState.serializer)
       ..add(LocalSettingsState.serializer)
       ..add(ServerConnectStatus.serializer)
-      ..addBuilderFactory(
-          const FullType(BuiltList, const [const FullType(ChannelModel)]), () => new ListBuilder<ChannelModel>())
-      ..addBuilderFactory(const FullType(BuiltMap, const [const FullType(ChannelModel), const FullType(bool)]),
-          () => new MapBuilder<ChannelModel, bool>())
-      ..addBuilderFactory(
-          const FullType(BuiltMap, const [const FullType(ChannelModel), const FullType(ServerConnectStatus)]),
-          () => new MapBuilder<ChannelModel, ServerConnectStatus>())
       ..addBuilderFactory(const FullType(BuiltList, const [const FullType(String)]), () => new ListBuilder<String>())
       ..addBuilderFactory(const FullType(BuiltList, const [const FullType(String)]), () => new ListBuilder<String>()))
     .build();
