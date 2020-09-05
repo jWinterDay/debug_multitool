@@ -18,17 +18,17 @@ class _$ChannelActions extends ChannelActions {
   final addChannel = ActionDispatcher<ChannelModel>('ChannelActions-addChannel');
   final removeChannel = ActionDispatcher<ChannelModel>('ChannelActions-removeChannel');
   final updateChannel = ActionDispatcher<ChannelModel>('ChannelActions-updateChannel');
-  final setServiceInProgress = ActionDispatcher<BuiltMap<ChannelModel, bool>>('ChannelActions-setServiceInProgress');
-  final setChannelConnected =
-      ActionDispatcher<BuiltMap<ChannelModel, ServerConnectStatus>>('ChannelActions-setChannelConnected');
+  final setCurrentChannel = ActionDispatcher<ChannelModel>('ChannelActions-setCurrentChannel');
+  final setChannelServerConnectStatus =
+      ActionDispatcher<BuiltMap<ChannelModel, ServerConnectStatus>>('ChannelActions-setChannelServerConnectStatus');
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
     addChannel.setDispatcher(dispatcher);
     removeChannel.setDispatcher(dispatcher);
     updateChannel.setDispatcher(dispatcher);
-    setServiceInProgress.setDispatcher(dispatcher);
-    setChannelConnected.setDispatcher(dispatcher);
+    setCurrentChannel.setDispatcher(dispatcher);
+    setChannelServerConnectStatus.setDispatcher(dispatcher);
   }
 }
 
@@ -36,7 +36,7 @@ class ChannelActionsNames {
   static final addChannel = ActionName<ChannelModel>('ChannelActions-addChannel');
   static final removeChannel = ActionName<ChannelModel>('ChannelActions-removeChannel');
   static final updateChannel = ActionName<ChannelModel>('ChannelActions-updateChannel');
-  static final setServiceInProgress = ActionName<BuiltMap<ChannelModel, bool>>('ChannelActions-setServiceInProgress');
-  static final setChannelConnected =
-      ActionName<BuiltMap<ChannelModel, ServerConnectStatus>>('ChannelActions-setChannelConnected');
+  static final setCurrentChannel = ActionName<ChannelModel>('ChannelActions-setCurrentChannel');
+  static final setChannelServerConnectStatus =
+      ActionName<BuiltMap<ChannelModel, ServerConnectStatus>>('ChannelActions-setChannelServerConnectStatus');
 }

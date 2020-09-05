@@ -32,6 +32,8 @@ class _$ChannelModelSerializer implements StructuredSerializer<ChannelModel> {
       serializers.serialize(object.isBlackListUsed, specifiedType: const FullType(bool)),
       'showFavoriteOnly',
       serializers.serialize(object.showFavoriteOnly, specifiedType: const FullType(bool)),
+      'isCurrent',
+      serializers.serialize(object.isCurrent, specifiedType: const FullType(bool)),
       'serverConnectStatus',
       serializers.serialize(object.serverConnectStatus, specifiedType: const FullType(ServerConnectStatus)),
       'datetime',
@@ -77,6 +79,9 @@ class _$ChannelModelSerializer implements StructuredSerializer<ChannelModel> {
         case 'showFavoriteOnly':
           result.showFavoriteOnly = serializers.deserialize(value, specifiedType: const FullType(bool)) as bool;
           break;
+        case 'isCurrent':
+          result.isCurrent = serializers.deserialize(value, specifiedType: const FullType(bool)) as bool;
+          break;
         case 'serverConnectStatus':
           result.serverConnectStatus =
               serializers.deserialize(value, specifiedType: const FullType(ServerConnectStatus)) as ServerConnectStatus;
@@ -115,6 +120,8 @@ class _$ChannelModel extends ChannelModel {
   @override
   final bool showFavoriteOnly;
   @override
+  final bool isCurrent;
+  @override
   final ServerConnectStatus serverConnectStatus;
   @override
   final DateTime datetime;
@@ -134,6 +141,7 @@ class _$ChannelModel extends ChannelModel {
       this.isWhiteListUsed,
       this.isBlackListUsed,
       this.showFavoriteOnly,
+      this.isCurrent,
       this.serverConnectStatus,
       this.datetime,
       this.whiteList,
@@ -159,6 +167,9 @@ class _$ChannelModel extends ChannelModel {
     }
     if (showFavoriteOnly == null) {
       throw new BuiltValueNullFieldError('ChannelModel', 'showFavoriteOnly');
+    }
+    if (isCurrent == null) {
+      throw new BuiltValueNullFieldError('ChannelModel', 'isCurrent');
     }
     if (serverConnectStatus == null) {
       throw new BuiltValueNullFieldError('ChannelModel', 'serverConnectStatus');
@@ -191,6 +202,7 @@ class _$ChannelModel extends ChannelModel {
         isWhiteListUsed == other.isWhiteListUsed &&
         isBlackListUsed == other.isBlackListUsed &&
         showFavoriteOnly == other.showFavoriteOnly &&
+        isCurrent == other.isCurrent &&
         serverConnectStatus == other.serverConnectStatus &&
         datetime == other.datetime &&
         whiteList == other.whiteList &&
@@ -206,11 +218,13 @@ class _$ChannelModel extends ChannelModel {
                     $jc(
                         $jc(
                             $jc(
-                                $jc($jc($jc($jc(0, channelId.hashCode), name.hashCode), wsUrl.hashCode),
-                                    description.hashCode),
-                                isWhiteListUsed.hashCode),
-                            isBlackListUsed.hashCode),
-                        showFavoriteOnly.hashCode),
+                                $jc(
+                                    $jc($jc($jc($jc(0, channelId.hashCode), name.hashCode), wsUrl.hashCode),
+                                        description.hashCode),
+                                    isWhiteListUsed.hashCode),
+                                isBlackListUsed.hashCode),
+                            showFavoriteOnly.hashCode),
+                        isCurrent.hashCode),
                     serverConnectStatus.hashCode),
                 datetime.hashCode),
             whiteList.hashCode),
@@ -227,6 +241,7 @@ class _$ChannelModel extends ChannelModel {
           ..add('isWhiteListUsed', isWhiteListUsed)
           ..add('isBlackListUsed', isBlackListUsed)
           ..add('showFavoriteOnly', showFavoriteOnly)
+          ..add('isCurrent', isCurrent)
           ..add('serverConnectStatus', serverConnectStatus)
           ..add('datetime', datetime)
           ..add('whiteList', whiteList)
@@ -266,6 +281,10 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
   bool get showFavoriteOnly => _$this._showFavoriteOnly;
   set showFavoriteOnly(bool showFavoriteOnly) => _$this._showFavoriteOnly = showFavoriteOnly;
 
+  bool _isCurrent;
+  bool get isCurrent => _$this._isCurrent;
+  set isCurrent(bool isCurrent) => _$this._isCurrent = isCurrent;
+
   ServerConnectStatus _serverConnectStatus;
   ServerConnectStatus get serverConnectStatus => _$this._serverConnectStatus;
   set serverConnectStatus(ServerConnectStatus serverConnectStatus) => _$this._serverConnectStatus = serverConnectStatus;
@@ -282,7 +301,9 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
   ListBuilder<String> get blackList => _$this._blackList ??= new ListBuilder<String>();
   set blackList(ListBuilder<String> blackList) => _$this._blackList = blackList;
 
-  ChannelModelBuilder();
+  ChannelModelBuilder() {
+    ChannelModel._initializeBuilder(this);
+  }
 
   ChannelModelBuilder get _$this {
     if (_$v != null) {
@@ -293,6 +314,7 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
       _isWhiteListUsed = _$v.isWhiteListUsed;
       _isBlackListUsed = _$v.isBlackListUsed;
       _showFavoriteOnly = _$v.showFavoriteOnly;
+      _isCurrent = _$v.isCurrent;
       _serverConnectStatus = _$v.serverConnectStatus;
       _datetime = _$v.datetime;
       _whiteList = _$v.whiteList?.toBuilder();
@@ -328,6 +350,7 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
               isWhiteListUsed: isWhiteListUsed,
               isBlackListUsed: isBlackListUsed,
               showFavoriteOnly: showFavoriteOnly,
+              isCurrent: isCurrent,
               serverConnectStatus: serverConnectStatus,
               datetime: datetime,
               whiteList: whiteList.build(),

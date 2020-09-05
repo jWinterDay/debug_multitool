@@ -1,4 +1,3 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:built_redux/built_redux.dart';
 import 'package:multi_debugger/domain/actions/channel_actions.dart';
 import 'package:multi_debugger/domain/models/models.dart';
@@ -12,59 +11,41 @@ NestedReducerBuilder<AppState, AppStateBuilder, ChannelState, ChannelStateBuilde
     )
       ..add<ChannelModel>(ChannelActionsNames.addChannel, _addChannel)
       ..add<ChannelModel>(ChannelActionsNames.removeChannel, _removeChannel)
-      ..add<ChannelModel>(ChannelActionsNames.updateChannel, _updateChannel)
-      ..add<BuiltMap<ChannelModel, bool>>(ChannelActionsNames.setServiceInProgress, _setServiceInProgress)
-      ..add<BuiltMap<ChannelModel, ServerConnectStatus>>(ChannelActionsNames.setChannelConnected, _setChannelConnected);
+      ..add<ChannelModel>(ChannelActionsNames.updateChannel, _updateChannel);
+// ..add<ChannelModel>(ChannelActionsNames.setCurrentChannel, _setCurrentChannel);
 
 void _addChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {
   final ChannelModel channelModel = action.payload;
 
-  // builder.channelList.add(channelModel);
-  // builder.serviceInProgress[channelModel] = false;
+  builder.channels.putIfAbsent(channelModel.channelId, () => channelModel);
 }
 
 void _removeChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {
   final ChannelModel channelModel = action.payload;
 
-  // builder.channelList.removeWhere((ChannelModel val) {
-  //   return val == channelModel;
-  // });
+  builder.channels.remove(channelModel.channelId);
 
-  // builder.serviceInProgress.remove(channelModel);
+  // if (channelModel.channelId == builder.currentChannel.channelId) {
+  //   builder.currentChannel.replace(null);
+  // }
 }
 
 void _updateChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {
   final ChannelModel channelModel = action.payload;
 
-  // final BuiltList nextList = builder.channelList.build().map((ChannelModel val) {
-  //   if (val == channelModel) {
-  //     return channelModel;
-  //   }
-
-  //   return val;
-  // }).toBuiltList();
+  builder.channels.updateValue(
+    channelModel.channelId,
+    (ChannelModel _) {
+      return channelModel;
+    },
+    ifAbsent: () {
+      return channelModel;
+    },
+  );
 }
 
-void _setServiceInProgress(
-  ChannelState state,
-  Action<BuiltMap<ChannelModel, bool>> action,
-  ChannelStateBuilder builder,
-) {
-  final BuiltMap<ChannelModel, bool> inData = action.payload;
+// void _setCurrentChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {
+//   final ChannelModel channelModel = action.payload;
 
-  // inData.forEach((ChannelModel channelModel, bool inProgress) {
-  //   builder.serviceInProgress.updateValue(
-  //     channelModel,
-  //     (bool curVal) => inProgress,
-  //     ifAbsent: () => builder.serviceInProgress[channelModel] = inProgress,
-  //   );
-  // });
-}
-
-void _setChannelConnected(
-  ChannelState state,
-  Action<BuiltMap<ChannelModel, ServerConnectStatus>> action,
-  ChannelStateBuilder builder,
-) {
-  // builder..channelList
-}
+//   builder.currentChannel.replace(channelModel);
+// }

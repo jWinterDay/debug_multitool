@@ -10,6 +10,16 @@ abstract class ChannelModel implements Built<ChannelModel, ChannelModelBuilder> 
 
   factory ChannelModel([ChannelModelBuilder updates(ChannelModelBuilder builder)]) = _$ChannelModel;
 
+  static void _initializeBuilder(ChannelModelBuilder b) => b
+    ..datetime = DateTime.now()
+    ..description = ''
+    ..isBlackListUsed = false
+    ..isCurrent = false
+    ..isWhiteListUsed = false
+    ..serverConnectStatus = ServerConnectStatus.disconnected
+    ..showFavoriteOnly = false
+    ..wsUrl = '';
+
   String get channelId;
 
   String get name;
@@ -23,6 +33,8 @@ abstract class ChannelModel implements Built<ChannelModel, ChannelModelBuilder> 
   bool get isBlackListUsed;
 
   bool get showFavoriteOnly;
+
+  bool get isCurrent;
 
   ServerConnectStatus get serverConnectStatus;
 

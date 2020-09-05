@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:multi_debugger/app_globals.dart';
 import 'package:multi_debugger/di/app_di.dart';
+import 'package:multi_debugger/domain/models/channel_model.dart';
+import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/services/logger_service/logger_service.dart';
 
 Future<void> main() async {
@@ -72,6 +74,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     setState(() {
+      ChannelModel cm = ChannelModel((b) => b
+        ..channelId = 'fsd_$_counter'
+        ..name = 'fdsfff_$_counter'
+        ..wsUrl = '');
+
+      di.get<AppGlobals>().store.actions.channelActions.addChannel(cm);
+
+      final channels = di.get<AppGlobals>().store.state.channelState.channels;
+      print('len = ${channels.length}');
+      print(channels);
+
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
       // so that the display can reflect the updated values. If we changed
