@@ -75,7 +75,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void _incrementCounter() {
     setState(() {
       ChannelModel cm = ChannelModel((b) => b
-        ..channelId = 'fsd_$_counter'
         ..name = 'fdsfff_$_counter'
         ..wsUrl = '');
 

@@ -22,8 +22,6 @@ class _$ChannelModelSerializer implements StructuredSerializer<ChannelModel> {
       serializers.serialize(object.channelId, specifiedType: const FullType(String)),
       'name',
       serializers.serialize(object.name, specifiedType: const FullType(String)),
-      'wsUrl',
-      serializers.serialize(object.wsUrl, specifiedType: const FullType(String)),
       'description',
       serializers.serialize(object.description, specifiedType: const FullType(String)),
       'isWhiteListUsed',
@@ -43,7 +41,9 @@ class _$ChannelModelSerializer implements StructuredSerializer<ChannelModel> {
       'blackList',
       serializers.serialize(object.blackList, specifiedType: const FullType(BuiltList, const [const FullType(String)])),
     ];
-
+    if (object.wsUrl != null) {
+      result..add('wsUrl')..add(serializers.serialize(object.wsUrl, specifiedType: const FullType(String)));
+    }
     return result;
   }
 
@@ -152,9 +152,6 @@ class _$ChannelModel extends ChannelModel {
     }
     if (name == null) {
       throw new BuiltValueNullFieldError('ChannelModel', 'name');
-    }
-    if (wsUrl == null) {
-      throw new BuiltValueNullFieldError('ChannelModel', 'wsUrl');
     }
     if (description == null) {
       throw new BuiltValueNullFieldError('ChannelModel', 'description');
