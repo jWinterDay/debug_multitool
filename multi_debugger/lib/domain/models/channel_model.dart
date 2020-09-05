@@ -19,11 +19,15 @@ abstract class ChannelModel implements Built<ChannelModel, ChannelModelBuilder> 
     ..isCurrent = false
     ..isWhiteListUsed = false
     ..serverConnectStatus = ServerConnectStatus.disconnected
+    ..whiteList = ListBuilder()
+    ..blackList = ListBuilder()
     ..showFavoriteOnly = false;
 
   String get channelId;
 
   String get name;
+
+  String get shortName;
 
   @nullable
   String get wsUrl;

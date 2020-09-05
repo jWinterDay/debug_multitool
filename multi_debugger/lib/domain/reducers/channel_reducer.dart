@@ -11,7 +11,8 @@ NestedReducerBuilder<AppState, AppStateBuilder, ChannelState, ChannelStateBuilde
     )
       ..add<ChannelModel>(ChannelActionsNames.addChannel, _addChannel)
       ..add<ChannelModel>(ChannelActionsNames.removeChannel, _removeChannel)
-      ..add<ChannelModel>(ChannelActionsNames.updateChannel, _updateChannel);
+      ..add<ChannelModel>(ChannelActionsNames.updateChannel, _updateChannel)
+      ..add<ChannelModel>(ChannelActionsNames.setCurrentChannel, _setCurrentChannel);
 
 void _addChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {
   final ChannelModel channelModel = action.payload;
@@ -37,4 +38,19 @@ void _updateChannel(ChannelState state, Action<ChannelModel> action, ChannelStat
       return channelModel;
     },
   );
+}
+
+void _setCurrentChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {
+  final ChannelModel channelModel = action.payload;
+
+  builder.channels.updateAllValues((String id, ChannelModel cm) {
+    final bool update = channelModel.channelId == cm.channelId;
+    return channelModel.rebuild((builder) => builder.isCurrent = update);
+  });
+
+  // builder.channels.updateValue(
+  //   channelModel.channelId,
+  //   (ChannelModel cm) => cm,
+  //   ifAbsent: () => channelModel,
+  // );
 }

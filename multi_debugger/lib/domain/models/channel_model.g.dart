@@ -22,6 +22,8 @@ class _$ChannelModelSerializer implements StructuredSerializer<ChannelModel> {
       serializers.serialize(object.channelId, specifiedType: const FullType(String)),
       'name',
       serializers.serialize(object.name, specifiedType: const FullType(String)),
+      'shortName',
+      serializers.serialize(object.shortName, specifiedType: const FullType(String)),
       'description',
       serializers.serialize(object.description, specifiedType: const FullType(String)),
       'isWhiteListUsed',
@@ -63,6 +65,9 @@ class _$ChannelModelSerializer implements StructuredSerializer<ChannelModel> {
           break;
         case 'name':
           result.name = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          break;
+        case 'shortName':
+          result.shortName = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
           break;
         case 'wsUrl':
           result.wsUrl = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
@@ -110,6 +115,8 @@ class _$ChannelModel extends ChannelModel {
   @override
   final String name;
   @override
+  final String shortName;
+  @override
   final String wsUrl;
   @override
   final String description;
@@ -136,6 +143,7 @@ class _$ChannelModel extends ChannelModel {
   _$ChannelModel._(
       {this.channelId,
       this.name,
+      this.shortName,
       this.wsUrl,
       this.description,
       this.isWhiteListUsed,
@@ -152,6 +160,9 @@ class _$ChannelModel extends ChannelModel {
     }
     if (name == null) {
       throw new BuiltValueNullFieldError('ChannelModel', 'name');
+    }
+    if (shortName == null) {
+      throw new BuiltValueNullFieldError('ChannelModel', 'shortName');
     }
     if (description == null) {
       throw new BuiltValueNullFieldError('ChannelModel', 'description');
@@ -194,6 +205,7 @@ class _$ChannelModel extends ChannelModel {
     return other is ChannelModel &&
         channelId == other.channelId &&
         name == other.name &&
+        shortName == other.shortName &&
         wsUrl == other.wsUrl &&
         description == other.description &&
         isWhiteListUsed == other.isWhiteListUsed &&
@@ -216,7 +228,9 @@ class _$ChannelModel extends ChannelModel {
                         $jc(
                             $jc(
                                 $jc(
-                                    $jc($jc($jc($jc(0, channelId.hashCode), name.hashCode), wsUrl.hashCode),
+                                    $jc(
+                                        $jc($jc($jc($jc(0, channelId.hashCode), name.hashCode), shortName.hashCode),
+                                            wsUrl.hashCode),
                                         description.hashCode),
                                     isWhiteListUsed.hashCode),
                                 isBlackListUsed.hashCode),
@@ -233,6 +247,7 @@ class _$ChannelModel extends ChannelModel {
     return (newBuiltValueToStringHelper('ChannelModel')
           ..add('channelId', channelId)
           ..add('name', name)
+          ..add('shortName', shortName)
           ..add('wsUrl', wsUrl)
           ..add('description', description)
           ..add('isWhiteListUsed', isWhiteListUsed)
@@ -257,6 +272,10 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
   String _name;
   String get name => _$this._name;
   set name(String name) => _$this._name = name;
+
+  String _shortName;
+  String get shortName => _$this._shortName;
+  set shortName(String shortName) => _$this._shortName = shortName;
 
   String _wsUrl;
   String get wsUrl => _$this._wsUrl;
@@ -306,6 +325,7 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
     if (_$v != null) {
       _channelId = _$v.channelId;
       _name = _$v.name;
+      _shortName = _$v.shortName;
       _wsUrl = _$v.wsUrl;
       _description = _$v.description;
       _isWhiteListUsed = _$v.isWhiteListUsed;
@@ -342,6 +362,7 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
           new _$ChannelModel._(
               channelId: channelId,
               name: name,
+              shortName: shortName,
               wsUrl: wsUrl,
               description: description,
               isWhiteListUsed: isWhiteListUsed,

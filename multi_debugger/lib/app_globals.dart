@@ -33,9 +33,7 @@ class AppGlobals {
     _store = Store<AppState, AppStateBuilder, AppActions>(
       reducers,
       AppState(
-        (builder) => builder
-          // ..channelState = ChannelState().toBuilder()
-          ..appConfigState = AppConfigState().toBuilder(),
+        (builder) => builder..appConfigState = AppConfigState().toBuilder(),
       ),
       AppActions(),
       middleware: appMiddlewares,
