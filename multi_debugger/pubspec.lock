@@ -259,6 +259,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  go_flutter_utils:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "4706af6cdb361530761d9431bf3a79b62fa8cb4a"
+      url: "git://github.com/jWinterDay/go_flutter_utils.git"
+    source: git
+    version: "1.0.0+1"
   graphs:
     dependency: transitive
     description:

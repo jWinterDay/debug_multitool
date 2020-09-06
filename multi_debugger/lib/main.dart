@@ -14,6 +14,8 @@ Future<void> main() async {
       await AppDI.init();
       await di.get<AppGlobals>().init();
 
+      di.get<AppGlobals>().store.actions.appConfigActions.fetchComputerName();
+
       runApp(const App());
     },
     (error, stackTrace) async {

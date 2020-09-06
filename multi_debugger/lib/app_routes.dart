@@ -1,3 +1,5 @@
 class AppRoutes {
-  static const addChannel = 'addChannel';
+  AppRoutes._();
+
+  static const editChannel = 'editChannel';
 }

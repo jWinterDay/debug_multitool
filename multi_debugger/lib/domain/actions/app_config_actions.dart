@@ -9,4 +9,7 @@ abstract class AppConfigActions extends ReduxActions {
   factory AppConfigActions() = _$AppConfigActions;
 
   ActionDispatcher<LocalSettingsState> get setLocalSettings;
+
+  ActionDispatcher<void> get fetchComputerName;
+  ActionDispatcher<String> get setComputerName;
 }

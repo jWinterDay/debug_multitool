@@ -23,6 +23,11 @@ class _$AppConfigStateSerializer implements StructuredSerializer<AppConfigState>
         ..add('localSettings')
         ..add(serializers.serialize(object.localSettings, specifiedType: const FullType(LocalSettingsState)));
     }
+    if (object.computerName != null) {
+      result
+        ..add('computerName')
+        ..add(serializers.serialize(object.computerName, specifiedType: const FullType(String)));
+    }
     return result;
   }
 
@@ -41,6 +46,9 @@ class _$AppConfigStateSerializer implements StructuredSerializer<AppConfigState>
           result.localSettings.replace(
               serializers.deserialize(value, specifiedType: const FullType(LocalSettingsState)) as LocalSettingsState);
           break;
+        case 'computerName':
+          result.computerName = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          break;
       }
     }
 
@@ -51,11 +59,13 @@ class _$AppConfigStateSerializer implements StructuredSerializer<AppConfigState>
 class _$AppConfigState extends AppConfigState {
   @override
   final LocalSettingsState localSettings;
+  @override
+  final String computerName;
 
   factory _$AppConfigState([void Function(AppConfigStateBuilder) updates]) =>
       (new AppConfigStateBuilder()..update(updates)).build();
 
-  _$AppConfigState._({this.localSettings}) : super._();
+  _$AppConfigState._({this.localSettings, this.computerName}) : super._();
 
   @override
   AppConfigState rebuild(void Function(AppConfigStateBuilder) updates) => (toBuilder()..update(updates)).build();
@@ -66,17 +76,20 @@ class _$AppConfigState extends AppConfigState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is AppConfigState && localSettings == other.localSettings;
+    return other is AppConfigState && localSettings == other.localSettings && computerName == other.computerName;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, localSettings.hashCode));
+    return $jf($jc($jc(0, localSettings.hashCode), computerName.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('AppConfigState')..add('localSettings', localSettings)).toString();
+    return (newBuiltValueToStringHelper('AppConfigState')
+          ..add('localSettings', localSettings)
+          ..add('computerName', computerName))
+        .toString();
   }
 }
 
@@ -87,6 +100,10 @@ class AppConfigStateBuilder implements Builder<AppConfigState, AppConfigStateBui
   LocalSettingsStateBuilder get localSettings => _$this._localSettings ??= new LocalSettingsStateBuilder();
   set localSettings(LocalSettingsStateBuilder localSettings) => _$this._localSettings = localSettings;
 
+  String _computerName;
+  String get computerName => _$this._computerName;
+  set computerName(String computerName) => _$this._computerName = computerName;
+
   AppConfigStateBuilder() {
     AppConfigState._initializeBuilder(this);
   }
@@ -94,6 +111,7 @@ class AppConfigStateBuilder implements Builder<AppConfigState, AppConfigStateBui
   AppConfigStateBuilder get _$this {
     if (_$v != null) {
       _localSettings = _$v.localSettings?.toBuilder();
+      _computerName = _$v.computerName;
       _$v = null;
     }
     return this;
@@ -116,7 +134,7 @@ class AppConfigStateBuilder implements Builder<AppConfigState, AppConfigStateBui
   _$AppConfigState build() {
     _$AppConfigState _$result;
     try {
-      _$result = _$v ?? new _$AppConfigState._(localSettings: _localSettings?.build());
+      _$result = _$v ?? new _$AppConfigState._(localSettings: _localSettings?.build(), computerName: computerName);
     } catch (_) {
       String _$failedField;
       try {

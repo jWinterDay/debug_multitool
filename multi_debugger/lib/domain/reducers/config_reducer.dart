@@ -6,9 +6,15 @@ NestedReducerBuilder<AppState, AppStateBuilder, AppConfigState, AppConfigStateBu
   return NestedReducerBuilder<AppState, AppStateBuilder, AppConfigState, AppConfigStateBuilder>(
     (state) => state.appConfigState,
     (builder) => builder.appConfigState,
-  )..add<LocalSettingsState>(AppConfigActionsNames.setLocalSettings, _setLocalSettings);
+  )
+    ..add<LocalSettingsState>(AppConfigActionsNames.setLocalSettings, _setLocalSettings)
+    ..add<String>(AppConfigActionsNames.setComputerName, _setComputerName);
 }
 
 void _setLocalSettings(AppConfigState state, Action<LocalSettingsState> action, AppConfigStateBuilder builder) {
   builder.localSettings.replace(action.payload);
+}
+
+void _setComputerName(AppConfigState state, Action<String> action, AppConfigStateBuilder builder) {
+  builder.computerName = action.payload;
 }

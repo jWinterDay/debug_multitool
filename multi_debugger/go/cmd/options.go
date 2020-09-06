@@ -8,6 +8,8 @@ import (
 	"github.com/go-flutter-desktop/plugins/package_info"
 	"github.com/go-flutter-desktop/plugins/path_provider"
 	"github.com/go-flutter-desktop/plugins/url_launcher"
+
+	"os_info"
 )
 
 const (
@@ -32,6 +34,9 @@ var options = []flutter.Option{
 		VendorName:      "multi_debugger",
 		ApplicationName: "multi_debugger",
 	}),
+
+	// os info
+	flutter.AddPlugin(&os_info.OsInfoFlutterPlugin{}),
 }
 
 type ScreenSizeSettings struct {

@@ -1,19 +1,22 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
+import 'package:multi_debugger/app_routes.dart';
 import 'package:multi_debugger/domain/base/base_bloc.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/states.dart';
 import 'package:rxdart/subjects.dart';
 
 class ChannelTabBloc extends BaseBloc {
-  StreamSubscription _channelSubscription;
+  StreamSubscription<ChannelState> _channelSubscription;
 
   BehaviorSubject<ChannelState> _channelStateSubject;
-  Stream<ChannelState> get channelState => _channelStateSubject.stream;
+  Stream<ChannelState> get channelStateStream => _channelStateSubject.stream;
 
   @override
   void dispose() {
     _channelSubscription?.cancel();
+    _channelStateSubject.close();
 
     super.dispose();
   }
@@ -24,7 +27,7 @@ class ChannelTabBloc extends BaseBloc {
 
     _channelStateSubject = BehaviorSubject<ChannelState>();
 
-    _channelSubscription = appGlobals.store.nextSubstate((state) {
+    _channelSubscription = appGlobals.store.nextSubstate((AppState state) {
       return state;
     }).map((state) {
       return state.channelState;
@@ -33,19 +36,20 @@ class ChannelTabBloc extends BaseBloc {
     });
   }
 
-  void addNew() {
-    ChannelModel channelModel = ChannelModel((b) {
-      return b
-        ..name = 'fsd'
-        ..serverConnectStatus = ServerConnectStatus.disconnected
-        ..isCurrent = false
-        ..shortName = 'current';
-    });
-
-    appGlobals.store.actions.channelActions.addChannel(channelModel);
+  void showAddChannel(BuildContext context) {
+    appGlobals.store.actions.routeTo(
+      AppRoute((builder) => builder
+        ..route = AppRoutes.editChannel
+        ..context = context),
+    );
   }
 
-  void updateChannel(ChannelModel channelModel) {
-    //
+  void showUpdateChannel(BuildContext context, ChannelModel channelModel) {
+    appGlobals.store.actions.routeTo(
+      AppRoute((builder) => builder
+        ..route = AppRoutes.editChannel
+        ..context = context
+        ..bundle = channelModel),
+    );
   }
 }

@@ -20,5 +20,8 @@ abstract class AppConfigState implements Built<AppConfigState, AppConfigStateBui
   @nullable
   LocalSettingsState get localSettings;
 
+  @nullable
+  String get computerName;
+
   static Serializer<AppConfigState> get serializer => _$appConfigStateSerializer;
 }

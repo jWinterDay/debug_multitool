@@ -38,7 +38,7 @@ class _ChannelTabState extends State<ChannelTab> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<ChannelState>(
-      stream: _bloc.channelState,
+      stream: _bloc.channelStateStream,
       builder: (_, snapshot) {
         final ChannelState channelState = snapshot.data;
 
@@ -52,7 +52,7 @@ class _ChannelTabState extends State<ChannelTab> {
             SliverToBoxAdapter(
               child: GestureDetector(
                 onTap: () {
-                  _bloc.addNew();
+                  _bloc.showAddChannel(context);
 
                   Future.delayed(const Duration(milliseconds: 300), () {
                     _scrollController.animateTo(
@@ -103,7 +103,7 @@ class _ChannelTabState extends State<ChannelTab> {
 
             // channel
             GestureDetector(
-              onTap: () => _bloc.updateChannel(channelModel),
+              onTap: () => _bloc.showUpdateChannel(context, channelModel),
               child: _Button(
                 bgColor: bgColor,
                 child: RepaintBoundary(
