@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
+  AppColors._();
+
   static const Color bodyText2Color = Colors.black;
 
   // 244 244 247

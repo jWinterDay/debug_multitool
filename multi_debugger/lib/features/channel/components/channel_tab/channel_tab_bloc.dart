@@ -38,7 +38,7 @@ class ChannelTabBloc extends BaseBloc {
       return b
         ..name = 'fsd'
         ..serverConnectStatus = ServerConnectStatus.disconnected
-        ..isCurrent = true
+        ..isCurrent = false
         ..shortName = 'current';
     });
 

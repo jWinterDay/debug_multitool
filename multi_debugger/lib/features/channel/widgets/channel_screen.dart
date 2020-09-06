@@ -14,7 +14,7 @@ class ChannelScreen extends StatelessWidget {
         children: [
           // channels tab
           Container(
-            width: 100,
+            width: 100.0,
             decoration: const BoxDecoration(
               boxShadow: [
                 BoxShadow(
@@ -34,7 +34,7 @@ class ChannelScreen extends StatelessWidget {
               children: [
                 // tab bar
                 Container(
-                  height: 120,
+                  height: 120.0,
                   decoration: const BoxDecoration(
                     boxShadow: [
                       BoxShadow(
@@ -49,7 +49,7 @@ class ChannelScreen extends StatelessWidget {
 
                 // channel actions
                 Container(
-                  height: 80,
+                  height: 80.0,
                   decoration: const BoxDecoration(
                     boxShadow: [
                       BoxShadow(
