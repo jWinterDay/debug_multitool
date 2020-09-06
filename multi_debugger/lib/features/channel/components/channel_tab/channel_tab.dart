@@ -210,24 +210,25 @@ class _Button extends StatelessWidget {
     return Center(
       child: Container(
         padding: const EdgeInsets.only(top: 20.0),
-        child: InkWell(
-          onTap: callback,
-          child: Container(
-            width: 70.0,
-            height: 70.0,
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(35.0)),
-              boxShadow: [
-                const BoxShadow(
-                  color: Color(0x33000000),
-                  offset: Offset(0, 1),
-                  blurRadius: 1,
+        child: ClipOval(
+          child: Material(
+            color: bgColor,
+            // elevation: 100.0,
+            // shadowColor: Colors.black,
+            // shape: BeveledRectangleBorder(
+            //   borderRadius: BorderRadius.only(topLeft: Radius.circular(200.0)),
+            // ),
+            child: InkWell(
+              splashColor: AppColors.gray2,
+              hoverColor: AppColors.gray3,
+              child: SizedBox(
+                width: 70,
+                height: 70,
+                child: Center(
+                  child: child,
                 ),
-              ],
-              color: bgColor,
-            ),
-            child: Center(
-              child: child,
+              ),
+              onTap: callback,
             ),
           ),
         ),
