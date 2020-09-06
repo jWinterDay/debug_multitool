@@ -26,5 +26,6 @@
     "editor.detectIndentation": false,
     "editor.tabSize": 2
   },
-  "dart.analysisExcludedFolders": [ "build", "release", "macos", "linux" ]
+  "dart.analysisExcludedFolders": [ "build", "release", "macos", "linux" ],
+  "editor.minimap.enabled": false
 }
