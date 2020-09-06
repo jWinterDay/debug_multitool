@@ -10,17 +10,12 @@ final appTheme = ThemeData(
   // scaffoldBackgroundColor: AppColors.backgroundColor,
   textTheme: const TextTheme(
     bodyText2: TextStyle(
-      fontSize: 21.0,
+      fontSize: 13.0,
+      fontWeight: FontWeight.w400,
+      fontStyle: FontStyle.normal,
+      fontFamily: "SFProDisplay",
       color: AppColors.bodyText2Color,
     ),
-    // bodyText1: TextStyle(
-    //   fontSize: 21.0,
-    //   color: AppColors.bodyText2Color,
-    // ),
-    // headline1: TextStyle(
-    //   fontSize: 21.0,
-    //   color: AppColors.bodyText2Color,
-    // ),
   ),
   visualDensity: VisualDensity.adaptivePlatformDensity,
 );

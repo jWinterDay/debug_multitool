@@ -50,3 +50,7 @@ flutter:
   uses-material-design: true
   assets:
     - application_bundle/
+  fonts:
+    - family: LoggerIcons
+      fonts:
+        - asset: assets/icons/Logger.ttf

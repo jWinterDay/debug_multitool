@@ -1,27 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:multi_debugger/app/colors.dart';
-import 'package:multi_debugger/app_globals.dart';
-import 'package:multi_debugger/di/app_di.dart';
+import 'package:multi_debugger/features/channel/components/channel_tab/channel_tab.dart';
 
-class ChannelScreen extends StatefulWidget {
+class ChannelScreen extends StatelessWidget {
   const ChannelScreen({
     Key key,
   }) : super(key: key);
-
-  @override
-  State createState() => _ChannelState();
-}
-
-class _ChannelState extends State<ChannelScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +24,7 @@ class _ChannelState extends State<ChannelScreen> {
               ],
               color: AppColors.gray2,
             ),
+            child: const ChannelTab(),
           ),
           const SizedBox(width: 1.0),
 
@@ -105,7 +90,7 @@ class _ChannelState extends State<ChannelScreen> {
                                 offset: Offset(1, 0),
                               )
                             ],
-                            color: AppColors.primaryColorDark,
+                            color: AppColors.background,
                           ),
                         ),
                       ),
