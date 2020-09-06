@@ -50,8 +50,14 @@ class _ChannelTabState extends State<ChannelTab> {
 
             // add new
             SliverToBoxAdapter(
-              child: GestureDetector(
-                onTap: () {
+              child: _Button(
+                child: const RepaintBoundary(
+                  child: Icon(
+                    LoggerIcons.addNew_1x,
+                    color: AppColors.positive,
+                  ),
+                ),
+                callback: () {
                   _bloc.showAddChannel(context);
 
                   Future.delayed(const Duration(milliseconds: 300), () {
@@ -62,14 +68,6 @@ class _ChannelTabState extends State<ChannelTab> {
                     );
                   });
                 },
-                child: const _Button(
-                  child: RepaintBoundary(
-                    child: Icon(
-                      LoggerIcons.addNew_1x,
-                      color: AppColors.positive,
-                    ),
-                  ),
-                ),
               ),
             ),
           ],
@@ -102,19 +100,17 @@ class _ChannelTabState extends State<ChannelTab> {
               ),
 
             // channel
-            GestureDetector(
-              onTap: () => _bloc.showUpdateChannel(context, channelModel),
-              child: _Button(
-                bgColor: bgColor,
-                child: RepaintBoundary(
-                  child: Text(
-                    channelModel.shortName,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: textColor),
-                  ),
+            _Button(
+              bgColor: bgColor,
+              child: RepaintBoundary(
+                child: Text(
+                  channelModel.shortName,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: textColor),
                 ),
               ),
+              callback: () => _bloc.showUpdateChannel(context, channelModel),
             ),
 
             // status
@@ -132,7 +128,6 @@ class _ChannelTabState extends State<ChannelTab> {
   }
 }
 
-//
 class _CurrentWidget extends StatelessWidget {
   const _CurrentWidget({
     Key key,
@@ -158,7 +153,6 @@ class _CurrentWidget extends StatelessWidget {
   }
 }
 
-//
 class _Status extends StatelessWidget {
   const _Status({
     Key key,
@@ -198,38 +192,43 @@ class _Status extends StatelessWidget {
   }
 }
 
-//
 class _Button extends StatelessWidget {
   const _Button({
     Key key,
     this.child,
     this.bgColor = AppColors.background,
+    this.callback,
   }) : super(key: key);
 
   final Widget child;
   final Color bgColor;
+  // ignore: diagnostic_describe_all_properties
+  final VoidCallback callback;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
         padding: const EdgeInsets.only(top: 20.0),
-        child: Container(
-          width: 70.0,
-          height: 70.0,
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(35.0)),
-            boxShadow: [
-              const BoxShadow(
-                color: Color(0x33000000),
-                offset: Offset(0, 1),
-                blurRadius: 1,
-              ),
-            ],
-            color: bgColor,
-          ),
-          child: Center(
-            child: child,
+        child: InkWell(
+          onTap: callback,
+          child: Container(
+            width: 70.0,
+            height: 70.0,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(35.0)),
+              boxShadow: [
+                const BoxShadow(
+                  color: Color(0x33000000),
+                  offset: Offset(0, 1),
+                  blurRadius: 1,
+                ),
+              ],
+              color: bgColor,
+            ),
+            child: Center(
+              child: child,
+            ),
           ),
         ),
       ),
