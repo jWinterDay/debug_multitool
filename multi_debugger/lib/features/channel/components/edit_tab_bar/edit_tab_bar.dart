@@ -28,6 +28,22 @@ class EditTabBarScreen extends StatefulWidget {
 class _EditTabBarScreenState extends State<EditTabBarScreen> {
   EditTabBarBloc _bloc;
 
+  final InputDecoration _inputDecoration = InputDecoration(
+    contentPadding: const EdgeInsets.all(0.0),
+    border: OutlineInputBorder(
+      borderSide: const BorderSide(color: AppColors.gray3),
+      borderRadius: BorderRadius.circular(6.0),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide: const BorderSide(color: AppColors.gray3),
+      borderRadius: BorderRadius.circular(6.0),
+    ),
+    hintStyle: const TextStyle(
+      color: AppColors.gray5,
+      fontSize: 15.0,
+    ),
+  );
+
   @override
   void initState() {
     super.initState();
@@ -88,7 +104,10 @@ class _EditTabBarScreenState extends State<EditTabBarScreen> {
                             children: [
                               const TextSpan(
                                 text: 'Your computer name: ',
-                                style: TextStyle(color: AppColors.gray6, fontSize: 15.0),
+                                style: TextStyle(
+                                  color: AppColors.gray6,
+                                  fontSize: 15.0,
+                                ),
                               ),
                               TextSpan(
                                 text: name,
@@ -102,6 +121,95 @@ class _EditTabBarScreenState extends State<EditTabBarScreen> {
                           ),
                         );
                       },
+                    ),
+                  ),
+
+                  // channel name
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0).copyWith(top: 10.0),
+                    child: TextFormField(
+                      autofocus: true,
+                      onChanged: _bloc.onNameChanged,
+                      cursorColor: AppColors.positive,
+                      style: const TextStyle(
+                        color: AppColors.gray5,
+                        fontSize: 15.0,
+                      ),
+                      textAlign: TextAlign.center,
+                      decoration: _inputDecoration.copyWith(hintText: 'Channel name'),
+                    ),
+                  ),
+
+                  // short name caption
+                  Container(
+                    padding: const EdgeInsets.only(top: 25.0),
+                    child: const Text(
+                      'Short channel name (max: 15 symbols):',
+                      style: const TextStyle(
+                        color: AppColors.gray6,
+                        fontSize: 15.0,
+                      ),
+                    ),
+                  ),
+
+                  // short name
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0).copyWith(top: 10.0),
+                    child: TextFormField(
+                      onChanged: _bloc.onShortNameChanged,
+                      cursorColor: AppColors.positive,
+                      style: const TextStyle(
+                        color: AppColors.gray5,
+                        fontSize: 15.0,
+                      ),
+                      textAlign: TextAlign.center,
+                      decoration: _inputDecoration.copyWith(hintText: 'Short name'),
+                    ),
+                  ),
+
+                  // buttons
+                  const SizedBox(
+                    height: 25.0,
+                  ),
+
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        RaisedButton(
+                          onPressed: () {
+                            _bloc.pop(context);
+                          },
+                          textColor: AppColors.positive,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(6.0),
+                          ),
+                          child: const Text(
+                            'CANCEL',
+                            style: TextStyle(fontSize: 17.0),
+                          ),
+                        ),
+                        StreamBuilder<bool>(
+                          stream: _bloc.correctFormStream,
+                          builder: (_, snapshot) {
+                            final bool correct = snapshot.data ?? false;
+
+                            return RaisedButton(
+                              onPressed: correct ? () => _bloc.addChannel(context) : null,
+                              color: AppColors.positive,
+                              textColor: AppColors.background,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6.0),
+                              ),
+                              child: const Text(
+                                'ADD CHANNEL',
+                                style: TextStyle(fontSize: 17.0),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ],

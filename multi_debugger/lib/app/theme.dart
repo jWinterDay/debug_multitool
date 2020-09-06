@@ -7,7 +7,11 @@ final appTheme = ThemeData(
   primaryColor: AppColors.primaryColor,
   primaryColorDark: AppColors.primaryColor,
   primaryColorLight: AppColors.primaryColor,
-  // scaffoldBackgroundColor: AppColors.backgroundColor,
+  buttonTheme: const ButtonThemeData(
+    minWidth: 175.0,
+    height: 44.0,
+    buttonColor: AppColors.gray1,
+  ),
   textTheme: const TextTheme(
     bodyText2: TextStyle(
       fontSize: 13.0,

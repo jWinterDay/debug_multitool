@@ -30,6 +30,10 @@ void _routeTo(
   _activeRoute = payload.route;
 
   switch (payload.route) {
+    case AppRoutes.pop:
+      Navigator.of(_activeRouteContext).pop(payload.bundle);
+      break;
+
     case AppRoutes.editChannel:
       await showGeneralDialog<void>(
         context: _activeRouteContext,
