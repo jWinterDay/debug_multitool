@@ -45,12 +45,7 @@ void _setCurrentChannel(ChannelState state, Action<ChannelModel> action, Channel
 
   builder.channels.updateAllValues((String id, ChannelModel cm) {
     final bool update = channelModel.channelId == cm.channelId;
-    return channelModel.rebuild((builder) => builder.isCurrent = update);
-  });
 
-  // builder.channels.updateValue(
-  //   channelModel.channelId,
-  //   (ChannelModel cm) => cm,
-  //   ifAbsent: () => channelModel,
-  // );
+    return cm.rebuild((builder) => builder.isCurrent = update);
+  });
 }

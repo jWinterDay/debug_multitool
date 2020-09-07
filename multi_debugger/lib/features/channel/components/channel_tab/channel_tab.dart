@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:multi_debugger/app/colors.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/states.dart';
+import 'package:multi_debugger/features/channel/components/server_connect_status/server_connect_status.dart';
 import 'package:multi_debugger/tools/logger_icons.dart';
 
 import 'channel_tab_bloc.dart';
@@ -55,6 +56,7 @@ class _ChannelTabState extends State<ChannelTab> {
                   child: Icon(
                     LoggerIcons.addNew_1x,
                     color: AppColors.positive,
+                    size: 26.0,
                   ),
                 ),
                 callback: () {
@@ -110,14 +112,14 @@ class _ChannelTabState extends State<ChannelTab> {
                   style: TextStyle(color: textColor),
                 ),
               ),
-              callback: () => _bloc.showUpdateChannel(context, channelModel),
+              callback: () => _bloc.setCurrent(channelModel),
             ),
 
             // status
             Positioned(
               left: 70.0 - 5.0,
               top: 70.0,
-              child: _Status(
+              child: ConnectStatusWidget(
                 serverConnectStatus: channelModel.serverConnectStatus,
               ),
             ),
@@ -150,45 +152,6 @@ class _CurrentWidget extends StatelessWidget {
         color: AppColors.positive,
       ),
     );
-  }
-}
-
-class _Status extends StatelessWidget {
-  const _Status({
-    Key key,
-    @required this.serverConnectStatus,
-  })  : assert(serverConnectStatus != null),
-        super(key: key);
-
-  final ServerConnectStatus serverConnectStatus;
-
-  @override
-  Widget build(BuildContext context) {
-    final Color bgColor =
-        serverConnectStatus == ServerConnectStatus.connected ? AppColors.channelConnected : AppColors.gray5;
-
-    return Container(
-      width: 20.0,
-      height: 20.0,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-        border: Border.all(color: AppColors.background, width: 2.0),
-        boxShadow: [
-          const BoxShadow(
-            color: AppColors.gray4,
-            offset: Offset(0, 1),
-            blurRadius: 1,
-          )
-        ],
-        color: bgColor,
-      ),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<ServerConnectStatus>('serverConnectStatus', serverConnectStatus));
   }
 }
 

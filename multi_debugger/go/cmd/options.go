@@ -13,13 +13,13 @@ import (
 )
 
 const (
-	initW = 400
+	initW = 500
 	initH = 800
 
-	minW = 400 // iPhone 5
+	minW = 500
 	minH = 600
 
-	maxW = 5120 // 5K monitor
+	maxW = 5120
 	maxH = 4096
 )
 

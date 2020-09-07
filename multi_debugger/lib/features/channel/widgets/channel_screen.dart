@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:multi_debugger/app/colors.dart';
 import 'package:multi_debugger/features/channel/components/channel_tab/channel_tab.dart';
+import 'package:multi_debugger/features/channel/components/channel_tab_bar/channel_tab_bar.dart';
 
 class ChannelScreen extends StatelessWidget {
   const ChannelScreen({
@@ -44,6 +45,7 @@ class ChannelScreen extends StatelessWidget {
                     ],
                     color: AppColors.gray1,
                   ),
+                  child: const ChannelTabBar(),
                 ),
                 const SizedBox(height: 1.0),
 

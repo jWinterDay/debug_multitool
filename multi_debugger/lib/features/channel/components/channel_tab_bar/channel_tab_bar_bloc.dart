@@ -7,7 +7,7 @@ import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/states.dart';
 import 'package:rxdart/subjects.dart';
 
-class ChannelTabBloc extends BaseBloc {
+class TabBarBloc extends BaseBloc {
   StreamSubscription<ChannelState> _channelSubscription;
 
   BehaviorSubject<ChannelState> _channelStateSubject;
@@ -36,21 +36,21 @@ class ChannelTabBloc extends BaseBloc {
     });
   }
 
-  void showAddChannel(BuildContext context) {
-    appGlobals.store.actions.routeTo(
-      AppRoute((builder) => builder
-        ..route = AppRoutes.editChannel
-        ..context = context),
-    );
-  }
+  // void showAddChannel(BuildContext context) {
+  //   appGlobals.store.actions.routeTo(
+  //     AppRoute((builder) => builder
+  //       ..route = AppRoutes.editChannel
+  //       ..context = context),
+  //   );
+  // }
 
-  void setCurrent(ChannelModel channelModel) {
-    appGlobals.store.actions.channelActions.setCurrentChannel(channelModel);
-    // appGlobals.store.actions.routeTo(
-    //   AppRoute((builder) => builder
-    //     ..route = AppRoutes.editChannel
-    //     ..context = context
-    //     ..bundle = channelModel),
-    // );
-  }
+  // void setCurrent(ChannelModel channelModel) {
+  //   appGlobals.store.actions.channelActions.setCurrentChannel(channelModel);
+  //   // appGlobals.store.actions.routeTo(
+  //   //   AppRoute((builder) => builder
+  //   //     ..route = AppRoutes.editChannel
+  //   //     ..context = context
+  //   //     ..bundle = channelModel),
+  //   // );
+  // }
 }
