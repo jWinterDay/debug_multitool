@@ -14,6 +14,12 @@ class ServerConnectStatus extends EnumClass {
 
   static const ServerConnectStatus connecting = _$connecting;
 
+  // status in connect state
+  static const List<ServerConnectStatus> inConnect = [
+    connected,
+    connecting,
+  ];
+
   static BuiltSet<ServerConnectStatus> get values => _$values;
 
   static ServerConnectStatus valueOf(String name) => _$serverConnectStatusValueOf(name);

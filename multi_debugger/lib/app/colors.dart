@@ -34,6 +34,9 @@ class AppColors {
   /// 0 206 147
   static const Color channelConnected = Color(0xFF00CE93);
 
+  /// 153 214 197
+  static const Color channelConnecting = Color(0xFF99D6C5);
+
   static Color channelActiveTitle = Colors.white;
 
   static Color get channelInactiveTitle => bodyText2Color;

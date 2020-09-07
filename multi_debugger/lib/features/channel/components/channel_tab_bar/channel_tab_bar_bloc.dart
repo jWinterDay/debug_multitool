@@ -13,18 +13,16 @@ class TabBarBloc extends BaseBloc {
   Stream<ChannelModel> get currentChannelModelStream => _currentChannelModelSubject.stream;
 
   final TextEditingController urlTextController = TextEditingController(text: '');
-  BehaviorSubject<String> _urlSubject;
 
-  BehaviorSubject<bool> _correctSubject;
-  Stream<bool> get correctStream => _correctSubject.stream;
+  BehaviorSubject<bool> _enabledConnectBtnSubject;
+  Stream<bool> get enabledConnectBtnStream => _enabledConnectBtnSubject.stream;
 
   @override
   void dispose() {
     _currentChannelModelSubscription?.cancel();
 
     _currentChannelModelSubject.close();
-    _urlSubject.close();
-    _correctSubject.close();
+    _enabledConnectBtnSubject.close();
 
     urlTextController.dispose();
 
@@ -39,14 +37,16 @@ class TabBarBloc extends BaseBloc {
     urlTextController.addListener(() {
       final String url = urlTextController.text;
 
-      _urlSubject.add(url);
-
       // correct
       final bool correct = url.isNotEmpty;
-      _correctSubject.add(correct);
+
+      // connect status
+      // final bool enabledByStatus = currentChannelModel.serverConnectStatus == Server
+
+      _enabledConnectBtnSubject.add(correct);
 
       // save url for current channel
-      if (currentChannelModel != null) {
+      if (currentChannelModel != null && url != currentChannelModel?.wsUrl) {
         ChannelModel nextChannelModel = ChannelModel((b) {
           b
             ..replace(currentChannelModel)
@@ -60,8 +60,7 @@ class TabBarBloc extends BaseBloc {
     });
 
     _currentChannelModelSubject = BehaviorSubject<ChannelModel>();
-    _urlSubject = BehaviorSubject<String>.seeded('');
-    _correctSubject = BehaviorSubject<bool>.seeded(false);
+    _enabledConnectBtnSubject = BehaviorSubject<bool>.seeded(false);
 
     // state
     _currentChannelModelSubscription = appGlobals.store.nextSubstate((AppState state) {
@@ -69,21 +68,47 @@ class TabBarBloc extends BaseBloc {
     }).map((state) {
       return state.channelState.currentChannel;
     }).listen((ChannelModel channelModel) {
-      _currentChannelModelSubject.add(channelModel);
+      if (channelModel?.wsUrl != urlTextController.text) {
+        urlTextController.text = channelModel?.wsUrl ?? '';
+      }
 
-      urlTextController.text = channelModel?.wsUrl ?? '';
+      _currentChannelModelSubject.add(channelModel);
     });
   }
-
-  void onUrlChanged(String url) => _urlSubject.add(url);
 
   void showSelectUrl() {
     //
   }
 
   void connect() {
-    // appGlobals.store.actions.channelActions.//.state.channelState.currentChannel.
-    //
+    if (currentChannelModel == null) {
+      return;
+    }
+
+    final ServerConnectStatus curStatus = currentChannelModel.serverConnectStatus;
+
+    ServerConnectStatus resStatus;
+
+    switch (curStatus) {
+      case ServerConnectStatus.disconnected:
+        resStatus = ServerConnectStatus.connecting;
+        break;
+      case ServerConnectStatus.connecting:
+      case ServerConnectStatus.connected:
+        resStatus = ServerConnectStatus.disconnected;
+        break;
+      default:
+    }
+
+    ChannelModel nextChannelModel = ChannelModel((b) {
+      b
+        ..replace(currentChannelModel)
+        ..serverConnectStatus = resStatus;
+
+      return b;
+    });
+
+    appGlobals.store.actions.channelActions.updateChannel(nextChannelModel);
   }
 
   // void showAddChannel(BuildContext context) {

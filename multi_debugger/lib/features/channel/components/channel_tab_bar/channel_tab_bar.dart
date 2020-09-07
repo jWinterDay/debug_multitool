@@ -59,7 +59,7 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
         children: [
           Row(
             children: [
-              // channel unfo
+              // channel info
               StreamBuilder<ChannelModel>(
                 initialData: _bloc.currentChannelModel,
                 stream: _bloc.currentChannelModelStream,
@@ -94,7 +94,7 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
                       Container(
                         padding: const EdgeInsets.only(left: 6.0),
                         child: const RotatedBox(
-                          quarterTurns: 2,
+                          quarterTurns: 0,
                           child: Icon(
                             LoggerIcons.arrowDown_1x,
                             size: 25.0,
@@ -156,183 +156,156 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
               ),
             ],
           ),
+
           const SizedBox(height: 15.0),
 
           // url and connect
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+          StreamBuilder<ChannelModel>(
+            initialData: _bloc.currentChannelModel,
+            stream: _bloc.currentChannelModelStream,
+            builder: (context, snapshot) {
+              final ChannelModel channelModel = snapshot.data;
+
+              ServerConnectStatus serverConnectStatus = channelModel?.serverConnectStatus;
+              serverConnectStatus ??= ServerConnectStatus.disconnected;
+
               // select url
-              Container(
-                height: 36.0,
-                child: ButtonTheme(
-                  minWidth: 126.0,
-                  child: RaisedButton(
-                    onPressed: _bloc.showSelectUrl,
-                    child: Row(
-                      children: [
-                        const Icon(
-                          LoggerIcons.search_1x,
-                          color: AppColors.gray5,
-                          size: 18.0,
-                        ),
-                        const SizedBox(
-                          width: 8.0,
-                        ),
-                        const Text(
-                          'Select URL',
-                          style: TextStyle(
-                            color: AppColors.bodyText2Color,
-                            fontSize: 15.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                    color: AppColors.background,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6.0),
-                      side: const BorderSide(color: AppColors.gray4),
-                    ),
-                  ),
-                ),
-              ),
-
+              final bool inConnect = ServerConnectStatus.inConnect.contains(serverConnectStatus);
               // url
-              Expanded(
-                child: Container(
-                  height: 45.0,
-                  padding: const EdgeInsets.only(left: 15.0),
-                  child: TextField(
-                    controller: _bloc.urlTextController,
-                    autofocus: true,
-                    cursorColor: AppColors.positive,
-                    style: const TextStyle(
-                      color: AppColors.bodyText2Color,
-                      fontSize: 15.0,
-                    ),
-                    textAlign: TextAlign.center,
-                    decoration: _inputDecoration.copyWith(hintText: 'URL'),
-                  ),
-                ),
-              ),
+              final bool urlEnabled = ServerConnectStatus.disconnected == serverConnectStatus;
+              // button
+              IconData icon;
+              Color bgColor;
+              String text;
 
-              // connect
-              StreamBuilder<bool>(
-                initialData: false,
-                stream: _bloc.correctStream,
-                builder: (_, snapshot) {
-                  final bool correct = snapshot.data ?? false;
+              switch (serverConnectStatus) {
+                case ServerConnectStatus.disconnected:
+                  icon = LoggerIcons.connect_1x;
+                  bgColor = AppColors.channelConnected;
+                  text = 'CONNECT';
+                  break;
+                case ServerConnectStatus.connecting:
+                  icon = LoggerIcons.loader_1x;
+                  bgColor = AppColors.channelConnecting;
+                  text = 'CONNECT';
+                  break;
+                case ServerConnectStatus.connected:
+                  icon = LoggerIcons.disconnect_1x;
+                  bgColor = AppColors.gray5;
+                  text = 'DISCONNECT';
+                  break;
+                default:
+                  icon = LoggerIcons.disconnect_1x;
+              }
 
-                  return Container(
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // select url
+                  Container(
                     height: 36.0,
-                    padding: const EdgeInsets.only(left: 15.0),
                     child: ButtonTheme(
-                      minWidth: 220.0,
+                      minWidth: 126.0,
                       child: RaisedButton(
-                        onPressed: correct ? () => _bloc.connect : null,
+                        onPressed: inConnect ? null : _bloc.showSelectUrl,
+                        disabledColor: AppColors.gray5,
                         child: Row(
                           children: [
-                            const Icon(
-                              LoggerIcons.connect_1x,
-                              color: AppColors.background,
+                            Icon(
+                              LoggerIcons.search_1x,
+                              color: inConnect ? AppColors.background : AppColors.gray5,
                               size: 18.0,
                             ),
                             const SizedBox(
                               width: 8.0,
                             ),
-                            const Text(
-                              'Connect',
+                            Text(
+                              'Select URL',
                               style: TextStyle(
-                                color: AppColors.background,
+                                color: inConnect ? AppColors.background : AppColors.bodyText2Color,
                                 fontSize: 15.0,
                               ),
                             ),
                           ],
                         ),
-                        color: AppColors.positive,
+                        color: AppColors.background,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(6.0),
                           side: const BorderSide(color: AppColors.gray4),
                         ),
                       ),
                     ),
-                  );
-                },
-              ),
-            ],
-          ),
-          // Container(
-          //   padding: const EdgeInsets.only(left: 15.0, top: 15.0),
-          //   child: TextFormField(
-          //     autofocus: true,
-          //     // onChanged: _bloc.onNameChanged,
-          //     cursorColor: AppColors.positive,
+                  ),
 
-          //     style: const TextStyle(
-          //       color: AppColors.bodyText2Color,
-          //       fontSize: 15.0,
-          //     ),
-          //     textAlign: TextAlign.center,
-          //     decoration: _inputDecoration.copyWith(hintText: 'URL'),
-          //   ),
-          // ),
+                  // url
+                  Expanded(
+                    child: Container(
+                      height: 45.0,
+                      padding: const EdgeInsets.only(left: 15.0),
+                      child: TextField(
+                        controller: _bloc.urlTextController,
+                        autofocus: true,
+                        enabled: urlEnabled,
+                        cursorColor: AppColors.positive,
+                        style: const TextStyle(
+                          color: AppColors.bodyText2Color,
+                          fontSize: 15.0,
+                        ),
+                        textAlign: TextAlign.center,
+                        decoration: _inputDecoration.copyWith(hintText: 'URL'),
+                      ),
+                    ),
+                  ),
+
+                  // connect
+                  StreamBuilder<bool>(
+                    initialData: false,
+                    stream: _bloc.enabledConnectBtnStream,
+                    builder: (_, enabledSnapshot) {
+                      final bool enabled = enabledSnapshot.data ?? false;
+
+                      return Container(
+                        height: 36.0,
+                        padding: const EdgeInsets.only(left: 15.0),
+                        child: ButtonTheme(
+                          minWidth: 220.0,
+                          child: RaisedButton(
+                            onPressed: enabled ? () => _bloc.connect() : null,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  icon,
+                                  color: AppColors.background,
+                                  size: 18.0,
+                                ),
+                                const SizedBox(
+                                  width: 8.0,
+                                ),
+                                Text(
+                                  text,
+                                  style: const TextStyle(
+                                    color: AppColors.background,
+                                    fontSize: 15.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            color: bgColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6.0),
+                              side: const BorderSide(color: AppColors.gray4),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
         ],
       ),
     );
-  }
-}
-
-class _Button extends StatelessWidget {
-  const _Button({
-    Key key,
-    this.child,
-    this.bgColor = AppColors.background,
-    this.callback,
-  }) : super(key: key);
-
-  final Widget child;
-  final Color bgColor;
-  // ignore: diagnostic_describe_all_properties
-  final VoidCallback callback;
-
-  @override
-  Widget build(BuildContext context) {
-    return ButtonTheme(
-      minWidth: 126.0,
-      child: RaisedButton(
-        onPressed: () {},
-        child: Row(
-          children: [
-            const Icon(
-              LoggerIcons.search_1x,
-              color: AppColors.gray5,
-              size: 18.0,
-            ),
-            const SizedBox(
-              width: 8.0,
-            ),
-            const Text(
-              'Select URL',
-              style: TextStyle(
-                color: AppColors.bodyText2Color,
-                fontSize: 15.0,
-              ),
-            ),
-          ],
-        ),
-        color: AppColors.background,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(6.0),
-          side: const BorderSide(color: AppColors.gray4),
-        ),
-      ),
-    );
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-
-    properties.add(ColorProperty('bgColor', bgColor));
   }
 }
