@@ -99,7 +99,7 @@ class EditTabBarBloc extends BaseBloc {
       return b
         ..name = name
         ..serverConnectStatus = ServerConnectStatus.disconnected
-        ..isCurrent = false
+        ..isCurrent = true
         ..shortName = shortName;
     });
 

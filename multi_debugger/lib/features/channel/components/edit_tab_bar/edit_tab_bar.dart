@@ -127,7 +127,7 @@ class _EditTabBarScreenState extends State<EditTabBarScreen> {
                   // channel name
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0).copyWith(top: 10.0),
-                    child: TextFormField(
+                    child: TextField(
                       autofocus: true,
                       onChanged: _bloc.onNameChanged,
                       cursorColor: AppColors.positive,
@@ -155,7 +155,7 @@ class _EditTabBarScreenState extends State<EditTabBarScreen> {
                   // short name
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0).copyWith(top: 10.0),
-                    child: TextFormField(
+                    child: TextField(
                       onChanged: _bloc.onShortNameChanged,
                       cursorColor: AppColors.positive,
                       style: const TextStyle(

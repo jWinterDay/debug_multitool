@@ -1,9 +1,7 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:multi_debugger/app/colors.dart';
 import 'package:multi_debugger/domain/models/models.dart';
-import 'package:multi_debugger/domain/states/states.dart';
 import 'package:multi_debugger/features/channel/components/server_connect_status/server_connect_status.dart';
 import 'package:multi_debugger/tools/logger_icons.dart';
 
@@ -20,10 +18,10 @@ class ChannelTabBar extends StatefulWidget {
 
 class _ChannelTabBarState extends State<ChannelTabBar> {
   TabBarBloc _bloc;
-
   final InputDecoration _inputDecoration = InputDecoration(
-    contentPadding: const EdgeInsets.all(0.0),
+    // contentPadding: const EdgeInsets.all(20.0),
     filled: true,
+    // isDense: true,
     fillColor: AppColors.background,
     border: OutlineInputBorder(
       borderSide: const BorderSide(color: AppColors.gray3),
@@ -62,37 +60,51 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
           Row(
             children: [
               // channel unfo
-              Row(
-                children: [
-                  // status
-                  ConnectStatusWidget(serverConnectStatus: ServerConnectStatus.connected),
+              StreamBuilder<ChannelModel>(
+                initialData: _bloc.currentChannelModel,
+                stream: _bloc.currentChannelModelStream,
+                builder: (_, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Text('no channel (TODO)');
+                  }
 
-                  // channel name
-                  Container(
-                    padding: const EdgeInsets.only(left: 10.0),
-                    child: Text(
-                      "jwd_dev",
-                      style: const TextStyle(
-                        color: AppColors.gray6,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 22.0,
-                      ),
-                    ),
-                  ),
+                  final ChannelModel currentChannelModel = snapshot.data;
 
-                  // arrow
-                  Container(
-                    padding: const EdgeInsets.only(left: 6.0),
-                    child: const RotatedBox(
-                      quarterTurns: 2,
-                      child: Icon(
-                        LoggerIcons.arrowDown_1x,
-                        size: 25.0,
-                        color: AppColors.gray6,
+                  return Row(
+                    children: [
+                      // status
+                      ConnectStatusWidget(
+                        serverConnectStatus: currentChannelModel.serverConnectStatus,
                       ),
-                    ),
-                  ),
-                ],
+
+                      // channel name
+                      Container(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          currentChannelModel.name,
+                          style: const TextStyle(
+                            color: AppColors.gray6,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 22.0,
+                          ),
+                        ),
+                      ),
+
+                      // arrow
+                      Container(
+                        padding: const EdgeInsets.only(left: 6.0),
+                        child: const RotatedBox(
+                          quarterTurns: 2,
+                          child: Icon(
+                            LoggerIcons.arrowDown_1x,
+                            size: 25.0,
+                            color: AppColors.gray6,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
 
               Expanded(child: Container()),
@@ -144,72 +156,108 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
               ),
             ],
           ),
+          const SizedBox(height: 15.0),
 
           // url and connect
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // select url
-              ButtonTheme(
-                minWidth: 126.0,
-                child: RaisedButton(
-                  onPressed: () {},
-                  child: Row(
-                    children: [
-                      const Icon(
-                        LoggerIcons.search_1x,
-                        color: AppColors.gray5,
-                        size: 18.0,
-                      ),
-                      const SizedBox(
-                        width: 8.0,
-                      ),
-                      const Text(
-                        'Select URL',
-                        style: TextStyle(
-                          color: AppColors.bodyText2Color,
-                          fontSize: 15.0,
+              Container(
+                height: 36.0,
+                child: ButtonTheme(
+                  minWidth: 126.0,
+                  child: RaisedButton(
+                    onPressed: _bloc.showSelectUrl,
+                    child: Row(
+                      children: [
+                        const Icon(
+                          LoggerIcons.search_1x,
+                          color: AppColors.gray5,
+                          size: 18.0,
                         ),
-                      ),
-                    ],
+                        const SizedBox(
+                          width: 8.0,
+                        ),
+                        const Text(
+                          'Select URL',
+                          style: TextStyle(
+                            color: AppColors.bodyText2Color,
+                            fontSize: 15.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                    color: AppColors.background,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6.0),
+                      side: const BorderSide(color: AppColors.gray4),
+                    ),
                   ),
-                  color: AppColors.background,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6.0),
-                    side: const BorderSide(color: AppColors.gray4),
+                ),
+              ),
+
+              // url
+              Expanded(
+                child: Container(
+                  height: 45.0,
+                  padding: const EdgeInsets.only(left: 15.0),
+                  child: TextField(
+                    controller: _bloc.urlTextController,
+                    autofocus: true,
+                    cursorColor: AppColors.positive,
+                    style: const TextStyle(
+                      color: AppColors.bodyText2Color,
+                      fontSize: 15.0,
+                    ),
+                    textAlign: TextAlign.center,
+                    decoration: _inputDecoration.copyWith(hintText: 'URL'),
                   ),
                 ),
               ),
 
               // connect
-              ButtonTheme(
-                minWidth: 220.0,
-                child: RaisedButton(
-                  onPressed: () {},
-                  child: Row(
-                    children: [
-                      const Icon(
-                        LoggerIcons.connect_1x,
-                        color: AppColors.background,
-                        size: 18.0,
-                      ),
-                      const SizedBox(
-                        width: 8.0,
-                      ),
-                      const Text(
-                        'Connect',
-                        style: TextStyle(
-                          color: AppColors.background,
-                          fontSize: 15.0,
+              StreamBuilder<bool>(
+                initialData: false,
+                stream: _bloc.correctStream,
+                builder: (_, snapshot) {
+                  final bool correct = snapshot.data ?? false;
+
+                  return Container(
+                    height: 36.0,
+                    padding: const EdgeInsets.only(left: 15.0),
+                    child: ButtonTheme(
+                      minWidth: 220.0,
+                      child: RaisedButton(
+                        onPressed: correct ? () => _bloc.connect : null,
+                        child: Row(
+                          children: [
+                            const Icon(
+                              LoggerIcons.connect_1x,
+                              color: AppColors.background,
+                              size: 18.0,
+                            ),
+                            const SizedBox(
+                              width: 8.0,
+                            ),
+                            const Text(
+                              'Connect',
+                              style: TextStyle(
+                                color: AppColors.background,
+                                fontSize: 15.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                        color: AppColors.positive,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6.0),
+                          side: const BorderSide(color: AppColors.gray4),
                         ),
                       ),
-                    ],
-                  ),
-                  color: AppColors.positive,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6.0),
-                    side: const BorderSide(color: AppColors.gray4),
-                  ),
-                ),
+                    ),
+                  );
+                },
               ),
             ],
           ),

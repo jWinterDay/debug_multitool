@@ -17,6 +17,11 @@ NestedReducerBuilder<AppState, AppStateBuilder, ChannelState, ChannelStateBuilde
 void _addChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {
   final ChannelModel channelModel = action.payload;
 
+  // set other channel not current
+  builder.channels.updateAllValues((String id, ChannelModel cm) {
+    return cm.rebuild((builder) => builder.isCurrent = false);
+  });
+
   builder.channels.putIfAbsent(channelModel.channelId, () => channelModel);
 }
 
