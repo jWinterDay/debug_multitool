@@ -4,6 +4,7 @@ import 'package:flutter_simple_dependency_injection/injector.dart';
 import 'package:multi_debugger/app_globals.dart';
 import 'package:multi_debugger/domain/epics/local_station_epic.dart';
 import 'package:multi_debugger/domain/epics/remote_epic.dart';
+import 'package:multi_debugger/domain/epics/server_connect_epic.dart';
 import 'package:multi_debugger/services/local_station_service/local_station_service.dart';
 import 'package:multi_debugger/services/local_station_service/local_station_service_impl.dart';
 import 'package:multi_debugger/services/local_storage_service/local_storage_service.dart';
@@ -28,6 +29,12 @@ class AppDI {
         isSingleton: true,
       )
 
+      // app globals
+      ..map<AppGlobals>(
+        (Injector di) => AppGlobals(loggerService: loggerService),
+        isSingleton: true,
+      )
+
       // local storage
       ..map<LocalStorageService>(
         (Injector injector) => LocalStorageServiceImpl()..init(),
@@ -48,7 +55,10 @@ class AppDI {
 
       // server communicate
       ..map<ServerCommunicateService>(
-        (Injector injector) => ServerCommunicateServiceImpl(loggerService: loggerService)..init(),
+        (Injector injector) => ServerCommunicateServiceImpl(
+          loggerService: loggerService,
+          appGlobals: di.get<AppGlobals>(),
+        )..init(),
         isSingleton: false, // !
       )
 
@@ -58,18 +68,20 @@ class AppDI {
         isSingleton: true,
       )
 
-      // remote epic
-      ..map<LocalStationEpic>(
-        (Injector injector) => LocalStationEpic(
-          localStationService: di.get<LocalStationService>(),
+      // server communicate epic
+      ..map<ServerConnectEpic>(
+        (Injector injector) => ServerConnectEpic(
           loggerService: loggerService,
         ),
         isSingleton: true,
       )
 
-      // app globals
-      ..map<AppGlobals>(
-        (Injector di) => AppGlobals(loggerService: loggerService),
+      // local station epic
+      ..map<LocalStationEpic>(
+        (Injector injector) => LocalStationEpic(
+          localStationService: di.get<LocalStationService>(),
+          loggerService: loggerService,
+        ),
         isSingleton: true,
       );
 

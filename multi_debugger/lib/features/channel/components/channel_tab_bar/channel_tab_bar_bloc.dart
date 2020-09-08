@@ -108,7 +108,7 @@ class TabBarBloc extends BaseBloc {
       return b;
     });
 
-    appGlobals.store.actions.channelActions.updateChannel(nextChannelModel);
+    appGlobals.store.actions.channelActions.changeConnectStatus(nextChannelModel);
   }
 
   // void showAddChannel(BuildContext context) {

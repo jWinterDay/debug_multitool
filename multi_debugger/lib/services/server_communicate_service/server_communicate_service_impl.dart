@@ -3,7 +3,8 @@ import 'dart:convert';
 
 import 'package:centrifuge/centrifuge.dart' as centrifuge;
 import 'package:flutter/foundation.dart';
-import 'package:multi_debugger/domain/models/models.dart' show ServerConnectStatus;
+import 'package:multi_debugger/app_globals.dart';
+import 'package:multi_debugger/domain/models/models.dart' show ChannelModel, ServerConnectStatus;
 import 'package:multi_debugger/services/logger_service/logger_service.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -12,7 +13,13 @@ import 'server_communicate_service.dart';
 class ServerCommunicateServiceImpl extends ServerCommunicateService {
   ServerCommunicateServiceImpl({
     @required LoggerService loggerService,
-  }) : super(loggerService: loggerService);
+    @required AppGlobals appGlobals,
+  })  : assert(loggerService != null),
+        assert(appGlobals != null),
+        super(
+          loggerService: loggerService,
+          appGlobals: appGlobals,
+        );
 
   final BehaviorSubject<ServerConnectStatus> _connectStatusSubject = BehaviorSubject<ServerConnectStatus>();
   Stream<ServerConnectStatus> get connectStatusStream => _connectStatusSubject.stream;
@@ -37,23 +44,37 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
   }
 
   @override
-  Future<void> connect(String url, String channelName, {centrifuge.ClientConfig clientConfig}) async {
+  Future<void> connect(ChannelModel channelModel, {centrifuge.ClientConfig clientConfig}) async {
+    print('>>> service connect');
     _connectStatusSubject.add(ServerConnectStatus.connecting);
-    _client = centrifuge.createClient(url);
-    _subscription = _client.getSubscription(channelName);
+    _client = centrifuge.createClient(channelModel.wsUrl);
+    _subscription = _client.getSubscription(channelModel.name);
 
     // connect sub
     _connectSub = _client.connectStream.listen((centrifuge.ConnectEvent event) {
+      print('!!!!!!!! centrifugo connected (${channelModel.name} > ${channelModel.wsUrl})');
+
+      ChannelModel channelModelTransfer = ChannelModel((b) {
+        b
+          ..replace(channelModel)
+          ..serverConnectStatus = ServerConnectStatus.connected;
+
+        return b;
+      });
+      appGlobals.store.actions.channelActions.changeConnectStatus(channelModelTransfer);
+
       _connectStatusSubject.add(ServerConnectStatus.connected);
     });
 
     // disconnect sub
     _disconnectSub = _client.disconnectStream.listen((centrifuge.DisconnectEvent event) {
+      print('!!!!!!!! centrifugo disconnected (${channelModel.name} > ${channelModel.wsUrl})');
       _connectStatusSubject.add(ServerConnectStatus.disconnected);
     });
 
     // publish sub
     _publishSub = _subscription.publishStream.listen((centrifuge.PublishEvent event) {
+      print('!!!!!!!! centrifugo publish');
       // final Map<String, dynamic> message = json.decode(utf8.decode(event.data)) as Map<String, dynamic>;
     });
 
@@ -64,6 +85,7 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
 
   @override
   Future<void> disconnect() async {
+    print('>>> service disconnect');
     if (currentConnectStatus == ServerConnectStatus.connected) {
       _client?.disconnect();
     }

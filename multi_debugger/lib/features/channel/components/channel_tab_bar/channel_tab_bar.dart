@@ -19,15 +19,22 @@ class ChannelTabBar extends StatefulWidget {
 class _ChannelTabBarState extends State<ChannelTabBar> {
   TabBarBloc _bloc;
   final InputDecoration _inputDecoration = InputDecoration(
-    // contentPadding: const EdgeInsets.all(20.0),
     filled: true,
-    // isDense: true,
+    hintText: 'URL',
     fillColor: AppColors.background,
     border: OutlineInputBorder(
       borderSide: const BorderSide(color: AppColors.gray3),
       borderRadius: BorderRadius.circular(6.0),
     ),
     focusedBorder: OutlineInputBorder(
+      borderSide: const BorderSide(color: AppColors.gray3),
+      borderRadius: BorderRadius.circular(6.0),
+    ),
+    disabledBorder: OutlineInputBorder(
+      borderSide: const BorderSide(color: AppColors.gray3),
+      borderRadius: BorderRadius.circular(6.0),
+    ),
+    enabledBorder: OutlineInputBorder(
       borderSide: const BorderSide(color: AppColors.gray3),
       borderRadius: BorderRadius.circular(6.0),
     ),
@@ -57,6 +64,7 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
       padding: const EdgeInsets.only(top: 25.0, left: 15.0),
       child: Column(
         children: [
+          // channel name and user profile
           Row(
             children: [
               // channel info
@@ -65,7 +73,7 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
                 stream: _bloc.currentChannelModelStream,
                 builder: (_, snapshot) {
                   if (!snapshot.hasData) {
-                    return Text('no channel (TODO)');
+                    return const SizedBox();
                   }
 
                   final ChannelModel currentChannelModel = snapshot.data;
@@ -166,36 +174,55 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
             builder: (context, snapshot) {
               final ChannelModel channelModel = snapshot.data;
 
+              final bool hasCurrentChannel = channelModel != null;
               ServerConnectStatus serverConnectStatus = channelModel?.serverConnectStatus;
               serverConnectStatus ??= ServerConnectStatus.disconnected;
 
               // select url
               final bool inConnect = ServerConnectStatus.inConnect.contains(serverConnectStatus);
               // url
-              final bool urlEnabled = ServerConnectStatus.disconnected == serverConnectStatus;
+              final bool urlEnabled = hasCurrentChannel && ServerConnectStatus.disconnected == serverConnectStatus;
               // button
-              IconData icon;
+              Widget connectWidget = const Icon(
+                LoggerIcons.connect_1x,
+                color: AppColors.background,
+                size: 18.0,
+              );
               Color bgColor;
               String text;
 
               switch (serverConnectStatus) {
                 case ServerConnectStatus.disconnected:
-                  icon = LoggerIcons.connect_1x;
                   bgColor = AppColors.channelConnected;
                   text = 'CONNECT';
                   break;
                 case ServerConnectStatus.connecting:
-                  icon = LoggerIcons.loader_1x;
+                  connectWidget = const SizedBox(
+                    width: 18.0,
+                    height: 18.0,
+                    child: CircularProgressIndicator(),
+                  );
                   bgColor = AppColors.channelConnecting;
                   text = 'CONNECT';
                   break;
                 case ServerConnectStatus.connected:
-                  icon = LoggerIcons.disconnect_1x;
+                  connectWidget = const Icon(
+                    LoggerIcons.disconnect_1x,
+                    color: AppColors.background,
+                    size: 18.0,
+                  );
                   bgColor = AppColors.gray5;
                   text = 'DISCONNECT';
                   break;
-                default:
-                  icon = LoggerIcons.disconnect_1x;
+              }
+
+              Color selectUrlColor;
+              if (inConnect) {
+                selectUrlColor = AppColors.background;
+              } else if (!hasCurrentChannel) {
+                selectUrlColor = AppColors.gray3;
+              } else {
+                selectUrlColor = AppColors.bodyText2Color;
               }
 
               return Row(
@@ -207,13 +234,13 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
                     child: ButtonTheme(
                       minWidth: 126.0,
                       child: RaisedButton(
-                        onPressed: inConnect ? null : _bloc.showSelectUrl,
+                        onPressed: (inConnect || !hasCurrentChannel) ? null : _bloc.showSelectUrl,
                         disabledColor: AppColors.gray5,
                         child: Row(
                           children: [
                             Icon(
                               LoggerIcons.search_1x,
-                              color: inConnect ? AppColors.background : AppColors.gray5,
+                              color: inConnect ? AppColors.background : AppColors.gray3,
                               size: 18.0,
                             ),
                             const SizedBox(
@@ -222,7 +249,7 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
                             Text(
                               'Select URL',
                               style: TextStyle(
-                                color: inConnect ? AppColors.background : AppColors.bodyText2Color,
+                                color: selectUrlColor,
                                 fontSize: 15.0,
                               ),
                             ),
@@ -238,6 +265,8 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
                   ),
 
                   // url
+                  // ('ws://localhost:8001/connection/websocket?format=protobuf', 1),
+                  // ('ws://172.16.55.141:8001/connection/websocket?format=protobuf', 1);--operation_end
                   Expanded(
                     child: Container(
                       height: 45.0,
@@ -252,54 +281,52 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
                           fontSize: 15.0,
                         ),
                         textAlign: TextAlign.center,
-                        decoration: _inputDecoration.copyWith(hintText: 'URL'),
+                        decoration:
+                            inConnect ? _inputDecoration.copyWith(fillColor: AppColors.gray5) : _inputDecoration,
                       ),
                     ),
                   ),
 
                   // connect
-                  StreamBuilder<bool>(
-                    initialData: false,
-                    stream: _bloc.enabledConnectBtnStream,
-                    builder: (_, enabledSnapshot) {
-                      final bool enabled = enabledSnapshot.data ?? false;
+                  if (hasCurrentChannel)
+                    StreamBuilder<bool>(
+                      initialData: false,
+                      stream: _bloc.enabledConnectBtnStream,
+                      builder: (_, enabledSnapshot) {
+                        final bool enabled = enabledSnapshot.data ?? false;
 
-                      return Container(
-                        height: 36.0,
-                        padding: const EdgeInsets.only(left: 15.0),
-                        child: ButtonTheme(
-                          minWidth: 220.0,
-                          child: RaisedButton(
-                            onPressed: enabled ? () => _bloc.connect() : null,
-                            child: Row(
-                              children: [
-                                Icon(
-                                  icon,
-                                  color: AppColors.background,
-                                  size: 18.0,
-                                ),
-                                const SizedBox(
-                                  width: 8.0,
-                                ),
-                                Text(
-                                  text,
-                                  style: const TextStyle(
-                                    color: AppColors.background,
-                                    fontSize: 15.0,
+                        return Container(
+                          height: 36.0,
+                          padding: const EdgeInsets.only(left: 15.0),
+                          child: ButtonTheme(
+                            minWidth: 220.0,
+                            child: RaisedButton(
+                              onPressed: enabled ? () => _bloc.connect() : null,
+                              child: Row(
+                                children: [
+                                  connectWidget,
+                                  const SizedBox(
+                                    width: 8.0,
                                   ),
-                                ),
-                              ],
-                            ),
-                            color: bgColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(6.0),
-                              side: const BorderSide(color: AppColors.gray4),
+                                  Text(
+                                    text,
+                                    style: const TextStyle(
+                                      color: AppColors.background,
+                                      fontSize: 15.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              color: bgColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6.0),
+                                side: const BorderSide(color: AppColors.gray4),
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
+                        );
+                      },
+                    ),
                 ],
               );
             },

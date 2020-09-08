@@ -10,8 +10,10 @@ abstract class ChannelState implements Built<ChannelState, ChannelStateBuilder> 
 
   factory ChannelState([ChannelStateBuilder updates(ChannelStateBuilder builder)]) = _$ChannelState;
 
+  /// <channel id, model>
   BuiltMap<String, ChannelModel> get channels;
 
+  /// current selected channel
   ChannelModel get currentChannel {
     final Iterable<ChannelModel> channelModel = channels.values.where((ChannelModel cm) {
       return cm.isCurrent;

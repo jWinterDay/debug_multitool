@@ -12,6 +12,7 @@ NestedReducerBuilder<AppState, AppStateBuilder, ChannelState, ChannelStateBuilde
       ..add<ChannelModel>(ChannelActionsNames.addChannel, _addChannel)
       ..add<ChannelModel>(ChannelActionsNames.removeChannel, _removeChannel)
       ..add<ChannelModel>(ChannelActionsNames.updateChannel, _updateChannel)
+      ..add<ChannelModel>(ChannelActionsNames.changeConnectStatus, _changeConnectStatus)
       ..add<ChannelModel>(ChannelActionsNames.setCurrentChannel, _setCurrentChannel);
 
 void _addChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {
@@ -22,13 +23,26 @@ void _addChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBu
     return cm.rebuild((builder) => builder.isCurrent = false);
   });
 
+  // channel list
   builder.channels.putIfAbsent(channelModel.channelId, () => channelModel);
+
+  // service list
+  // final ServerCommunicateService service = di.get<ServerCommunicateService>();
+  // state.serverCommunicateServices.rebuild(() => null) putIfAbsent(channelModel.channelId, () => service);
 }
 
 void _removeChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {
   final ChannelModel channelModel = action.payload;
 
+  // channel list
   builder.channels.remove(channelModel.channelId);
+
+  // service list
+  // final ServerCommunicateService service =
+  //     builder.serverCommunicateServices[channelModel.channelId] as ServerCommunicateService;
+  // service.disconnect();
+  // service.dispose();
+  // builder.serverCommunicateServices.remove(channelModel.channelId);
 }
 
 void _updateChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {
@@ -43,6 +57,10 @@ void _updateChannel(ChannelState state, Action<ChannelModel> action, ChannelStat
       return channelModel;
     },
   );
+}
+
+void _changeConnectStatus(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {
+  _updateChannel(state, action, builder);
 }
 
 void _setCurrentChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {

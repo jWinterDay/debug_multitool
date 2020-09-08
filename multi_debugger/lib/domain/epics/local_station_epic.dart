@@ -19,13 +19,18 @@ class LocalStationEpic {
 
   Stream getComputerName(Stream<Action<dynamic>> stream, MiddlewareApi<AppState, AppStateBuilder, AppActions> api) {
     return stream
-        .where((Action<dynamic> action) => action.name == AppConfigActionsNames.fetchComputerName.name)
+        .where((Action<dynamic> action) {
+          return action.name == AppConfigActionsNames.fetchComputerName.name;
+        })
         .debounceTime(const Duration(seconds: 1))
-        .asyncMap((Action<dynamic> action) => localStationService.fetchComputerName())
+        .asyncMap((Action<dynamic> action) {
+          return localStationService.fetchComputerName();
+        })
         .doOnData((String name) {
-      api.actions.appConfigActions.setComputerName(name);
-    }).handleError((dynamic error) {
-      loggerService.e('getComputerName error: $error');
-    });
+          api.actions.appConfigActions.setComputerName(name);
+        })
+        .handleError((dynamic error) {
+          loggerService.e('getComputerName error: $error');
+        });
   }
 }

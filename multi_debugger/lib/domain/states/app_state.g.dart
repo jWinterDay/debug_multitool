@@ -10,13 +10,18 @@ class _$AppState extends AppState {
   @override
   final ChannelState channelState;
   @override
+  final ServerCommunicateServicesState serverCommunicateServicesState;
+  @override
   final AppConfigState appConfigState;
 
   factory _$AppState([void Function(AppStateBuilder) updates]) => (new AppStateBuilder()..update(updates)).build();
 
-  _$AppState._({this.channelState, this.appConfigState}) : super._() {
+  _$AppState._({this.channelState, this.serverCommunicateServicesState, this.appConfigState}) : super._() {
     if (channelState == null) {
       throw new BuiltValueNullFieldError('AppState', 'channelState');
+    }
+    if (serverCommunicateServicesState == null) {
+      throw new BuiltValueNullFieldError('AppState', 'serverCommunicateServicesState');
     }
     if (appConfigState == null) {
       throw new BuiltValueNullFieldError('AppState', 'appConfigState');
@@ -32,18 +37,23 @@ class _$AppState extends AppState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is AppState && channelState == other.channelState && appConfigState == other.appConfigState;
+    return other is AppState &&
+        channelState == other.channelState &&
+        serverCommunicateServicesState == other.serverCommunicateServicesState &&
+        appConfigState == other.appConfigState;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, channelState.hashCode), appConfigState.hashCode));
+    return $jf(
+        $jc($jc($jc(0, channelState.hashCode), serverCommunicateServicesState.hashCode), appConfigState.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('AppState')
           ..add('channelState', channelState)
+          ..add('serverCommunicateServicesState', serverCommunicateServicesState)
           ..add('appConfigState', appConfigState))
         .toString();
   }
@@ -56,6 +66,11 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   ChannelStateBuilder get channelState => _$this._channelState ??= new ChannelStateBuilder();
   set channelState(ChannelStateBuilder channelState) => _$this._channelState = channelState;
 
+  ServerCommunicateServicesState _serverCommunicateServicesState;
+  ServerCommunicateServicesState get serverCommunicateServicesState => _$this._serverCommunicateServicesState;
+  set serverCommunicateServicesState(ServerCommunicateServicesState serverCommunicateServicesState) =>
+      _$this._serverCommunicateServicesState = serverCommunicateServicesState;
+
   AppConfigStateBuilder _appConfigState;
   AppConfigStateBuilder get appConfigState => _$this._appConfigState ??= new AppConfigStateBuilder();
   set appConfigState(AppConfigStateBuilder appConfigState) => _$this._appConfigState = appConfigState;
@@ -65,6 +80,7 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   AppStateBuilder get _$this {
     if (_$v != null) {
       _channelState = _$v.channelState?.toBuilder();
+      _serverCommunicateServicesState = _$v.serverCommunicateServicesState;
       _appConfigState = _$v.appConfigState?.toBuilder();
       _$v = null;
     }
@@ -88,12 +104,17 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   _$AppState build() {
     _$AppState _$result;
     try {
-      _$result = _$v ?? new _$AppState._(channelState: channelState.build(), appConfigState: appConfigState.build());
+      _$result = _$v ??
+          new _$AppState._(
+              channelState: channelState.build(),
+              serverCommunicateServicesState: serverCommunicateServicesState,
+              appConfigState: appConfigState.build());
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'channelState';
         channelState.build();
+
         _$failedField = 'appConfigState';
         appConfigState.build();
       } catch (e) {

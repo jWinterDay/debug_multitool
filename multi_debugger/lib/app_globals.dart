@@ -32,9 +32,7 @@ class AppGlobals {
   Future<void> _initStore() async {
     _store = Store<AppState, AppStateBuilder, AppActions>(
       reducers,
-      AppState(
-        (builder) => builder..appConfigState = AppConfigState().toBuilder(),
-      ),
+      AppState(),
       AppActions(),
       middleware: appMiddlewares,
     );

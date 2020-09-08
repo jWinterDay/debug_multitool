@@ -3,6 +3,7 @@ import 'package:multi_debugger/di/app_di.dart';
 // import 'package:multi_debugger/di/app_di.dart';
 import 'package:multi_debugger/domain/actions/actions.dart';
 import 'package:multi_debugger/domain/built_redux_rx.dart';
+import 'package:multi_debugger/domain/epics/server_connect_epic.dart';
 import 'package:multi_debugger/domain/middlewares/navigation_middleware.dart';
 import 'package:multi_debugger/domain/epics/local_station_epic.dart';
 import 'package:multi_debugger/domain/states/states.dart';
@@ -17,5 +18,6 @@ Iterable<Middleware<AppState, AppStateBuilder, AppActions>> get appMiddlewares =
       // epics
       createEpicMiddleware([
         di.get<LocalStationEpic>().getComputerName,
+        di.get<ServerConnectEpic>().connect,
       ]),
     ];
