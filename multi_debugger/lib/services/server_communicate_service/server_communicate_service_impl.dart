@@ -4,9 +4,9 @@ import 'dart:convert';
 import 'package:centrifuge/centrifuge.dart' as centrifuge;
 import 'package:flutter/foundation.dart';
 import 'package:multi_debugger/app_globals.dart';
-import 'package:multi_debugger/domain/models/models.dart' show ChannelModel, ServerConnectStatus;
+import 'package:multi_debugger/domain/base/pair.dart';
+import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/services/logger_service/logger_service.dart';
-import 'package:rxdart/rxdart.dart';
 
 import 'server_communicate_service.dart';
 
@@ -21,10 +21,6 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
           appGlobals: appGlobals,
         );
 
-  final BehaviorSubject<ServerConnectStatus> _connectStatusSubject = BehaviorSubject<ServerConnectStatus>();
-  Stream<ServerConnectStatus> get connectStatusStream => _connectStatusSubject.stream;
-  ServerConnectStatus get currentConnectStatus => _connectStatusSubject.value;
-
   centrifuge.Client _client;
   centrifuge.Subscription _subscription;
   StreamSubscription<centrifuge.ConnectEvent> _connectSub;
@@ -38,22 +34,18 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
 
   @override
   void dispose() {
-    _connectStatusSubject.close();
-
     super.dispose();
   }
 
   @override
   Future<void> connect(ChannelModel channelModel, {centrifuge.ClientConfig clientConfig}) async {
-    print('>>> service connect');
-    _connectStatusSubject.add(ServerConnectStatus.connecting);
+    loggerService.d('service connect for channel id: ${channelModel.channelId}');
     _client = centrifuge.createClient(channelModel.wsUrl);
     _subscription = _client.getSubscription(channelModel.name);
 
     // connect sub
     _connectSub = _client.connectStream.listen((centrifuge.ConnectEvent event) {
-      print('!!!!!!!! centrifugo connected (${channelModel.name} > ${channelModel.wsUrl})');
-
+      // channel connect status
       ChannelModel channelModelTransfer = ChannelModel((b) {
         b
           ..replace(channelModel)
@@ -63,18 +55,38 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
       });
       appGlobals.store.actions.channelActions.changeConnectStatus(channelModelTransfer);
 
-      _connectStatusSubject.add(ServerConnectStatus.connected);
+      // server event -> connect
+      ServerEvent serverEvent = ServerEvent((b) {
+        b
+          ..action = 'connect'
+          ..serverEventType = ServerEventType.connect;
+
+        return b;
+      });
+
+      Pair<String, ServerEvent> event = Pair(channelModel.channelId, serverEvent);
+      appGlobals.store.actions.serverEventActions.addEvent(event);
     });
 
     // disconnect sub
     _disconnectSub = _client.disconnectStream.listen((centrifuge.DisconnectEvent event) {
-      print('!!!!!!!! centrifugo disconnected (${channelModel.name} > ${channelModel.wsUrl})');
-      _connectStatusSubject.add(ServerConnectStatus.disconnected);
+      loggerService.d('service disconnect for channel id: ${channelModel.channelId}');
+
+      // server event -> disconnect
+      ServerEvent serverEvent = ServerEvent((b) {
+        b
+          ..action = 'disconnect'
+          ..serverEventType = ServerEventType.disconnect;
+
+        return b;
+      });
+
+      Pair<String, ServerEvent> event = Pair(channelModel.channelId, serverEvent);
+      appGlobals.store.actions.serverEventActions.addEvent(event);
     });
 
     // publish sub
     _publishSub = _subscription.publishStream.listen((centrifuge.PublishEvent event) {
-      print('!!!!!!!! centrifugo publish');
       // final Map<String, dynamic> message = json.decode(utf8.decode(event.data)) as Map<String, dynamic>;
     });
 
@@ -85,10 +97,7 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
 
   @override
   Future<void> disconnect() async {
-    print('>>> service disconnect');
-    if (currentConnectStatus == ServerConnectStatus.connected) {
-      _client?.disconnect();
-    }
+    _client?.disconnect();
 
     Future<void>.delayed(const Duration(milliseconds: 200), () {
       _connectSub?.cancel();
@@ -97,8 +106,6 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
     });
 
     _subscription?.unsubscribe();
-    _connectStatusSubject.add(ServerConnectStatus.disconnected);
-    _client = null;
   }
 
   @override

@@ -189,12 +189,11 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
                 size: 18.0,
               );
               Color bgColor;
-              String text;
+              String text = 'CONNECT';
 
               switch (serverConnectStatus) {
                 case ServerConnectStatus.disconnected:
                   bgColor = AppColors.channelConnected;
-                  text = 'CONNECT';
                   break;
                 case ServerConnectStatus.connecting:
                   connectWidget = const SizedBox(
@@ -203,7 +202,6 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
                     child: CircularProgressIndicator(),
                   );
                   bgColor = AppColors.channelConnecting;
-                  text = 'CONNECT';
                   break;
                 case ServerConnectStatus.connected:
                   connectWidget = const Icon(

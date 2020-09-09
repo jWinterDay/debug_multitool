@@ -138,6 +138,7 @@ class _SelectUrlState extends State<SelectUrlScreen> {
                   Container(
                     padding: const EdgeInsets.only(left: 5.0),
                     child: InkWell(
+                      borderRadius: BorderRadius.circular(20.0),
                       hoverColor: AppColors.gray2,
                       onTap: () => _bloc.deletetUrl(savedUrl),
                       child: Container(

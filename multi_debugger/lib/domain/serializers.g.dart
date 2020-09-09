@@ -13,6 +13,7 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(LocalSettingsState.serializer)
       ..add(SavedUrlState.serializer)
       ..add(ServerConnectStatus.serializer)
+      ..add(ServerEventType.serializer)
       ..addBuilderFactory(const FullType(BuiltList, const [const FullType(String)]), () => new ListBuilder<String>())
       ..addBuilderFactory(const FullType(BuiltList, const [const FullType(String)]), () => new ListBuilder<String>())
       ..addBuilderFactory(const FullType(BuiltMap, const [const FullType(String), const FullType(ChannelModel)]),

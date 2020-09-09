@@ -36,9 +36,19 @@ class ServerConnectEpic {
         default:
       }
 
-      print('nextStatus = $nextStatus');
+      print('epic!!!! > nextStatus = $nextStatus > ${action.name}');
 
-      print('epic!!!! > ${action.name}');
+      //     final ChannelModel channelModel = action.payload;
+
+      // builder.channels.updateValue(
+      //   channelModel.channelId,
+      //   (ChannelModel _) {
+      //     return channelModel;
+      //   },
+      //   ifAbsent: () {
+      //     return channelModel;
+      //   },
+      // );
       // api.actions.appConfigActions.setComputerName(name);
     }).handleError((dynamic error) {
       loggerService.e('connect error: $error', 'ServerConnectEpic', StackTrace.current);

@@ -4,7 +4,6 @@ import 'package:built_value/serializer.dart';
 
 part 'server_connect_status.g.dart';
 
-/// Тип линии
 class ServerConnectStatus extends EnumClass {
   const ServerConnectStatus._(String name) : super(name);
 

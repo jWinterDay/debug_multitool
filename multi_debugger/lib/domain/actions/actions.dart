@@ -1,6 +1,7 @@
 import 'package:built_redux/built_redux.dart';
 import 'package:multi_debugger/domain/actions/app_config_actions.dart';
 import 'package:multi_debugger/domain/actions/saved_url_actions.dart';
+import 'package:multi_debugger/domain/actions/server_event_actions.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 
 import 'channel_actions.dart';
@@ -20,4 +21,6 @@ abstract class AppActions extends ReduxActions {
   AppConfigActions get appConfigActions;
 
   SavedUrlActions get savedUrlActions;
+
+  ServerEventActions get serverEventActions;
 }

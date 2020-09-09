@@ -14,11 +14,18 @@ class _$AppState extends AppState {
   @override
   final SavedUrlState savedUrlState;
   @override
+  final ServerEventState serverEventState;
+  @override
   final ServerCommunicateServicesState serverCommunicateServicesState;
 
   factory _$AppState([void Function(AppStateBuilder) updates]) => (new AppStateBuilder()..update(updates)).build();
 
-  _$AppState._({this.appConfigState, this.channelState, this.savedUrlState, this.serverCommunicateServicesState})
+  _$AppState._(
+      {this.appConfigState,
+      this.channelState,
+      this.savedUrlState,
+      this.serverEventState,
+      this.serverCommunicateServicesState})
       : super._() {
     if (appConfigState == null) {
       throw new BuiltValueNullFieldError('AppState', 'appConfigState');
@@ -28,6 +35,9 @@ class _$AppState extends AppState {
     }
     if (savedUrlState == null) {
       throw new BuiltValueNullFieldError('AppState', 'savedUrlState');
+    }
+    if (serverEventState == null) {
+      throw new BuiltValueNullFieldError('AppState', 'serverEventState');
     }
     if (serverCommunicateServicesState == null) {
       throw new BuiltValueNullFieldError('AppState', 'serverCommunicateServicesState');
@@ -47,12 +57,15 @@ class _$AppState extends AppState {
         appConfigState == other.appConfigState &&
         channelState == other.channelState &&
         savedUrlState == other.savedUrlState &&
+        serverEventState == other.serverEventState &&
         serverCommunicateServicesState == other.serverCommunicateServicesState;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc($jc(0, appConfigState.hashCode), channelState.hashCode), savedUrlState.hashCode),
+    return $jf($jc(
+        $jc($jc($jc($jc(0, appConfigState.hashCode), channelState.hashCode), savedUrlState.hashCode),
+            serverEventState.hashCode),
         serverCommunicateServicesState.hashCode));
   }
 
@@ -62,6 +75,7 @@ class _$AppState extends AppState {
           ..add('appConfigState', appConfigState)
           ..add('channelState', channelState)
           ..add('savedUrlState', savedUrlState)
+          ..add('serverEventState', serverEventState)
           ..add('serverCommunicateServicesState', serverCommunicateServicesState))
         .toString();
   }
@@ -82,6 +96,10 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   SavedUrlStateBuilder get savedUrlState => _$this._savedUrlState ??= new SavedUrlStateBuilder();
   set savedUrlState(SavedUrlStateBuilder savedUrlState) => _$this._savedUrlState = savedUrlState;
 
+  ServerEventStateBuilder _serverEventState;
+  ServerEventStateBuilder get serverEventState => _$this._serverEventState ??= new ServerEventStateBuilder();
+  set serverEventState(ServerEventStateBuilder serverEventState) => _$this._serverEventState = serverEventState;
+
   ServerCommunicateServicesState _serverCommunicateServicesState;
   ServerCommunicateServicesState get serverCommunicateServicesState => _$this._serverCommunicateServicesState;
   set serverCommunicateServicesState(ServerCommunicateServicesState serverCommunicateServicesState) =>
@@ -94,6 +112,7 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
       _appConfigState = _$v.appConfigState?.toBuilder();
       _channelState = _$v.channelState?.toBuilder();
       _savedUrlState = _$v.savedUrlState?.toBuilder();
+      _serverEventState = _$v.serverEventState?.toBuilder();
       _serverCommunicateServicesState = _$v.serverCommunicateServicesState;
       _$v = null;
     }
@@ -122,6 +141,7 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
               appConfigState: appConfigState.build(),
               channelState: channelState.build(),
               savedUrlState: savedUrlState.build(),
+              serverEventState: serverEventState.build(),
               serverCommunicateServicesState: serverCommunicateServicesState);
     } catch (_) {
       String _$failedField;
@@ -132,6 +152,8 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
         channelState.build();
         _$failedField = 'savedUrlState';
         savedUrlState.build();
+        _$failedField = 'serverEventState';
+        serverEventState.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError('AppState', _$failedField, e.toString());
       }
