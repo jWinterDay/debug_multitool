@@ -265,8 +265,6 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
                   ),
 
                   // url
-                  // ('ws://localhost:8001/connection/websocket?format=protobuf', 1),
-                  // ('ws://172.16.55.141:8001/connection/websocket?format=protobuf', 1);--operation_end
                   Expanded(
                     child: Container(
                       height: 45.0,

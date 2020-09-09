@@ -8,18 +8,13 @@ part of 'saved_url.dart';
 
 class _$SavedUrl extends SavedUrl {
   @override
-  final String savedUrlId;
-  @override
   final String url;
   @override
   final bool custom;
 
   factory _$SavedUrl([void Function(SavedUrlBuilder) updates]) => (new SavedUrlBuilder()..update(updates)).build();
 
-  _$SavedUrl._({this.savedUrlId, this.url, this.custom}) : super._() {
-    if (savedUrlId == null) {
-      throw new BuiltValueNullFieldError('SavedUrl', 'savedUrlId');
-    }
+  _$SavedUrl._({this.url, this.custom}) : super._() {
     if (url == null) {
       throw new BuiltValueNullFieldError('SavedUrl', 'url');
     }
@@ -37,30 +32,22 @@ class _$SavedUrl extends SavedUrl {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is SavedUrl && savedUrlId == other.savedUrlId && url == other.url && custom == other.custom;
+    return other is SavedUrl && url == other.url && custom == other.custom;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, savedUrlId.hashCode), url.hashCode), custom.hashCode));
+    return $jf($jc($jc(0, url.hashCode), custom.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('SavedUrl')
-          ..add('savedUrlId', savedUrlId)
-          ..add('url', url)
-          ..add('custom', custom))
-        .toString();
+    return (newBuiltValueToStringHelper('SavedUrl')..add('url', url)..add('custom', custom)).toString();
   }
 }
 
 class SavedUrlBuilder implements Builder<SavedUrl, SavedUrlBuilder> {
   _$SavedUrl _$v;
-
-  String _savedUrlId;
-  String get savedUrlId => _$this._savedUrlId;
-  set savedUrlId(String savedUrlId) => _$this._savedUrlId = savedUrlId;
 
   String _url;
   String get url => _$this._url;
@@ -76,7 +63,6 @@ class SavedUrlBuilder implements Builder<SavedUrl, SavedUrlBuilder> {
 
   SavedUrlBuilder get _$this {
     if (_$v != null) {
-      _savedUrlId = _$v.savedUrlId;
       _url = _$v.url;
       _custom = _$v.custom;
       _$v = null;
@@ -99,7 +85,7 @@ class SavedUrlBuilder implements Builder<SavedUrl, SavedUrlBuilder> {
 
   @override
   _$SavedUrl build() {
-    final _$result = _$v ?? new _$SavedUrl._(savedUrlId: savedUrlId, url: url, custom: custom);
+    final _$result = _$v ?? new _$SavedUrl._(url: url, custom: custom);
     replace(_$result);
     return _$result;
   }

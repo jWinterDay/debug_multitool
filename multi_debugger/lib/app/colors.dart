@@ -41,6 +41,8 @@ class AppColors {
 
   static Color get channelInactiveTitle => bodyText2Color;
 
+  static const Color trash = Colors.red;
+
   static const Color transparent = Colors.transparent;
 
   static const Color primaryColor = Colors.blue;

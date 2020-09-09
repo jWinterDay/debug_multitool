@@ -16,11 +16,11 @@ class LocalStorageServiceImpl extends LocalStorageService {
   @override
   Future<List<SavedUrl>> fetchSavedUrlList() async {
     SavedUrl savedUrl = SavedUrl((b) => b
-      ..url = 'fsdfs'
+      ..url = 'ws://localhost:8001/connection/websocket?format=protobuf'
       ..custom = false);
     SavedUrl savedUrl2 = SavedUrl((b) => b
-      ..url = 'fsdfs2'
-      ..custom = false);
+      ..url = 'ws://172.16.55.141:8001/connection/websocket?format=protobuf'
+      ..custom = true);
 
     return [
       savedUrl,

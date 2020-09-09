@@ -31,6 +31,10 @@ void _addAllUrl(SavedUrlState state, Action<Iterable<SavedUrl>> action, SavedUrl
 void _deleteUrl(SavedUrlState state, Action<SavedUrl> action, SavedUrlStateBuilder builder) {
   final SavedUrl savedUrl = action.payload;
 
+  if (!savedUrl.custom) {
+    return;
+  }
+
   // channel list
   builder.urls.remove(savedUrl.savedUrlId);
 }

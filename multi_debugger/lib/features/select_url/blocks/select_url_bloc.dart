@@ -63,19 +63,23 @@ class SelectUrlBloc extends BaseBloc {
     );
   }
 
-  // add new custom url (TEST)
-  void selectUrl(String urlId) {
-    // SavedUrl savedUrl = SavedUrl((b) => b..url = url);
-
-    // appGlobals.store.actions.savedUrlActions.addUrl(savedUrl);
+  void deletetUrl(SavedUrl savedUrl) {
+    appGlobals.store.actions.savedUrlActions.deleteUrl(savedUrl);
   }
 
   // add new custom url (TEST)
-  void addUrl(String url) {
-    SavedUrl savedUrl = SavedUrl((b) => b..url = url);
+  // void selectUrl(String urlId) {
+  //   // SavedUrl savedUrl = SavedUrl((b) => b..url = url);
 
-    appGlobals.store.actions.savedUrlActions.addUrl(savedUrl);
-  }
+  //   // appGlobals.store.actions.savedUrlActions.addUrl(savedUrl);
+  // }
+
+  // add new custom url (TEST)
+  // void addUrl(String url) {
+  //   SavedUrl savedUrl = SavedUrl((b) => b..url = url);
+
+  //   appGlobals.store.actions.savedUrlActions.addUrl(savedUrl);
+  // }
   // void showSelectUrl(BuildContext context) {
   //   appGlobals.store.actions.routeTo(
   //     AppRoute((builder) => builder

@@ -6,6 +6,7 @@ import 'package:multi_debugger/app/colors.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/saved_url_state.dart';
 import 'package:multi_debugger/features/select_url/blocks/select_url_bloc.dart';
+import 'package:multi_debugger/tools/logger_icons.dart';
 
 class SelectUrlScreen extends StatefulWidget {
   const SelectUrlScreen({
@@ -94,7 +95,7 @@ class _SelectUrlState extends State<SelectUrlScreen> {
                             // custom urls
                             _sliverTitle('CUSTOM'),
 
-                            ..._sliverItems(customSavedUrlList),
+                            ..._sliverItems(customSavedUrlList, canRemove: true),
                           ],
                         );
                       },
@@ -109,7 +110,7 @@ class _SelectUrlState extends State<SelectUrlScreen> {
     );
   }
 
-  List<Widget> _sliverItems(List<SavedUrl> savedUrlList) {
+  List<Widget> _sliverItems(List<SavedUrl> savedUrlList, {bool canRemove = false}) {
     return savedUrlList.map((SavedUrl savedUrl) {
       return SliverToBoxAdapter(
         child: InkWell(
@@ -123,11 +124,35 @@ class _SelectUrlState extends State<SelectUrlScreen> {
                 ),
               ),
             ),
-            child: Text(
-              savedUrl.url, // "ws://172.16.55.141:80012/connection/websocket?format=protobuf",
-              style: const TextStyle(
-                fontSize: 15.0,
-              ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    savedUrl.url,
+                    style: const TextStyle(
+                      fontSize: 15.0,
+                    ),
+                  ),
+                ),
+                if (canRemove)
+                  Container(
+                    padding: const EdgeInsets.only(left: 5.0),
+                    child: InkWell(
+                      hoverColor: AppColors.gray2,
+                      onTap: () => _bloc.deletetUrl(savedUrl),
+                      child: Container(
+                        color: AppColors.transparent,
+                        padding: const EdgeInsets.all(8.0),
+                        alignment: Alignment.topCenter,
+                        child: const Icon(
+                          LoggerIcons.trash_1x,
+                          size: 20.0,
+                          color: AppColors.trash,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         ),
@@ -137,27 +162,23 @@ class _SelectUrlState extends State<SelectUrlScreen> {
 
   Widget _sliverTitle(String title) {
     return SliverToBoxAdapter(
-      child: InkWell(
-        onTap: () => _bloc.addUrl('test'),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0).copyWith(top: 15.0, bottom: 10.0),
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: AppColors.gray3,
-              ),
-            ),
-          ),
-          child: Text(
-            title,
-            style: const TextStyle(
-              color: AppColors.gray5,
-              fontSize: 13.0,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 15.0).copyWith(top: 15.0, bottom: 10.0),
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: AppColors.gray3,
             ),
           ),
         ),
+        child: Text(
+          title,
+          style: const TextStyle(
+            color: AppColors.gray5,
+            fontSize: 13.0,
+          ),
+        ),
       ),
-      // Text('fsdfsd'),
     );
   }
 }
