@@ -234,7 +234,7 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
                     child: ButtonTheme(
                       minWidth: 126.0,
                       child: RaisedButton(
-                        onPressed: (inConnect || !hasCurrentChannel) ? null : _bloc.showSelectUrl,
+                        onPressed: (inConnect || !hasCurrentChannel) ? null : () => _bloc.showSelectUrl(context),
                         disabledColor: AppColors.gray5,
                         child: Row(
                           children: [

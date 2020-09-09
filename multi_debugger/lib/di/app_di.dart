@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_simple_dependency_injection/injector.dart';
 import 'package:multi_debugger/app_globals.dart';
-import 'package:multi_debugger/domain/epics/local_station_epic.dart';
+import 'package:multi_debugger/domain/epics/local_epic.dart';
 import 'package:multi_debugger/domain/epics/remote_epic.dart';
 import 'package:multi_debugger/domain/epics/server_connect_epic.dart';
 import 'package:multi_debugger/services/local_station_service/local_station_service.dart';
@@ -77,9 +77,10 @@ class AppDI {
       )
 
       // local station epic
-      ..map<LocalStationEpic>(
-        (Injector injector) => LocalStationEpic(
+      ..map<LocalEpic>(
+        (Injector injector) => LocalEpic(
           localStationService: di.get<LocalStationService>(),
+          localStorageService: di.get<LocalStorageService>(),
           loggerService: loggerService,
         ),
         isSingleton: true,

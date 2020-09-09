@@ -1,0 +1,163 @@
+import 'dart:math' as math;
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:multi_debugger/app/colors.dart';
+import 'package:multi_debugger/domain/models/models.dart';
+import 'package:multi_debugger/domain/states/saved_url_state.dart';
+import 'package:multi_debugger/features/select_url/blocks/select_url_bloc.dart';
+
+class SelectUrlScreen extends StatefulWidget {
+  const SelectUrlScreen({
+    Key key,
+    this.channelModel,
+  }) : super(key: key);
+
+  final ChannelModel channelModel;
+
+  @override
+  _SelectUrlState createState() => _SelectUrlState();
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<ChannelModel>('channelModel', channelModel));
+  }
+}
+
+class _SelectUrlState extends State<SelectUrlScreen> {
+  SelectUrlBloc _bloc;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _bloc = SelectUrlBloc()..init();
+  }
+
+  @override
+  void dispose() {
+    _bloc.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
+    final double w = math.max(size.width / 3, 380);
+    final double h = math.max(size.height / 3, 316);
+
+    return Center(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(18.0),
+        child: SizedBox(
+          width: w,
+          height: h,
+          child: Scaffold(
+            backgroundColor: AppColors.background,
+            body: Center(
+              child: Column(
+                children: [
+                  // caption
+                  Container(
+                    padding: const EdgeInsets.only(top: 25.0),
+                    child: const Text(
+                      'Saved URL',
+                      style: const TextStyle(
+                        color: AppColors.gray6,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 22.0,
+                      ),
+                    ),
+                  ),
+
+                  Expanded(
+                    child: StreamBuilder<SavedUrlState>(
+                      initialData: _bloc.initSavedUrlState,
+                      stream: _bloc.savedUrlStateStream,
+                      builder: (_, snapshot) {
+                        final SavedUrlState state = snapshot.data;
+
+                        final List<SavedUrl> constSavedUrlList = _bloc.filterSavedUrl(state, custom: false);
+                        final List<SavedUrl> customSavedUrlList = _bloc.filterSavedUrl(state);
+
+                        return CustomScrollView(
+                          physics: const ClampingScrollPhysics(),
+                          slivers: [
+                            // constant urls
+                            _sliverTitle('CONSTANT'),
+
+                            ..._sliverItems(constSavedUrlList),
+
+                            // custom urls
+                            _sliverTitle('CUSTOM'),
+
+                            ..._sliverItems(customSavedUrlList),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _sliverItems(List<SavedUrl> savedUrlList) {
+    return savedUrlList.map((SavedUrl savedUrl) {
+      return SliverToBoxAdapter(
+        child: InkWell(
+          onTap: () => _bloc.pop(context, savedUrl.url),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 12.0),
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: AppColors.gray3,
+                ),
+              ),
+            ),
+            child: Text(
+              savedUrl.url, // "ws://172.16.55.141:80012/connection/websocket?format=protobuf",
+              style: const TextStyle(
+                fontSize: 15.0,
+              ),
+            ),
+          ),
+        ),
+      );
+    }).toList();
+  }
+
+  Widget _sliverTitle(String title) {
+    return SliverToBoxAdapter(
+      child: InkWell(
+        onTap: () => _bloc.addUrl('test'),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0).copyWith(top: 15.0, bottom: 10.0),
+          decoration: const BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: AppColors.gray3,
+              ),
+            ),
+          ),
+          child: Text(
+            title,
+            style: const TextStyle(
+              color: AppColors.gray5,
+              fontSize: 13.0,
+            ),
+          ),
+        ),
+      ),
+      // Text('fsdfsd'),
+    );
+  }
+}

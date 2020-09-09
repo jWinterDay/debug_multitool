@@ -12,6 +12,7 @@ part 'serializers.g.dart';
   ChannelState,
   AppConfigState,
   LocalSettingsState,
+  SavedUrlState,
 
   // models
   ChannelModel,

@@ -1,6 +1,7 @@
 import 'package:built_value/built_value.dart';
 import 'package:multi_debugger/domain/states/app_config_state.dart';
 import 'package:multi_debugger/domain/states/channel_state.dart';
+import 'package:multi_debugger/domain/states/saved_url_state.dart';
 import 'package:multi_debugger/domain/states/server_communicate_services_state.dart';
 
 part 'app_state.g.dart';
@@ -12,14 +13,17 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
     return _$AppState(
       (builder) => builder
         ..appConfigState = AppConfigState((builder) => builder).toBuilder()
+        ..savedUrlState = SavedUrlState().toBuilder()
         ..serverCommunicateServicesState = ServerCommunicateServicesState()
         ..update(updates),
     );
   }
 
+  AppConfigState get appConfigState;
+
   ChannelState get channelState;
 
-  ServerCommunicateServicesState get serverCommunicateServicesState;
+  SavedUrlState get savedUrlState;
 
-  AppConfigState get appConfigState;
+  ServerCommunicateServicesState get serverCommunicateServicesState;
 }

@@ -19,6 +19,7 @@ class _$AppActions extends AppActions {
 
   final channelActions = ChannelActions();
   final appConfigActions = AppConfigActions();
+  final savedUrlActions = SavedUrlActions();
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
@@ -26,6 +27,7 @@ class _$AppActions extends AppActions {
 
     channelActions.setDispatcher(dispatcher);
     appConfigActions.setDispatcher(dispatcher);
+    savedUrlActions.setDispatcher(dispatcher);
   }
 }
 

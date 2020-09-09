@@ -1,7 +1,9 @@
 class AppRoutes {
   AppRoutes._();
 
-  static const editChannel = 'editChannel';
+  static const String editChannel = 'editChannel';
 
-  static const pop = 'pop';
+  static const String pop = 'pop';
+
+  static const String selectUrl = 'selectUrl';
 }

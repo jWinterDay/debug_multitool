@@ -7,6 +7,7 @@ import 'package:multi_debugger/app_routes.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/states.dart';
 import 'package:multi_debugger/features/channel/components/edit_tab_bar/edit_tab_bar.dart';
+import 'package:multi_debugger/features/select_url/widgets/select_url_screen.dart';
 
 MiddlewareBuilder<AppState, AppStateBuilder, AppActions> createNavigationMiddleware() {
   return MiddlewareBuilder<AppState, AppStateBuilder, AppActions>()..add(AppActionsNames.routeTo, _routeTo);
@@ -30,10 +31,12 @@ void _routeTo(
   _activeRoute = payload.route;
 
   switch (payload.route) {
+    // pop any screen
     case AppRoutes.pop:
       Navigator.of(_activeRouteContext).pop(payload.bundle);
       break;
 
+    // edit or add channel
     case AppRoutes.editChannel:
       await showGeneralDialog<void>(
         context: _activeRouteContext,
@@ -43,6 +46,21 @@ void _routeTo(
         transitionDuration: const Duration(milliseconds: 300),
         pageBuilder: (_, __, ___) {
           return const EditTabBarScreen();
+        },
+      );
+
+      break;
+
+    // select url
+    case AppRoutes.selectUrl:
+      await showGeneralDialog<void>(
+        context: _activeRouteContext,
+        barrierDismissible: true,
+        barrierLabel: MaterialLocalizations.of(_activeRouteContext).modalBarrierDismissLabel,
+        barrierColor: AppColors.dialogBarrierColor,
+        transitionDuration: const Duration(milliseconds: 300),
+        pageBuilder: (_, __, ___) {
+          return const SelectUrlScreen();
         },
       );
 

@@ -84,7 +84,6 @@ class _EditTabBarScreenState extends State<EditTabBarScreen> {
                       style: const TextStyle(
                         color: AppColors.gray6,
                         fontWeight: FontWeight.w700,
-                        fontStyle: FontStyle.normal,
                         fontSize: 22.0,
                       ),
                     ),

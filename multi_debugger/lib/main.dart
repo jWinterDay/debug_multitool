@@ -15,6 +15,7 @@ Future<void> main() async {
       await di.get<AppGlobals>().init();
 
       di.get<AppGlobals>().store.actions.appConfigActions.fetchComputerName();
+      di.get<AppGlobals>().store.actions.appConfigActions.fetchLocalSettings();
 
       runApp(const App());
     },

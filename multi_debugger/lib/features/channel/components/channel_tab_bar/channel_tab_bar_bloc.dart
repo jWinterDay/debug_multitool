@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:multi_debugger/app_routes.dart';
 import 'package:multi_debugger/domain/base/base_bloc.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/states.dart';
@@ -76,8 +77,12 @@ class TabBarBloc extends BaseBloc {
     });
   }
 
-  void showSelectUrl() {
-    //
+  void showSelectUrl(BuildContext context) {
+    appGlobals.store.actions.routeTo(
+      AppRoute((builder) => builder
+        ..route = AppRoutes.selectUrl
+        ..context = context),
+    );
   }
 
   void connect() {
