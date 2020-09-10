@@ -53,10 +53,15 @@ class ActionsViewBloc extends BaseBloc {
         return null;
       }
 
-      List<ServerEvent> eventList = serverEventState.getEventsForChannel(currentChannel.channelId);
+      List<ServerEvent> eventList = serverEventState.getEventsForChannel(currentChannel);
 
       return eventList;
-    }).listen((List<ServerEvent> eventList) {
+    })
+        // .distinct((List<ServerEvent> prev, List<ServerEvent> next) {
+        //   print('prev = ${prev.hashCode}, next = ${next.hashCode} eq = ${prev == next}');
+        //   return (prev?.length ?? 0) == (next?.length ?? 0); // false; //prev == next;
+        // })
+        .listen((List<ServerEvent> eventList) {
       _serverEventListSubject.add(eventList);
     });
   }

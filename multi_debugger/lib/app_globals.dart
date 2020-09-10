@@ -26,6 +26,8 @@ class AppGlobals {
   Future<void> init() async {
     await _initStore();
     await _initLocalSettingsState();
+
+    loggerService.setLoggerLevel(_store.state.appConfigState.localSettings.loggerLevel);
   }
 
   // init redux store

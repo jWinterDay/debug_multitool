@@ -7,6 +7,11 @@ class LoggerServiceImpl extends LoggerService {
   Logger _logger;
 
   @override
+  void setLoggerLevel(Level level) {
+    Logger.level = level;
+  }
+
+  @override
   void init() {
     super.init();
 

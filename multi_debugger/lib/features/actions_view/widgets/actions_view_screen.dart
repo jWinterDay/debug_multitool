@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:multi_debugger/app/colors.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/features/actions_view/blocks/actions_view_bloc.dart';
+import 'package:multi_debugger/tools/logger_icons.dart';
 
 class ActionsViewScreen extends StatefulWidget {
   const ActionsViewScreen({
@@ -115,8 +116,9 @@ class _ActionsViewState extends State<ActionsViewScreen> {
                     ),
                   ),
                   Container(
-                    width: 40.0,
+                    // width: 40.0,
                     alignment: Alignment.center,
+                    padding: const EdgeInsets.only(right: 34.0),
                     child: const Text(
                       'Black',
                       style: TextStyle(
@@ -141,7 +143,10 @@ class _ActionsViewState extends State<ActionsViewScreen> {
                 return const Center(
                   child: Text(
                     'No actions',
-                    style: const TextStyle(color: AppColors.gray6, fontSize: 17.0),
+                    style: const TextStyle(
+                      color: AppColors.gray6,
+                      fontSize: 17.0,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 );
@@ -149,21 +154,78 @@ class _ActionsViewState extends State<ActionsViewScreen> {
 
               final List<ServerEvent> serverEventList = snapshot.data;
 
-              // final List<List<ServerEvent>> t = serverEventState.events.values.toList();
-              // final List<ServerEvent> tlist = t.isEmpty ? [] : t.first;
-              // final List<String> actions = serverEventState.events.keys.toList();
-
               List<Widget> sliverList = serverEventList.map((ServerEvent serverEvent) {
+                final Color textColor = serverEvent.serverEventType == ServerEventType.connect
+                    ? AppColors.positive
+                    : AppColors.bodyText2Color;
+
                 return SliverToBoxAdapter(
-                  child: Text(serverEvent.action),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12.0).copyWith(left: 15.0),
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: AppColors.gray3,
+                        ),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        // action name
+                        Expanded(
+                          child: Text(
+                            serverEvent.action,
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: 15.0,
+                            ),
+                          ),
+                        ),
+
+                        // repeat
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: Icon(
+                            LoggerIcons.repeat_1x,
+                            color: AppColors.gray3,
+                            size: 20.0,
+                          ),
+                        ),
+
+                        // favorite
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: Icon(
+                            LoggerIcons.favoriteNull_1x,
+                            color: AppColors.gray3,
+                            size: 20.0,
+                          ),
+                        ),
+
+                        // white list
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: Icon(
+                            LoggerIcons.whitelistNull_1x,
+                            color: AppColors.gray3,
+                            size: 20.0,
+                          ),
+                        ),
+
+                        // black list
+                        Padding(
+                          padding: const EdgeInsets.only(right: 34.0),
+                          child: Icon(
+                            LoggerIcons.blacklistActive_1x,
+                            color: AppColors.gray3,
+                            size: 20.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               }).toList();
-
-              // List<Widget> sliverList = actions.map((String action) {
-              //   return SliverToBoxAdapter(
-              //     child: Text(action),
-              //   );
-              // }).toList();
 
               return CustomScrollView(
                 slivers: sliverList,
@@ -173,137 +235,5 @@ class _ActionsViewState extends State<ActionsViewScreen> {
         ),
       ],
     );
-
-    // return Center(
-    //   child: ClipRRect(
-    //     borderRadius: BorderRadius.circular(18.0),
-    //     child: SizedBox(
-    //       width: w,
-    //       height: h,
-    //       child: Scaffold(
-    //         backgroundColor: AppColors.background,
-    //         body: Center(
-    //           child: Column(
-    //             children: [
-    //               // caption
-    //               Container(
-    //                 padding: const EdgeInsets.only(top: 25.0),
-    //                 child: const Text(
-    //                   'Saved URL',
-    //                   style: const TextStyle(
-    //                     color: AppColors.gray6,
-    //                     fontWeight: FontWeight.w700,
-    //                     fontSize: 22.0,
-    //                   ),
-    //                 ),
-    //               ),
-
-    //               Expanded(
-    //                 child: StreamBuilder<SavedUrlState>(
-    //                   initialData: _bloc.initSavedUrlState,
-    //                   stream: _bloc.savedUrlStateStream,
-    //                   builder: (_, snapshot) {
-    //                     final SavedUrlState state = snapshot.data;
-
-    //                     final List<SavedUrl> constSavedUrlList = _bloc.filterSavedUrl(state, custom: false);
-    //                     final List<SavedUrl> customSavedUrlList = _bloc.filterSavedUrl(state);
-
-    //                     return CustomScrollView(
-    //                       physics: const ClampingScrollPhysics(),
-    //                       slivers: [
-    //                         // constant urls
-    //                         _sliverTitle('CONSTANT'),
-
-    //                         ..._sliverItems(constSavedUrlList),
-
-    //                         // custom urls
-    //                         _sliverTitle('CUSTOM'),
-
-    //                         ..._sliverItems(customSavedUrlList, canRemove: true),
-    //                       ],
-    //                     );
-    //                   },
-    //                 ),
-    //               ),
-    //             ],
-    //           ),
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
-
-  // List<Widget> _sliverItems(List<SavedUrl> savedUrlList, {bool canRemove = false}) {
-  //   return savedUrlList.map((SavedUrl savedUrl) {
-  //     return SliverToBoxAdapter(
-  //       child: InkWell(
-  //         // onTap: () => _bloc.pop(context, savedUrl.url),
-  //         child: Container(
-  //           padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 12.0),
-  //           decoration: const BoxDecoration(
-  //             border: Border(
-  //               bottom: BorderSide(
-  //                 color: AppColors.gray3,
-  //               ),
-  //             ),
-  //           ),
-  //           child: Row(
-  //             children: [
-  //               Expanded(
-  //                 child: Text(
-  //                   savedUrl.url,
-  //                   style: const TextStyle(
-  //                     fontSize: 15.0,
-  //                   ),
-  //                 ),
-  //               ),
-  //               if (canRemove)
-  //                 Container(
-  //                   padding: const EdgeInsets.only(left: 5.0),
-  //                   child: InkWell(
-  //                     borderRadius: BorderRadius.circular(20.0),
-  //                     hoverColor: AppColors.gray2,
-  //                     onTap: () => _bloc.deletetUrl(savedUrl),
-  //                     child: Container(
-  //                       color: AppColors.transparent,
-  //                       padding: const EdgeInsets.all(8.0),
-  //                       alignment: Alignment.topCenter,
-  //                       child: const Icon(
-  //                         LoggerIcons.trash_1x,
-  //                         size: 20.0,
-  //                         color: AppColors.trash,
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     );
-  //   }).toList();
-  // }
-
-  // Widget _sliverTitle(String title) {
-  //   return SliverToBoxAdapter(
-  //     child: Container(
-  //       padding: const EdgeInsets.symmetric(horizontal: 15.0).copyWith(top: 15.0, bottom: 10.0),
-  //       decoration: const BoxDecoration(
-  //         border: Border(
-  //           bottom: BorderSide(
-  //             color: AppColors.gray3,
-  //           ),
-  //         ),
-  //       ),
-  //       child: Text(
-  //         title,
-  //         style: const TextStyle(
-  //           color: AppColors.gray5,
-  //           fontSize: 13.0,
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 }
