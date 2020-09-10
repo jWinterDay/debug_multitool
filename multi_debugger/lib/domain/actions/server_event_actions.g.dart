@@ -16,13 +16,16 @@ class _$ServerEventActions extends ServerEventActions {
   _$ServerEventActions._() : super._();
 
   final addEvent = ActionDispatcher<Pair<String, ServerEvent>>('ServerEventActions-addEvent');
+  final toggleFavorite = ActionDispatcher<Pair<String, ServerEvent>>('ServerEventActions-toggleFavorite');
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
     addEvent.setDispatcher(dispatcher);
+    toggleFavorite.setDispatcher(dispatcher);
   }
 }
 
 class ServerEventActionsNames {
   static final addEvent = ActionName<Pair<String, ServerEvent>>('ServerEventActions-addEvent');
+  static final toggleFavorite = ActionName<Pair<String, ServerEvent>>('ServerEventActions-toggleFavorite');
 }

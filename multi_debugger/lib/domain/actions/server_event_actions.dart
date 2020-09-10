@@ -11,4 +11,6 @@ abstract class ServerEventActions extends ReduxActions {
 
   /// <channel id, add server event>
   ActionDispatcher<Pair<String, ServerEvent>> get addEvent;
+
+  ActionDispatcher<Pair<String, ServerEvent>> get toggleFavorite;
 }

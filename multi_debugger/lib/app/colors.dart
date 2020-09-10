@@ -41,7 +41,11 @@ class AppColors {
 
   static Color get channelInactiveTitle => bodyText2Color;
 
-  static const Color trash = Colors.red;
+  static const Color red = Colors.red;
+
+  static const Color selected = Colors.pink;
+
+  static const Color eventDelimiter = Colors.orange;
 
   static const Color transparent = Colors.transparent;
 

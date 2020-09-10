@@ -22,7 +22,7 @@ class _$ServerEventStateSerializer implements StructuredSerializer<ServerEventSt
       serializers.serialize(object.events,
           specifiedType: const FullType(BuiltMap, const [
             const FullType(String),
-            const FullType(List, const [const FullType(ServerEvent)])
+            const FullType(BuiltList, const [const FullType(ServerEvent)])
           ])),
     ];
 
@@ -44,7 +44,7 @@ class _$ServerEventStateSerializer implements StructuredSerializer<ServerEventSt
           result.events.replace(serializers.deserialize(value,
               specifiedType: const FullType(BuiltMap, const [
                 const FullType(String),
-                const FullType(List, const [const FullType(ServerEvent)])
+                const FullType(BuiltList, const [const FullType(ServerEvent)])
               ])));
           break;
       }
@@ -56,7 +56,7 @@ class _$ServerEventStateSerializer implements StructuredSerializer<ServerEventSt
 
 class _$ServerEventState extends ServerEventState {
   @override
-  final BuiltMap<String, List<ServerEvent>> events;
+  final BuiltMap<String, BuiltList<ServerEvent>> events;
 
   factory _$ServerEventState([void Function(ServerEventStateBuilder) updates]) =>
       (new ServerEventStateBuilder()..update(updates)).build();
@@ -93,9 +93,10 @@ class _$ServerEventState extends ServerEventState {
 class ServerEventStateBuilder implements Builder<ServerEventState, ServerEventStateBuilder> {
   _$ServerEventState _$v;
 
-  MapBuilder<String, List<ServerEvent>> _events;
-  MapBuilder<String, List<ServerEvent>> get events => _$this._events ??= new MapBuilder<String, List<ServerEvent>>();
-  set events(MapBuilder<String, List<ServerEvent>> events) => _$this._events = events;
+  MapBuilder<String, BuiltList<ServerEvent>> _events;
+  MapBuilder<String, BuiltList<ServerEvent>> get events =>
+      _$this._events ??= new MapBuilder<String, BuiltList<ServerEvent>>();
+  set events(MapBuilder<String, BuiltList<ServerEvent>> events) => _$this._events = events;
 
   ServerEventStateBuilder() {
     ServerEventState._initializeBuilder(this);

@@ -148,7 +148,7 @@ class _SelectUrlState extends State<SelectUrlScreen> {
                         child: const Icon(
                           LoggerIcons.trash_1x,
                           size: 20.0,
-                          color: AppColors.trash,
+                          color: AppColors.red,
                         ),
                       ),
                     ),

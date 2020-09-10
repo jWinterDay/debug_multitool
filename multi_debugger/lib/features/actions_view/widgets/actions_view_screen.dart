@@ -1,8 +1,10 @@
 import 'dart:math' as math;
 
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_debugger/app/colors.dart';
+import 'package:multi_debugger/domain/base/pair.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/features/actions_view/blocks/actions_view_bloc.dart';
 import 'package:multi_debugger/tools/logger_icons.dart';
@@ -135,7 +137,7 @@ class _ActionsViewState extends State<ActionsViewScreen> {
 
         // actions
         Expanded(
-          child: StreamBuilder<List<ServerEvent>>(
+          child: StreamBuilder<Pair<ChannelModel, BuiltList<ServerEvent>>>(
             // initialData: _bloc.initServerEventState,
             stream: _bloc.serverEventStateStream,
             builder: (_, snapshot) {
@@ -152,80 +154,9 @@ class _ActionsViewState extends State<ActionsViewScreen> {
                 );
               }
 
-              final List<ServerEvent> serverEventList = snapshot.data;
+              final Pair<ChannelModel, BuiltList<ServerEvent>> pair = snapshot.data;
 
-              List<Widget> sliverList = serverEventList.map((ServerEvent serverEvent) {
-                final Color textColor = serverEvent.serverEventType == ServerEventType.connect
-                    ? AppColors.positive
-                    : AppColors.bodyText2Color;
-
-                return SliverToBoxAdapter(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0).copyWith(left: 15.0),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          color: AppColors.gray3,
-                        ),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        // action name
-                        Expanded(
-                          child: Text(
-                            serverEvent.action,
-                            style: TextStyle(
-                              color: textColor,
-                              fontSize: 15.0,
-                            ),
-                          ),
-                        ),
-
-                        // repeat
-                        Padding(
-                          padding: const EdgeInsets.only(right: 20.0),
-                          child: Icon(
-                            LoggerIcons.repeat_1x,
-                            color: AppColors.gray3,
-                            size: 20.0,
-                          ),
-                        ),
-
-                        // favorite
-                        Padding(
-                          padding: const EdgeInsets.only(right: 20.0),
-                          child: Icon(
-                            LoggerIcons.favoriteNull_1x,
-                            color: AppColors.gray3,
-                            size: 20.0,
-                          ),
-                        ),
-
-                        // white list
-                        Padding(
-                          padding: const EdgeInsets.only(right: 20.0),
-                          child: Icon(
-                            LoggerIcons.whitelistNull_1x,
-                            color: AppColors.gray3,
-                            size: 20.0,
-                          ),
-                        ),
-
-                        // black list
-                        Padding(
-                          padding: const EdgeInsets.only(right: 34.0),
-                          child: Icon(
-                            LoggerIcons.blacklistActive_1x,
-                            color: AppColors.gray3,
-                            size: 20.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }).toList();
+              final List<Widget> sliverList = _itemSliverList(pair);
 
               return CustomScrollView(
                 slivers: sliverList,
@@ -235,5 +166,115 @@ class _ActionsViewState extends State<ActionsViewScreen> {
         ),
       ],
     );
+  }
+
+  List<Widget> _itemSliverList(Pair<ChannelModel, BuiltList<ServerEvent>> pair) {
+    final ChannelModel currentChannelModel = pair.first;
+    final BuiltList<ServerEvent> serverEventList = pair.second;
+
+    return List.generate(serverEventList.length, (int index) {
+      final ServerEvent serverEvent = serverEventList[index];
+
+      // delimiter
+      if (serverEvent.serverEventType == ServerEventType.delimiter) {
+        return SliverToBoxAdapter(
+          child: Container(
+            height: 4.0,
+            color: AppColors.eventDelimiter,
+          ),
+        );
+      }
+
+      final bool inWhiteList = currentChannelModel.whiteList.contains(serverEvent.action);
+      final bool inBlackList = currentChannelModel.blackList.contains(serverEvent.action);
+
+      Color textColor = AppColors.bodyText2Color;
+      switch (serverEvent.serverEventType) {
+        case ServerEventType.connect:
+          textColor = AppColors.positive;
+          break;
+        case ServerEventType.disconnect:
+          textColor = AppColors.red;
+          break;
+
+        default:
+      }
+
+      return SliverToBoxAdapter(
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12.0).copyWith(left: 15.0),
+          decoration: const BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: AppColors.gray3,
+              ),
+            ),
+          ),
+          child: Row(
+            children: [
+              // action name
+              Expanded(
+                child: Text(
+                  '$index) ${serverEvent.action}',
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: 15.0,
+                  ),
+                ),
+              ),
+
+              // repeat
+              const Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: Icon(
+                  LoggerIcons.repeat_1x,
+                  color: AppColors.gray3,
+                  size: 20.0,
+                ),
+              ),
+
+              // favorite
+              InkWell(
+                onTap: () => _bloc.toggleFavorite(serverEvent),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 20.0),
+                  child: Icon(
+                    serverEvent.favorite ? LoggerIcons.favoriteActive_1x : LoggerIcons.favoriteNull_1x,
+                    color: serverEvent.favorite ? AppColors.selected : AppColors.gray3,
+                    size: 20.0,
+                  ),
+                ),
+              ),
+
+              // white list
+              InkWell(
+                onTap: () => _bloc.toggleWhiteList(serverEvent),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 20.0),
+                  child: Icon(
+                    inWhiteList ? LoggerIcons.whitelistActive_1x : LoggerIcons.whitelistNull_1x,
+                    color: inWhiteList ? AppColors.primaryColor : AppColors.gray3,
+                    size: 20.0,
+                  ),
+                ),
+              ),
+
+              // black list
+              InkWell(
+                onTap: () => _bloc.toggleBlackList(serverEvent),
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 34.0),
+                  child: Icon(
+                    inBlackList ? LoggerIcons.blacklistActive_1x : LoggerIcons.blacklistNull_1x,
+                    color: inBlackList ? AppColors.gray6 : AppColors.gray3,
+                    size: 20.0,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
   }
 }
