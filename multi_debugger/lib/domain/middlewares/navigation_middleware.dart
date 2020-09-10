@@ -14,7 +14,7 @@ MiddlewareBuilder<AppState, AppStateBuilder, AppActions> createNavigationMiddlew
 }
 
 BuildContext _activeRouteContext;
-String _activeRoute;
+// String _activeRoute;
 
 // NavigatorState get rootNavigator => di.get<AppGlobals>().rootNavigatorKey.currentState;
 
@@ -28,7 +28,7 @@ void _routeTo(
   final AppRoute payload = action.payload;
 
   _activeRouteContext = payload.context as BuildContext;
-  _activeRoute = payload.route;
+  // _activeRoute = payload.route;
 
   switch (payload.route) {
     // pop any screen

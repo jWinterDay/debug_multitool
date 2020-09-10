@@ -9,6 +9,7 @@ part of 'server_event_type.dart';
 const ServerEventType _$connect = const ServerEventType._('connect');
 const ServerEventType _$disconnect = const ServerEventType._('disconnect');
 const ServerEventType _$action = const ServerEventType._('action');
+const ServerEventType _$delimiter = const ServerEventType._('delimiter');
 
 ServerEventType _$serverEventTypeValueOf(String name) {
   switch (name) {
@@ -18,6 +19,8 @@ ServerEventType _$serverEventTypeValueOf(String name) {
       return _$disconnect;
     case 'action':
       return _$action;
+    case 'delimiter':
+      return _$delimiter;
     default:
       throw new ArgumentError(name);
   }
@@ -27,6 +30,7 @@ final BuiltSet<ServerEventType> _$values = new BuiltSet<ServerEventType>(const <
   _$connect,
   _$disconnect,
   _$action,
+  _$delimiter,
 ]);
 
 Serializer<ServerEventType> _$serverEventTypeSerializer = new _$ServerEventTypeSerializer();

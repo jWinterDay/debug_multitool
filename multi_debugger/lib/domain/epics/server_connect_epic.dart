@@ -36,7 +36,7 @@ class ServerConnectEpic {
         default:
       }
 
-      print('epic!!!! > nextStatus = $nextStatus > ${action.name}');
+      loggerService.d('epic!!!! > nextStatus = $nextStatus > ${action.name}');
 
       //     final ChannelModel channelModel = action.payload;
 

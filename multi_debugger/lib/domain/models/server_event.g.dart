@@ -15,16 +15,27 @@ class _$ServerEvent extends ServerEvent {
   final JsonObject state;
   @override
   final ServerEventType serverEventType;
+  @override
+  final DateTime datetime;
+  @override
+  final bool favorite;
 
   factory _$ServerEvent([void Function(ServerEventBuilder) updates]) =>
       (new ServerEventBuilder()..update(updates)).build();
 
-  _$ServerEvent._({this.action, this.payload, this.state, this.serverEventType}) : super._() {
+  _$ServerEvent._({this.action, this.payload, this.state, this.serverEventType, this.datetime, this.favorite})
+      : super._() {
     if (action == null) {
       throw new BuiltValueNullFieldError('ServerEvent', 'action');
     }
     if (serverEventType == null) {
       throw new BuiltValueNullFieldError('ServerEvent', 'serverEventType');
+    }
+    if (datetime == null) {
+      throw new BuiltValueNullFieldError('ServerEvent', 'datetime');
+    }
+    if (favorite == null) {
+      throw new BuiltValueNullFieldError('ServerEvent', 'favorite');
     }
   }
 
@@ -41,12 +52,17 @@ class _$ServerEvent extends ServerEvent {
         action == other.action &&
         payload == other.payload &&
         state == other.state &&
-        serverEventType == other.serverEventType;
+        serverEventType == other.serverEventType &&
+        datetime == other.datetime &&
+        favorite == other.favorite;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc($jc(0, action.hashCode), payload.hashCode), state.hashCode), serverEventType.hashCode));
+    return $jf($jc(
+        $jc($jc($jc($jc($jc(0, action.hashCode), payload.hashCode), state.hashCode), serverEventType.hashCode),
+            datetime.hashCode),
+        favorite.hashCode));
   }
 
   @override
@@ -55,7 +71,9 @@ class _$ServerEvent extends ServerEvent {
           ..add('action', action)
           ..add('payload', payload)
           ..add('state', state)
-          ..add('serverEventType', serverEventType))
+          ..add('serverEventType', serverEventType)
+          ..add('datetime', datetime)
+          ..add('favorite', favorite))
         .toString();
   }
 }
@@ -79,6 +97,14 @@ class ServerEventBuilder implements Builder<ServerEvent, ServerEventBuilder> {
   ServerEventType get serverEventType => _$this._serverEventType;
   set serverEventType(ServerEventType serverEventType) => _$this._serverEventType = serverEventType;
 
+  DateTime _datetime;
+  DateTime get datetime => _$this._datetime;
+  set datetime(DateTime datetime) => _$this._datetime = datetime;
+
+  bool _favorite;
+  bool get favorite => _$this._favorite;
+  set favorite(bool favorite) => _$this._favorite = favorite;
+
   ServerEventBuilder() {
     ServerEvent._initializeBuilder(this);
   }
@@ -89,6 +115,8 @@ class ServerEventBuilder implements Builder<ServerEvent, ServerEventBuilder> {
       _payload = _$v.payload;
       _state = _$v.state;
       _serverEventType = _$v.serverEventType;
+      _datetime = _$v.datetime;
+      _favorite = _$v.favorite;
       _$v = null;
     }
     return this;
@@ -109,8 +137,14 @@ class ServerEventBuilder implements Builder<ServerEvent, ServerEventBuilder> {
 
   @override
   _$ServerEvent build() {
-    final _$result =
-        _$v ?? new _$ServerEvent._(action: action, payload: payload, state: state, serverEventType: serverEventType);
+    final _$result = _$v ??
+        new _$ServerEvent._(
+            action: action,
+            payload: payload,
+            state: state,
+            serverEventType: serverEventType,
+            datetime: datetime,
+            favorite: favorite);
     replace(_$result);
     return _$result;
   }

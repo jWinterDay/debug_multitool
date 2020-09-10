@@ -99,6 +99,7 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
   Future<void> disconnect() async {
     _client?.disconnect();
 
+    // TODO
     Future<void>.delayed(const Duration(milliseconds: 200), () {
       _connectSub?.cancel();
       _disconnectSub?.cancel();

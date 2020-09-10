@@ -27,9 +27,7 @@ class ChannelTabBloc extends BaseBloc {
 
     _channelStateSubject = BehaviorSubject<ChannelState>();
 
-    _channelSubscription = appGlobals.store.nextSubstate((AppState state) {
-      return state;
-    }).map((state) {
+    _channelSubscription = appStateStream.map((AppState state) {
       return state.channelState;
     }).listen((ChannelState state) {
       _channelStateSubject.add(state);

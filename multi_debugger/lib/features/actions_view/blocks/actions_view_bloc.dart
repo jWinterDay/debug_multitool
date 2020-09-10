@@ -1,21 +1,22 @@
 import 'dart:async';
 
+import 'package:built_collection/built_collection.dart';
 import 'package:multi_debugger/domain/base/base_bloc.dart';
+import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/server_event_state.dart';
 import 'package:multi_debugger/domain/states/states.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ActionsViewBloc extends BaseBloc {
-  StreamSubscription<ServerEventState> _serverEventStateSubscription;
+  BehaviorSubject<List<ServerEvent>> _serverEventListSubject;
+  Stream<List<ServerEvent>> get serverEventStateStream => _serverEventListSubject.stream;
 
-  BehaviorSubject<ServerEventState> _serverEventStateSubject;
-  ServerEventState get initServerEventState => appGlobals.store.state.serverEventState;
-  Stream<ServerEventState> get serverEventStateStream => _serverEventStateSubject.stream;
+  StreamSubscription<List<ServerEvent>> _serverEventListSubscription;
 
   @override
   void dispose() {
-    _serverEventStateSubscription?.cancel();
-    _serverEventStateSubject.close();
+    _serverEventListSubscription?.cancel();
+    _serverEventListSubject.close();
 
     super.dispose();
   }
@@ -24,24 +25,32 @@ class ActionsViewBloc extends BaseBloc {
   void init() {
     super.init();
 
-    _serverEventStateSubject = BehaviorSubject<ServerEventState>();
+    _serverEventListSubject = BehaviorSubject<List<ServerEvent>>();
 
-    _serverEventStateSubscription = appGlobals.store.nextSubstate((AppState state) {
-      return state;
-    }).map((AppState state) {
-      return state.serverEventState;
-    }).listen((ServerEventState state) {
-      _serverEventStateSubject.add(state);
+    // combine server event stream
+    Stream<ServerEventState> serverEventStateStream = appStateStream.map((AppState appState) {
+      return appState.serverEventState;
+    });
+
+    // combine channel stream
+    Stream<ChannelState> channelStateStream = appStateStream.map((AppState appState) {
+      return appState.channelState;
+    });
+
+    _serverEventListSubscription = Rx.combineLatest2(serverEventStateStream, channelStateStream, (
+      ServerEventState serverEventState,
+      ChannelState channelState,
+    ) {
+      final ChannelModel currentChannel = channelState.currentChannel;
+      if (currentChannel == null) {
+        return null;
+      }
+
+      List<ServerEvent> eventList = serverEventState.getEventsForChannel(currentChannel.channelId);
+
+      return eventList;
+    }).listen((List<ServerEvent> eventList) {
+      _serverEventListSubject.add(eventList);
     });
   }
-
-  // List<SavedUrl> filterSavedUrl(SavedUrlState state, {bool custom = true}) {
-  //   return state.urls.values.where((SavedUrl savedUrl) {
-  //     return savedUrl.custom == custom;
-  //   }).toList();
-  // }
-
-  // void deletetUrl(SavedUrl savedUrl) {
-  //   appGlobals.store.actions.savedUrlActions.deleteUrl(savedUrl);
-  // }
 }

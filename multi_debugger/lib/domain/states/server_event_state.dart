@@ -18,5 +18,9 @@ abstract class ServerEventState implements Built<ServerEventState, ServerEventSt
   /// <channel id, url>
   BuiltMap<String, List<ServerEvent>> get events;
 
+  List<ServerEvent> getEventsForChannel(String channelName) {
+    return events[channelName];
+  }
+
   static Serializer<ServerEventState> get serializer => _$serverEventStateSerializer;
 }

@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:multi_debugger/app_routes.dart';
 import 'package:multi_debugger/domain/base/base_bloc.dart';
 import 'package:multi_debugger/domain/models/models.dart';
-import 'package:multi_debugger/domain/states/states.dart';
 import 'package:rxdart/subjects.dart';
 
 class TabBarBloc extends BaseBloc {
@@ -64,9 +63,7 @@ class TabBarBloc extends BaseBloc {
     _enabledConnectBtnSubject = BehaviorSubject<bool>.seeded(false);
 
     // state
-    _currentChannelModelSubscription = appGlobals.store.nextSubstate((AppState state) {
-      return state;
-    }).map((state) {
+    _currentChannelModelSubscription = appStateStream.map((state) {
       return state.channelState.currentChannel;
     }).listen((ChannelModel channelModel) {
       if (channelModel?.wsUrl != urlTextController.text) {

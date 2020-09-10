@@ -9,7 +9,10 @@ abstract class ServerEvent implements Built<ServerEvent, ServerEventBuilder> {
 
   factory ServerEvent([ServerEventBuilder updates(ServerEventBuilder buider)]) = _$ServerEvent;
 
-  static void _initializeBuilder(ServerEventBuilder b) => b..serverEventType = ServerEventType.action;
+  static void _initializeBuilder(ServerEventBuilder b) => b
+    ..serverEventType = ServerEventType.action
+    ..datetime = DateTime.now()
+    ..favorite = false;
 
   String get action;
 
@@ -20,4 +23,8 @@ abstract class ServerEvent implements Built<ServerEvent, ServerEventBuilder> {
   JsonObject get state;
 
   ServerEventType get serverEventType;
+
+  DateTime get datetime;
+
+  bool get favorite;
 }

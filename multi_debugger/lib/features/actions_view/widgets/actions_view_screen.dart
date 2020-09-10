@@ -2,11 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:multi_debugger/app/colors.dart';
 import 'package:multi_debugger/domain/models/models.dart';
-import 'package:multi_debugger/domain/states/server_event_state.dart';
 import 'package:multi_debugger/features/actions_view/blocks/actions_view_bloc.dart';
-import 'package:multi_debugger/tools/logger_icons.dart';
 
 class ActionsViewScreen extends StatefulWidget {
   const ActionsViewScreen({
@@ -47,8 +44,8 @@ class _ActionsViewState extends State<ActionsViewScreen> {
           child: Text('fdsf'),
         ),
         Expanded(
-          child: StreamBuilder<ServerEventState>(
-            initialData: _bloc.initServerEventState,
+          child: StreamBuilder<List<ServerEvent>>(
+            // initialData: _bloc.initServerEventState,
             stream: _bloc.serverEventStateStream,
             builder: (_, snapshot) {
               if (!snapshot.hasData) {
@@ -57,13 +54,13 @@ class _ActionsViewState extends State<ActionsViewScreen> {
                 );
               }
 
-              final ServerEventState serverEventState = snapshot.data;
+              final List<ServerEvent> serverEventList = snapshot.data;
 
-              final List<List<ServerEvent>> t = serverEventState.events.values.toList();
-              final List<ServerEvent> tlist = t.isEmpty ? [] : t.first;
-              final List<String> actions = serverEventState.events.keys.toList();
+              // final List<List<ServerEvent>> t = serverEventState.events.values.toList();
+              // final List<ServerEvent> tlist = t.isEmpty ? [] : t.first;
+              // final List<String> actions = serverEventState.events.keys.toList();
 
-              List<Widget> sliverList = tlist.map((ServerEvent serverEvent) {
+              List<Widget> sliverList = serverEventList.map((ServerEvent serverEvent) {
                 return SliverToBoxAdapter(
                   child: Text(serverEvent.action),
                 );
