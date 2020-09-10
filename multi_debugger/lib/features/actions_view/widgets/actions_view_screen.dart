@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:multi_debugger/app/colors.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/features/actions_view/blocks/actions_view_bloc.dart';
 
@@ -40,17 +41,109 @@ class _ActionsViewState extends State<ActionsViewScreen> {
 
     return Column(
       children: [
+        // titles
         Container(
-          child: Text('fdsf'),
+          decoration: const BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gray3,
+                offset: Offset(0, 1),
+              ),
+            ],
+            color: AppColors.gray2,
+          ),
+          child: StreamBuilder<bool>(
+            initialData: false,
+            stream: _bloc.titleVisibleStream,
+            builder: (_, snapshot) {
+              final bool visible = snapshot.data ?? false;
+
+              if (!visible) {
+                return Container();
+              }
+
+              return Row(
+                children: [
+                  // title
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 12.0, bottom: 10.0, left: 15.0),
+
+                      child: const Text(
+                        'Actions',
+                        style: const TextStyle(
+                          color: AppColors.gray6,
+                          fontSize: 11.0,
+                        ),
+                      ),
+                      // child: Text('Actions'),
+                    ),
+                  ),
+
+                  // filters
+                  Container(
+                    width: 40.0,
+                    alignment: Alignment.center,
+                    child: const Text(
+                      'Repeat',
+                      style: TextStyle(
+                        color: AppColors.gray6,
+                        fontSize: 11.0,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    // width: 40.0,
+                    alignment: Alignment.center,
+                    child: const Text(
+                      'Favorite',
+                      style: TextStyle(
+                        color: AppColors.gray6,
+                        fontSize: 11.0,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 40.0,
+                    alignment: Alignment.center,
+                    child: const Text(
+                      'White',
+                      style: const TextStyle(
+                        color: AppColors.gray6,
+                        fontSize: 11.0,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 40.0,
+                    alignment: Alignment.center,
+                    child: const Text(
+                      'Black',
+                      style: TextStyle(
+                        color: AppColors.gray6,
+                        fontSize: 11.0,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
+
+        // actions
         Expanded(
           child: StreamBuilder<List<ServerEvent>>(
             // initialData: _bloc.initServerEventState,
             stream: _bloc.serverEventStateStream,
             builder: (_, snapshot) {
               if (!snapshot.hasData) {
-                return Container(
-                  child: Text('no actions'),
+                return const Center(
+                  child: Text(
+                    'No actions',
+                    style: const TextStyle(color: AppColors.gray6, fontSize: 17.0),
+                    textAlign: TextAlign.center,
+                  ),
                 );
               }
 

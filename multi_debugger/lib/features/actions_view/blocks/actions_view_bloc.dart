@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:built_collection/built_collection.dart';
 import 'package:multi_debugger/domain/base/base_bloc.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/server_event_state.dart';
@@ -11,7 +10,15 @@ class ActionsViewBloc extends BaseBloc {
   BehaviorSubject<List<ServerEvent>> _serverEventListSubject;
   Stream<List<ServerEvent>> get serverEventStateStream => _serverEventListSubject.stream;
 
+  // event list stream
   StreamSubscription<List<ServerEvent>> _serverEventListSubscription;
+
+  // title visible stream
+  Stream<bool> get titleVisibleStream {
+    return _serverEventListSubject.map((List<ServerEvent> eventList) {
+      return eventList.isNotEmpty;
+    });
+  }
 
   @override
   void dispose() {

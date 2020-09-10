@@ -71,6 +71,7 @@ class ChannelScreen extends StatelessWidget {
                     children: [
                       // actions
                       Expanded(
+                        flex: 2, // TODO 1
                         child: Container(
                           decoration: const BoxDecoration(boxShadow: [
                             BoxShadow(
@@ -85,7 +86,7 @@ class ChannelScreen extends StatelessWidget {
 
                       // data
                       Expanded(
-                        flex: 2,
+                        flex: 1, // TODO 2
                         child: Container(
                           decoration: const BoxDecoration(
                             boxShadow: [
