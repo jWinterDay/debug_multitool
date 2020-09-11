@@ -47,6 +47,9 @@ class AppColors {
 
   static const Color eventDelimiter = Colors.orange;
 
+  // 115 97 203
+  static const Color autoScrollText = Color(0xFF7361CB);
+
   static const Color transparent = Colors.transparent;
 
   static const Color primaryColor = Colors.blue;

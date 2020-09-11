@@ -298,7 +298,7 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
 
                         return Container(
                           height: 36.0,
-                          padding: const EdgeInsets.only(left: 15.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
                           child: ButtonTheme(
                             minWidth: 220.0,
                             child: RaisedButton(

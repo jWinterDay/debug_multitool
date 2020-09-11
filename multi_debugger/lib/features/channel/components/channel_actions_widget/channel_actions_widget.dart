@@ -88,6 +88,7 @@ class _ChannelActionsWidgetState extends State<ChannelActionsWidget> {
               title: 'Add divider',
               used: existsChannel,
               withDropDown: false,
+              permanentBgColor: true,
               usedColor: AppColors.eventDelimiter,
               callback: () => _bloc.addDivider(context),
             ),
@@ -103,7 +104,7 @@ class _ChannelActionsWidgetState extends State<ChannelActionsWidget> {
               title: 'Autoscroll',
               used: useAutoScroll,
               withDropDown: false,
-              usedColor: AppColors.gray5,
+              usedColor: AppColors.autoScrollText,
               callback: () => _bloc.useAutoScroll(context),
             ),
 
@@ -118,6 +119,7 @@ class _ChannelActionsWidgetState extends State<ChannelActionsWidget> {
               title: 'Clear all',
               used: existsChannel,
               withDropDown: false,
+              permanentBgColor: true,
               usedColor: AppColors.red,
               callback: () => _bloc.clearAll(context),
             ),
@@ -136,6 +138,7 @@ class _Button extends StatelessWidget {
     this.used = false,
     this.usedColor = AppColors.selected,
     this.withDropDown = true,
+    this.permanentBgColor = false,
     this.callback,
     this.dropDownCallback,
   })  : assert(icon != null),
@@ -143,6 +146,7 @@ class _Button extends StatelessWidget {
         assert(used != null),
         assert(usedColor != null),
         assert(withDropDown != null),
+        assert(permanentBgColor != null),
         super(key: key);
 
   final IconData icon;
@@ -150,6 +154,7 @@ class _Button extends StatelessWidget {
   final bool used;
   final Color usedColor;
   final bool withDropDown;
+  final bool permanentBgColor;
   // ignore: diagnostic_describe_all_properties
   final VoidCallback callback;
   // ignore: diagnostic_describe_all_properties
@@ -159,6 +164,16 @@ class _Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color bgColor = AppColors.background;
+    Color iconColor = AppColors.gray3;
+
+    if (permanentBgColor) {
+      iconColor = usedColor;
+    } else if (used) {
+      iconColor = AppColors.background;
+      bgColor = usedColor;
+    }
+
     return Padding(
       padding: const EdgeInsets.only(left: 15.0),
       child: Column(
@@ -174,8 +189,8 @@ class _Button extends StatelessWidget {
                 child: Container(
                   width: _iconWidth,
                   height: 36.0,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(6.0)),
                     boxShadow: [
                       BoxShadow(
                         color: AppColors.gray4,
@@ -183,15 +198,17 @@ class _Button extends StatelessWidget {
                         blurRadius: 1,
                       )
                     ],
-                    color: AppColors.background,
+                    color: bgColor,
                   ),
                   child: Icon(
                     icon,
-                    color: used ? usedColor : AppColors.gray3,
+                    color: iconColor,
                     size: 20.0,
                   ),
                 ),
               ),
+
+              const SizedBox(width: 2.0),
 
               // drop down
               if (withDropDown)
@@ -200,21 +217,20 @@ class _Button extends StatelessWidget {
                   child: Container(
                     width: 24,
                     height: 36,
-                    padding: const EdgeInsets.only(left: 2.0),
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(6.0)),
                       boxShadow: [
-                        BoxShadow(
+                        const BoxShadow(
                           color: AppColors.gray4,
                           offset: Offset(0, 1),
                           blurRadius: 1,
                         )
                       ],
-                      color: AppColors.background,
+                      color: bgColor,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       LoggerIcons.arrowDown_1x,
-                      color: AppColors.gray5,
+                      color: iconColor,
                       size: 14.0,
                     ),
                   ),
@@ -231,7 +247,6 @@ class _Button extends StatelessWidget {
                 color: AppColors.gray6,
                 fontSize: 11.0,
               ),
-              // textAlign: TextAlign.center,
             ),
           )
         ],
@@ -247,6 +262,7 @@ class _Button extends StatelessWidget {
     properties.add(DiagnosticsProperty<bool>('used', used));
     properties.add(ColorProperty('usedColor', usedColor));
     properties.add(StringProperty('title', title));
+    properties.add(DiagnosticsProperty<bool>('permanentBgColor', permanentBgColor));
   }
 }
 
