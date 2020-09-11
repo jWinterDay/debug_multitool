@@ -19,5 +19,13 @@ abstract class ChannelActions extends ReduxActions {
 
   ActionDispatcher<ChannelModel> get setCurrentChannel;
 
+  ActionDispatcher<ChannelModel> get toggleShowFavorites;
+
+  ActionDispatcher<ChannelModel> get toggleShowWhiteList;
+
+  ActionDispatcher<ChannelModel> get toggleShowBlackList;
+
+  ActionDispatcher<ChannelModel> get toggleAutoScroll;
+
   ActionDispatcher<BuiltMap<ChannelModel, ServerConnectStatus>> get setChannelServerConnectStatus;
 }

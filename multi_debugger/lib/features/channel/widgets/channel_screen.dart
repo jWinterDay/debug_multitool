@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:multi_debugger/app/colors.dart';
 import 'package:multi_debugger/features/actions_view/widgets/actions_view_screen.dart';
+import 'package:multi_debugger/features/channel/components/channel_actions_widget/channel_actions_widget.dart';
 import 'package:multi_debugger/features/channel/components/channel_tab/channel_tab.dart';
 import 'package:multi_debugger/features/channel/components/channel_tab_bar/channel_tab_bar.dart';
 
@@ -62,6 +63,7 @@ class ChannelScreen extends StatelessWidget {
                     ],
                     color: AppColors.gray1,
                   ),
+                  child: ChannelActionsWidget(),
                 ),
                 const SizedBox(height: 1.0),
 
@@ -82,6 +84,7 @@ class ChannelScreen extends StatelessWidget {
                           child: const ActionsViewScreen(),
                         ),
                       ),
+
                       const SizedBox(width: 1.0),
 
                       // data

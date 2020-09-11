@@ -20,6 +20,10 @@ class _$ChannelActions extends ChannelActions {
   final updateChannel = ActionDispatcher<ChannelModel>('ChannelActions-updateChannel');
   final changeConnectStatus = ActionDispatcher<ChannelModel>('ChannelActions-changeConnectStatus');
   final setCurrentChannel = ActionDispatcher<ChannelModel>('ChannelActions-setCurrentChannel');
+  final toggleShowFavorites = ActionDispatcher<ChannelModel>('ChannelActions-toggleShowFavorites');
+  final toggleShowWhiteList = ActionDispatcher<ChannelModel>('ChannelActions-toggleShowWhiteList');
+  final toggleShowBlackList = ActionDispatcher<ChannelModel>('ChannelActions-toggleShowBlackList');
+  final toggleAutoScroll = ActionDispatcher<ChannelModel>('ChannelActions-toggleAutoScroll');
   final setChannelServerConnectStatus =
       ActionDispatcher<BuiltMap<ChannelModel, ServerConnectStatus>>('ChannelActions-setChannelServerConnectStatus');
 
@@ -30,6 +34,10 @@ class _$ChannelActions extends ChannelActions {
     updateChannel.setDispatcher(dispatcher);
     changeConnectStatus.setDispatcher(dispatcher);
     setCurrentChannel.setDispatcher(dispatcher);
+    toggleShowFavorites.setDispatcher(dispatcher);
+    toggleShowWhiteList.setDispatcher(dispatcher);
+    toggleShowBlackList.setDispatcher(dispatcher);
+    toggleAutoScroll.setDispatcher(dispatcher);
     setChannelServerConnectStatus.setDispatcher(dispatcher);
   }
 }
@@ -40,6 +48,10 @@ class ChannelActionsNames {
   static final updateChannel = ActionName<ChannelModel>('ChannelActions-updateChannel');
   static final changeConnectStatus = ActionName<ChannelModel>('ChannelActions-changeConnectStatus');
   static final setCurrentChannel = ActionName<ChannelModel>('ChannelActions-setCurrentChannel');
+  static final toggleShowFavorites = ActionName<ChannelModel>('ChannelActions-toggleShowFavorites');
+  static final toggleShowWhiteList = ActionName<ChannelModel>('ChannelActions-toggleShowWhiteList');
+  static final toggleShowBlackList = ActionName<ChannelModel>('ChannelActions-toggleShowBlackList');
+  static final toggleAutoScroll = ActionName<ChannelModel>('ChannelActions-toggleAutoScroll');
   static final setChannelServerConnectStatus =
       ActionName<BuiltMap<ChannelModel, ServerConnectStatus>>('ChannelActions-setChannelServerConnectStatus');
 }

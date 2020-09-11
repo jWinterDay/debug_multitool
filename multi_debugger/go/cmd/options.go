@@ -13,10 +13,10 @@ import (
 )
 
 const (
-	initW = 500
-	initH = 800
+	initW = 800
+	initH = 600
 
-	minW = 500
+	minW = 800
 	minH = 600
 
 	maxW = 5120

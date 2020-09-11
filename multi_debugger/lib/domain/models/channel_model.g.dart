@@ -34,6 +34,8 @@ class _$ChannelModelSerializer implements StructuredSerializer<ChannelModel> {
       serializers.serialize(object.showFavoriteOnly, specifiedType: const FullType(bool)),
       'isCurrent',
       serializers.serialize(object.isCurrent, specifiedType: const FullType(bool)),
+      'useAutoScroll',
+      serializers.serialize(object.useAutoScroll, specifiedType: const FullType(bool)),
       'serverConnectStatus',
       serializers.serialize(object.serverConnectStatus, specifiedType: const FullType(ServerConnectStatus)),
       'datetime',
@@ -87,6 +89,9 @@ class _$ChannelModelSerializer implements StructuredSerializer<ChannelModel> {
         case 'isCurrent':
           result.isCurrent = serializers.deserialize(value, specifiedType: const FullType(bool)) as bool;
           break;
+        case 'useAutoScroll':
+          result.useAutoScroll = serializers.deserialize(value, specifiedType: const FullType(bool)) as bool;
+          break;
         case 'serverConnectStatus':
           result.serverConnectStatus =
               serializers.deserialize(value, specifiedType: const FullType(ServerConnectStatus)) as ServerConnectStatus;
@@ -129,6 +134,8 @@ class _$ChannelModel extends ChannelModel {
   @override
   final bool isCurrent;
   @override
+  final bool useAutoScroll;
+  @override
   final ServerConnectStatus serverConnectStatus;
   @override
   final DateTime datetime;
@@ -150,6 +157,7 @@ class _$ChannelModel extends ChannelModel {
       this.isBlackListUsed,
       this.showFavoriteOnly,
       this.isCurrent,
+      this.useAutoScroll,
       this.serverConnectStatus,
       this.datetime,
       this.whiteList,
@@ -178,6 +186,9 @@ class _$ChannelModel extends ChannelModel {
     }
     if (isCurrent == null) {
       throw new BuiltValueNullFieldError('ChannelModel', 'isCurrent');
+    }
+    if (useAutoScroll == null) {
+      throw new BuiltValueNullFieldError('ChannelModel', 'useAutoScroll');
     }
     if (serverConnectStatus == null) {
       throw new BuiltValueNullFieldError('ChannelModel', 'serverConnectStatus');
@@ -212,6 +223,7 @@ class _$ChannelModel extends ChannelModel {
         isBlackListUsed == other.isBlackListUsed &&
         showFavoriteOnly == other.showFavoriteOnly &&
         isCurrent == other.isCurrent &&
+        useAutoScroll == other.useAutoScroll &&
         serverConnectStatus == other.serverConnectStatus &&
         datetime == other.datetime &&
         whiteList == other.whiteList &&
@@ -229,13 +241,15 @@ class _$ChannelModel extends ChannelModel {
                             $jc(
                                 $jc(
                                     $jc(
-                                        $jc($jc($jc($jc(0, channelId.hashCode), name.hashCode), shortName.hashCode),
-                                            wsUrl.hashCode),
-                                        description.hashCode),
-                                    isWhiteListUsed.hashCode),
-                                isBlackListUsed.hashCode),
-                            showFavoriteOnly.hashCode),
-                        isCurrent.hashCode),
+                                        $jc(
+                                            $jc($jc($jc($jc(0, channelId.hashCode), name.hashCode), shortName.hashCode),
+                                                wsUrl.hashCode),
+                                            description.hashCode),
+                                        isWhiteListUsed.hashCode),
+                                    isBlackListUsed.hashCode),
+                                showFavoriteOnly.hashCode),
+                            isCurrent.hashCode),
+                        useAutoScroll.hashCode),
                     serverConnectStatus.hashCode),
                 datetime.hashCode),
             whiteList.hashCode),
@@ -254,6 +268,7 @@ class _$ChannelModel extends ChannelModel {
           ..add('isBlackListUsed', isBlackListUsed)
           ..add('showFavoriteOnly', showFavoriteOnly)
           ..add('isCurrent', isCurrent)
+          ..add('useAutoScroll', useAutoScroll)
           ..add('serverConnectStatus', serverConnectStatus)
           ..add('datetime', datetime)
           ..add('whiteList', whiteList)
@@ -301,6 +316,10 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
   bool get isCurrent => _$this._isCurrent;
   set isCurrent(bool isCurrent) => _$this._isCurrent = isCurrent;
 
+  bool _useAutoScroll;
+  bool get useAutoScroll => _$this._useAutoScroll;
+  set useAutoScroll(bool useAutoScroll) => _$this._useAutoScroll = useAutoScroll;
+
   ServerConnectStatus _serverConnectStatus;
   ServerConnectStatus get serverConnectStatus => _$this._serverConnectStatus;
   set serverConnectStatus(ServerConnectStatus serverConnectStatus) => _$this._serverConnectStatus = serverConnectStatus;
@@ -332,6 +351,7 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
       _isBlackListUsed = _$v.isBlackListUsed;
       _showFavoriteOnly = _$v.showFavoriteOnly;
       _isCurrent = _$v.isCurrent;
+      _useAutoScroll = _$v.useAutoScroll;
       _serverConnectStatus = _$v.serverConnectStatus;
       _datetime = _$v.datetime;
       _whiteList = _$v.whiteList?.toBuilder();
@@ -369,6 +389,7 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
               isBlackListUsed: isBlackListUsed,
               showFavoriteOnly: showFavoriteOnly,
               isCurrent: isCurrent,
+              useAutoScroll: useAutoScroll,
               serverConnectStatus: serverConnectStatus,
               datetime: datetime,
               whiteList: whiteList.build(),

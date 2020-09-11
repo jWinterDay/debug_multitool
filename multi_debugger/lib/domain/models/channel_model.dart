@@ -18,6 +18,7 @@ abstract class ChannelModel implements Built<ChannelModel, ChannelModelBuilder> 
     ..isBlackListUsed = false
     ..isCurrent = false
     ..isWhiteListUsed = false
+    ..useAutoScroll = false
     ..serverConnectStatus = ServerConnectStatus.disconnected
     ..whiteList = ListBuilder()
     ..blackList = ListBuilder()
@@ -41,6 +42,8 @@ abstract class ChannelModel implements Built<ChannelModel, ChannelModelBuilder> 
   bool get showFavoriteOnly;
 
   bool get isCurrent;
+
+  bool get useAutoScroll;
 
   ServerConnectStatus get serverConnectStatus;
 

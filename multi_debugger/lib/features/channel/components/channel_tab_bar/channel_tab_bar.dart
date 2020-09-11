@@ -22,6 +22,11 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
     filled: true,
     hintText: 'URL',
     fillColor: AppColors.background,
+    suffixIcon: Icon(
+      LoggerIcons.clearInput_1x,
+      color: AppColors.gray5,
+    ),
+    // icon: Icon(LoggerIcons.clearInput_1x),
     border: OutlineInputBorder(
       borderSide: const BorderSide(color: AppColors.gray3),
       borderRadius: BorderRadius.circular(6.0),
