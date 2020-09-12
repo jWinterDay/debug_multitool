@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:multi_debugger/app/colors.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/saved_url_state.dart';
-import 'package:multi_debugger/features/select_url/blocks/select_url_bloc.dart';
+import 'package:multi_debugger/features/select_url/blocs/select_url_bloc.dart';
 import 'package:multi_debugger/tools/logger_icons.dart';
 
 class SelectUrlScreen extends StatefulWidget {

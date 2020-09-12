@@ -1,6 +1,6 @@
 import 'package:built_value/built_value.dart';
 import 'package:built_value/json_object.dart';
-import 'package:multi_debugger/domain/models/server_event_type.dart';
+import 'package:multi_debugger/domain/enums/server_event_type.dart';
 
 part 'server_event.g.dart';
 

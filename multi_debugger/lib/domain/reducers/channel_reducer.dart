@@ -15,10 +15,18 @@ NestedReducerBuilder<AppState, AppStateBuilder, ChannelState, ChannelStateBuilde
       ..add<ChannelModel>(ChannelActionsNames.updateChannel, _updateChannel)
       ..add<ChannelModel>(ChannelActionsNames.changeConnectStatus, _changeConnectStatus)
       ..add<ChannelModel>(ChannelActionsNames.setCurrentChannel, _setCurrentChannel)
+
+      // actions
       ..add<ChannelModel>(ChannelActionsNames.toggleShowFavorites, _toggleShowFavorites)
       ..add<ChannelModel>(ChannelActionsNames.toggleShowWhiteList, _toggleShowWhiteList)
       ..add<ChannelModel>(ChannelActionsNames.toggleShowBlackList, _toggleShowBlackList)
-      ..add<ChannelModel>(ChannelActionsNames.toggleAutoScroll, _toggleAutoScroll);
+      ..add<ChannelModel>(ChannelActionsNames.toggleAutoScroll, _toggleAutoScroll)
+
+      // filters
+      ..add<Pair<ChannelModel, String>>(ChannelActionsNames.addWhiteListItem, _addWhiteListItem)
+      ..add<Pair<ChannelModel, String>>(ChannelActionsNames.addBlackListItem, _addBlackListItem)
+      ..add<Pair<ChannelModel, String>>(ChannelActionsNames.deleteWhiteListItem, _deleteWhiteListItem)
+      ..add<Pair<ChannelModel, String>>(ChannelActionsNames.deleteBlackListItem, _deleteBlackListItem);
 
 void _addChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {
   final ChannelModel channelModel = action.payload;
@@ -58,6 +66,9 @@ void _changeConnectStatus(ChannelState state, Action<ChannelModel> action, Chann
   _updateChannel(state, action, builder);
 }
 
+// actions
+//
+//
 void _toggleShowFavorites(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {
   final ChannelModel channelModel = action.payload;
 
@@ -126,4 +137,83 @@ void _toggleAutoScroll(ChannelState state, Action<ChannelModel> action, ChannelS
   );
 
   _updateChannel(state, nextAction, builder);
+}
+
+// filters
+//
+//
+void _addWhiteListItem(ChannelState state, Action<Pair<ChannelModel, String>> action, ChannelStateBuilder builder) {
+  final Pair<ChannelModel, String> serverEventPair = action.payload;
+
+  final ChannelModel currentChannelModel = serverEventPair.first;
+  final String filter = serverEventPair.second;
+
+  builder.channels.updateValue(
+    currentChannelModel.channelId,
+    (ChannelModel cm) {
+      final nextWhiteList = cm.whiteList.rebuild((update) => update.add(filter));
+
+      return cm.rebuild((update) => update.whiteList = nextWhiteList.toBuilder());
+    },
+    ifAbsent: () {
+      return currentChannelModel;
+    },
+  );
+}
+
+void _addBlackListItem(ChannelState state, Action<Pair<ChannelModel, String>> action, ChannelStateBuilder builder) {
+  final Pair<ChannelModel, String> serverEventPair = action.payload;
+
+  final ChannelModel currentChannelModel = serverEventPair.first;
+  final String filter = serverEventPair.second;
+
+  builder.channels.updateValue(
+    currentChannelModel.channelId,
+    (ChannelModel cm) {
+      final nextBlackList = cm.blackList.rebuild((update) => update.add(filter));
+
+      return cm.rebuild((update) => update.blackList = nextBlackList.toBuilder());
+    },
+    ifAbsent: () {
+      return currentChannelModel;
+    },
+  );
+}
+
+void _deleteWhiteListItem(ChannelState state, Action<Pair<ChannelModel, String>> action, ChannelStateBuilder builder) {
+  final Pair<ChannelModel, String> serverEventPair = action.payload;
+
+  final ChannelModel currentChannelModel = serverEventPair.first;
+  final String filter = serverEventPair.second;
+
+  builder.channels.updateValue(
+    currentChannelModel.channelId,
+    (ChannelModel cm) {
+      final nextWhiteList = cm.whiteList.rebuild((update) => update.removeWhere((String f) => f == filter));
+
+      return cm.rebuild((update) => update.whiteList = nextWhiteList.toBuilder());
+    },
+    ifAbsent: () {
+      return currentChannelModel;
+    },
+  );
+}
+
+void _deleteBlackListItem(ChannelState state, Action<Pair<ChannelModel, String>> action, ChannelStateBuilder builder) {
+  final Pair<ChannelModel, String> serverEventPair = action.payload;
+
+  final ChannelModel currentChannelModel = serverEventPair.first;
+  final String filter = serverEventPair.second;
+
+  builder.channels.updateValue(
+    currentChannelModel.channelId,
+    (ChannelModel cm) {
+      final nextBlackList = cm.blackList.rebuild((update) => update.removeWhere((String f) => f == filter));
+
+      return cm.rebuild((update) => update.blackList = nextBlackList.toBuilder());
+    },
+    ifAbsent: () {
+      return currentChannelModel;
+    },
+  );
 }

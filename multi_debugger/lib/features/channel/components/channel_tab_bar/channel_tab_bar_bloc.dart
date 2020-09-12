@@ -8,7 +8,6 @@ import 'package:rxdart/subjects.dart';
 
 class TabBarBloc extends BaseBloc {
   StreamSubscription<ChannelModel> _currentChannelModelSubscription;
-  ChannelModel get currentChannelModel => appGlobals.store.state.channelState.currentChannel;
   BehaviorSubject<ChannelModel> _currentChannelModelSubject;
   Stream<ChannelModel> get currentChannelModelStream => _currentChannelModelSubject.stream;
 

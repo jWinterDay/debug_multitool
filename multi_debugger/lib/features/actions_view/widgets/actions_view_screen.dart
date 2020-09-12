@@ -5,8 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_debugger/app/colors.dart';
 import 'package:multi_debugger/domain/base/pair.dart';
+import 'package:multi_debugger/domain/enums/server_event_type.dart';
 import 'package:multi_debugger/domain/models/models.dart';
-import 'package:multi_debugger/features/actions_view/blocks/actions_view_bloc.dart';
+import 'package:multi_debugger/features/actions_view/blocs/actions_view_bloc.dart';
 import 'package:multi_debugger/tools/logger_icons.dart';
 
 class ActionsViewScreen extends StatefulWidget {

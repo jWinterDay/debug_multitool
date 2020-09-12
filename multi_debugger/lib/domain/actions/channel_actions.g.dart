@@ -24,6 +24,10 @@ class _$ChannelActions extends ChannelActions {
   final toggleShowWhiteList = ActionDispatcher<ChannelModel>('ChannelActions-toggleShowWhiteList');
   final toggleShowBlackList = ActionDispatcher<ChannelModel>('ChannelActions-toggleShowBlackList');
   final toggleAutoScroll = ActionDispatcher<ChannelModel>('ChannelActions-toggleAutoScroll');
+  final addWhiteListItem = ActionDispatcher<Pair<ChannelModel, String>>('ChannelActions-addWhiteListItem');
+  final addBlackListItem = ActionDispatcher<Pair<ChannelModel, String>>('ChannelActions-addBlackListItem');
+  final deleteWhiteListItem = ActionDispatcher<Pair<ChannelModel, String>>('ChannelActions-deleteWhiteListItem');
+  final deleteBlackListItem = ActionDispatcher<Pair<ChannelModel, String>>('ChannelActions-deleteBlackListItem');
   final setChannelServerConnectStatus =
       ActionDispatcher<BuiltMap<ChannelModel, ServerConnectStatus>>('ChannelActions-setChannelServerConnectStatus');
 
@@ -38,6 +42,10 @@ class _$ChannelActions extends ChannelActions {
     toggleShowWhiteList.setDispatcher(dispatcher);
     toggleShowBlackList.setDispatcher(dispatcher);
     toggleAutoScroll.setDispatcher(dispatcher);
+    addWhiteListItem.setDispatcher(dispatcher);
+    addBlackListItem.setDispatcher(dispatcher);
+    deleteWhiteListItem.setDispatcher(dispatcher);
+    deleteBlackListItem.setDispatcher(dispatcher);
     setChannelServerConnectStatus.setDispatcher(dispatcher);
   }
 }
@@ -52,6 +60,10 @@ class ChannelActionsNames {
   static final toggleShowWhiteList = ActionName<ChannelModel>('ChannelActions-toggleShowWhiteList');
   static final toggleShowBlackList = ActionName<ChannelModel>('ChannelActions-toggleShowBlackList');
   static final toggleAutoScroll = ActionName<ChannelModel>('ChannelActions-toggleAutoScroll');
+  static final addWhiteListItem = ActionName<Pair<ChannelModel, String>>('ChannelActions-addWhiteListItem');
+  static final addBlackListItem = ActionName<Pair<ChannelModel, String>>('ChannelActions-addBlackListItem');
+  static final deleteWhiteListItem = ActionName<Pair<ChannelModel, String>>('ChannelActions-deleteWhiteListItem');
+  static final deleteBlackListItem = ActionName<Pair<ChannelModel, String>>('ChannelActions-deleteBlackListItem');
   static final setChannelServerConnectStatus =
       ActionName<BuiltMap<ChannelModel, ServerConnectStatus>>('ChannelActions-setChannelServerConnectStatus');
 }

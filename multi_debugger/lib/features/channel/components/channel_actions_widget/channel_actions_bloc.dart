@@ -4,6 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:multi_debugger/app_routes.dart';
 import 'package:multi_debugger/domain/base/base_bloc.dart';
 import 'package:multi_debugger/domain/base/pair.dart';
+import 'package:multi_debugger/domain/enums/filter_list_type.dart';
+import 'package:multi_debugger/domain/enums/server_event_type.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/states.dart';
 import 'package:rxdart/subjects.dart';
@@ -12,7 +14,6 @@ class ChannelActionsBloc extends BaseBloc {
   StreamSubscription<ChannelState> _channelSubscription;
 
   BehaviorSubject<ChannelModel> _currentChannelModelSubject;
-  ChannelModel get currentChannelModel => _currentChannelModelSubject.value;
   Stream<ChannelModel> get currentChannelModelStream => _currentChannelModelSubject.stream;
 
   @override
@@ -67,15 +68,30 @@ class ChannelActionsBloc extends BaseBloc {
 
   /// show white list dialog
   void showWhiteList(BuildContext context) {
-    // appGlobals.store.actions.routeTo(
-    //   AppRoute((builder) => builder
-    //     ..route = AppRoutes.editChannel
-    //     ..context = context),
+    if (currentChannelModel == null) {
+      return;
+    }
+
+    appGlobals.store.actions.routeTo(
+      AppRoute((builder) => builder
+        ..route = AppRoutes.filterList
+        ..bundle = FilterListType.white
+        ..context = context),
+    );
   }
 
   /// show black list dialog
   void showBlackList(BuildContext context) {
-    //
+    if (currentChannelModel == null) {
+      return;
+    }
+
+    appGlobals.store.actions.routeTo(
+      AppRoute((builder) => builder
+        ..route = AppRoutes.filterList
+        ..bundle = FilterListType.black
+        ..context = context),
+    );
   }
 
   /// add divider

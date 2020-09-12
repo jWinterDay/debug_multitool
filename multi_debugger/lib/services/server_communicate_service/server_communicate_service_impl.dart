@@ -5,6 +5,7 @@ import 'package:centrifuge/centrifuge.dart' as centrifuge;
 import 'package:flutter/foundation.dart';
 import 'package:multi_debugger/app_globals.dart';
 import 'package:multi_debugger/domain/base/pair.dart';
+import 'package:multi_debugger/domain/enums/server_event_type.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/services/logger_service/logger_service.dart';
 

@@ -190,9 +190,14 @@ class _Button extends StatelessWidget {
                   width: _iconWidth,
                   height: 36.0,
                   decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(6.0)),
+                    borderRadius: withDropDown
+                        ? const BorderRadius.only(
+                            topLeft: Radius.circular(6.0),
+                            bottomLeft: Radius.circular(6.0),
+                          )
+                        : const BorderRadius.all(Radius.circular(6.0)),
                     boxShadow: [
-                      BoxShadow(
+                      const BoxShadow(
                         color: AppColors.gray4,
                         offset: Offset(0, 1),
                         blurRadius: 1,
@@ -218,7 +223,10 @@ class _Button extends StatelessWidget {
                     width: 24,
                     height: 36,
                     decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(6.0)),
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(6.0),
+                        bottomRight: Radius.circular(6.0),
+                      ),
                       boxShadow: [
                         const BoxShadow(
                           color: AppColors.gray4,

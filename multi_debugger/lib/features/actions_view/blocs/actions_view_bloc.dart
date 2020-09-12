@@ -72,8 +72,6 @@ class ActionsViewBloc extends BaseBloc {
 
   /// toggle favorite server event
   void toggleFavorite(ServerEvent serverEvent) {
-    final ChannelModel currentChannelModel = appGlobals.store.state.channelState.currentChannel;
-
     Pair<String, ServerEvent> pair = Pair(currentChannelModel.channelId, serverEvent);
 
     appGlobals.store.actions.serverEventActions.toggleFavorite(pair);
