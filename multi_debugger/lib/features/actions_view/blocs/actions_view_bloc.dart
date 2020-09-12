@@ -24,6 +24,9 @@ class ActionsViewBloc extends BaseBloc {
     });
   }
 
+  bool inWhiteList(String actionName) => currentChannelModel.whiteList.contains(actionName);
+  bool inBlackList(String actionName) => currentChannelModel.blackList.contains(actionName);
+
   @override
   void dispose() {
     _serverEventListSubscription?.cancel();
@@ -70,20 +73,34 @@ class ActionsViewBloc extends BaseBloc {
     });
   }
 
-  /// toggle favorite server event
+  /// add/remote to favorites in current channel model
   void toggleFavorite(ServerEvent serverEvent) {
     Pair<String, ServerEvent> pair = Pair(currentChannelModel.channelId, serverEvent);
 
     appGlobals.store.actions.serverEventActions.toggleFavorite(pair);
   }
 
-  /// toggle white list in current channel model
+  /// add/remove to white list in current channel model
   void toggleWhiteList(ServerEvent serverEvent) {
-    //
+    final String actionName = serverEvent.action;
+    final Pair<ChannelModel, String> pair = Pair(currentChannelModel, actionName);
+
+    if (inWhiteList(actionName)) {
+      appGlobals.store.actions.channelActions.deleteWhiteListItem(pair);
+    } else {
+      appGlobals.store.actions.channelActions.addWhiteListItem(pair);
+    }
   }
 
-  /// toggle black list in current channel model
+  /// add/remove to black list in current channel model
   void toggleBlackList(ServerEvent serverEvent) {
-    //
+    final String actionName = serverEvent.action;
+    final Pair<ChannelModel, String> pair = Pair(currentChannelModel, actionName);
+
+    if (inBlackList(actionName)) {
+      appGlobals.store.actions.channelActions.deleteBlackListItem(pair);
+    } else {
+      appGlobals.store.actions.channelActions.addBlackListItem(pair);
+    }
   }
 }

@@ -167,7 +167,7 @@ class _Button extends StatelessWidget {
     Color bgColor = AppColors.background;
     Color iconColor = AppColors.gray3;
 
-    if (permanentBgColor) {
+    if (permanentBgColor && used) {
       iconColor = usedColor;
     } else if (used) {
       iconColor = AppColors.background;
