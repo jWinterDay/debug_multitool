@@ -174,8 +174,11 @@ class _ActionsViewState extends State<ActionsViewScreen> {
     return List.generate(serverEventList.length, (int index) {
       final ServerEvent serverEvent = serverEventList[index];
 
+      final bool isDelimiter = serverEvent.serverEventType == ServerEventType.delimiter;
+      final bool isFormatError = serverEvent.serverEventType == ServerEventType.formatError;
+
       // delimiter
-      if (serverEvent.serverEventType == ServerEventType.delimiter) {
+      if (isDelimiter) {
         return SliverToBoxAdapter(
           child: Container(
             height: 4.0,
@@ -193,7 +196,10 @@ class _ActionsViewState extends State<ActionsViewScreen> {
           textColor = AppColors.positive;
           break;
         case ServerEventType.disconnect:
-          textColor = AppColors.red;
+          textColor = AppColors.channelDisconnected;
+          break;
+        case ServerEventType.formatError:
+          textColor = AppColors.serverEventFormatError;
           break;
 
         default:
@@ -224,53 +230,57 @@ class _ActionsViewState extends State<ActionsViewScreen> {
               ),
 
               // repeat
-              const Padding(
-                padding: EdgeInsets.only(right: 20.0),
-                child: Icon(
-                  LoggerIcons.repeat_1x,
-                  color: AppColors.gray3,
-                  size: 20.0,
+              if (!isFormatError)
+                const Padding(
+                  padding: EdgeInsets.only(right: 20.0),
+                  child: Icon(
+                    LoggerIcons.repeat_1x,
+                    color: AppColors.gray3,
+                    size: 20.0,
+                  ),
                 ),
-              ),
 
               // favorite
-              InkWell(
-                onTap: () => _bloc.toggleFavorite(serverEvent),
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 20.0),
-                  child: Icon(
-                    serverEvent.favorite ? LoggerIcons.favoriteActive_1x : LoggerIcons.favoriteNull_1x,
-                    color: serverEvent.favorite ? AppColors.selected : AppColors.gray3,
-                    size: 20.0,
+              if (!isFormatError)
+                InkWell(
+                  onTap: () => _bloc.toggleFavorite(serverEvent),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 20.0),
+                    child: Icon(
+                      serverEvent.favorite ? LoggerIcons.favoriteActive_1x : LoggerIcons.favoriteNull_1x,
+                      color: serverEvent.favorite ? AppColors.selected : AppColors.gray3,
+                      size: 20.0,
+                    ),
                   ),
                 ),
-              ),
 
               // white list
-              InkWell(
-                onTap: () => _bloc.toggleWhiteList(serverEvent),
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 20.0),
-                  child: Icon(
-                    inWhiteList ? LoggerIcons.whitelistActive_1x : LoggerIcons.whitelistNull_1x,
-                    color: inWhiteList ? AppColors.primaryColor : AppColors.gray3,
-                    size: 20.0,
+              if (!isFormatError)
+                InkWell(
+                  onTap: () => _bloc.toggleWhiteList(serverEvent),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 20.0),
+                    child: Icon(
+                      inWhiteList ? LoggerIcons.whitelistActive_1x : LoggerIcons.whitelistNull_1x,
+                      color: inWhiteList ? AppColors.primaryColor : AppColors.gray3,
+                      size: 20.0,
+                    ),
                   ),
                 ),
-              ),
 
               // black list
-              InkWell(
-                onTap: () => _bloc.toggleBlackList(serverEvent),
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 34.0),
-                  child: Icon(
-                    inBlackList ? LoggerIcons.blacklistActive_1x : LoggerIcons.blacklistNull_1x,
-                    color: inBlackList ? AppColors.gray6 : AppColors.gray3,
-                    size: 20.0,
+              if (!isFormatError)
+                InkWell(
+                  onTap: () => _bloc.toggleBlackList(serverEvent),
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 34.0),
+                    child: Icon(
+                      inBlackList ? LoggerIcons.blacklistActive_1x : LoggerIcons.blacklistNull_1x,
+                      color: inBlackList ? AppColors.gray6 : AppColors.gray3,
+                      size: 20.0,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

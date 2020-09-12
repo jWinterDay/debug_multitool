@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:built_value/json_object.dart';
 import 'package:centrifuge/centrifuge.dart' as centrifuge;
 import 'package:flutter/foundation.dart';
 import 'package:multi_debugger/app_globals.dart';
@@ -97,8 +98,41 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
     });
 
     // publish sub
-    _publishSub = _subscription.publishStream.listen((centrifuge.PublishEvent event) {
-      // final Map<String, dynamic> message = json.decode(utf8.decode(event.data)) as Map<String, dynamic>;
+    _publishSub = _subscription.publishStream.listen((centrifuge.PublishEvent publishEvent) {
+      final dynamic message = json.decode(utf8.decode(publishEvent.data));
+
+      if (message is! Map) {
+        ServerEvent serverEvent = ServerEvent((b) {
+          b
+            ..action = 'Format error. Message type is not Map'
+            ..serverEventType = ServerEventType.formatError;
+
+          return b;
+        });
+
+        Pair<String, ServerEvent> event = Pair(channelModel.channelId, serverEvent);
+        appGlobals.store.actions.serverEventActions.addEvent(event);
+        return;
+      }
+
+      final Map<String, dynamic> messageMap = message as Map<String, dynamic>;
+
+      String action = (messageMap['action'] ?? 'Unknown action').toString();
+      JsonObject payload = JsonObject(messageMap['action'].toString());
+      JsonObject state = JsonObject(messageMap['state'].toString());
+
+      ServerEvent serverEvent = ServerEvent((b) {
+        b
+          ..action = action
+          ..payload = payload
+          ..state = state
+          ..serverEventType = ServerEventType.action;
+
+        return b;
+      });
+
+      Pair<String, ServerEvent> event = Pair(channelModel.channelId, serverEvent);
+      appGlobals.store.actions.serverEventActions.addEvent(event);
     });
 
     // connect
