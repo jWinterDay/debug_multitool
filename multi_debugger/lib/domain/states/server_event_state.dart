@@ -15,8 +15,11 @@ abstract class ServerEventState implements Built<ServerEventState, ServerEventSt
   static void _initializeBuilder(ServerEventStateBuilder b) =>
       b..events = BuiltMap<String, BuiltList<ServerEvent>>().toBuilder();
 
-  /// <channel id, url>
+  /// <channel id, server event list>
   BuiltMap<String, BuiltList<ServerEvent>> get events;
+
+  /// <channel id, server event list>
+  BuiltMap<String, BuiltList<ServerEvent>> get selectedEvents;
 
   BuiltList<ServerEvent> getEventsForChannel(ChannelModel currentChannel) {
     assert(currentChannel != null);
@@ -25,25 +28,24 @@ abstract class ServerEventState implements Built<ServerEventState, ServerEventSt
       return BuiltList();
     }
 
-    // TODO
-    // List<ServerEvent> serverEventList = events[currentChannel.channelId].where((ServerEvent serverEvent) {
-    //   // favorites
-    //   final bool show = !currentChannel.showFavoriteOnly || serverEvent.favorite;
+    List<ServerEvent> serverEventList = events[currentChannel.channelId].where((ServerEvent serverEvent) {
+      // favorites
+      final bool show = !currentChannel.showFavoriteOnly || serverEvent.favorite;
 
-    //   return show;
-    // }).where((ServerEvent serverEvent) {
-    //   // white
-    //   final bool show = !currentChannel.isWhiteListUsed || currentChannel.whiteList.contains(serverEvent.action);
+      return show;
+    }).where((ServerEvent serverEvent) {
+      // white
+      final bool show = !currentChannel.isWhiteListUsed || currentChannel.whiteList.contains(serverEvent.action);
 
-    //   return show;
-    // }).where((ServerEvent serverEvent) {
-    //   // black
-    //   final bool show = !currentChannel.isBlackListUsed || !currentChannel.blackList.contains(serverEvent.action);
+      return show;
+    }).where((ServerEvent serverEvent) {
+      // black
+      final bool show = !currentChannel.isBlackListUsed || !currentChannel.blackList.contains(serverEvent.action);
 
-    //   return show;
-    // }).toList();
+      return show;
+    }).toList();
 
-    return events[currentChannel.channelId];
+    return BuiltList.from(serverEventList);
   }
 
   static Serializer<ServerEventState> get serializer => _$serverEventStateSerializer;

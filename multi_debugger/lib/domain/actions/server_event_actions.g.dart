@@ -16,12 +16,14 @@ class _$ServerEventActions extends ServerEventActions {
   _$ServerEventActions._() : super._();
 
   final addEvent = ActionDispatcher<Pair<String, ServerEvent>>('ServerEventActions-addEvent');
+  final selectEvent = ActionDispatcher<Pair<String, ServerEvent>>('ServerEventActions-selectEvent');
   final clearEvents = ActionDispatcher<ChannelModel>('ServerEventActions-clearEvents');
   final toggleFavorite = ActionDispatcher<Pair<String, ServerEvent>>('ServerEventActions-toggleFavorite');
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
     addEvent.setDispatcher(dispatcher);
+    selectEvent.setDispatcher(dispatcher);
     clearEvents.setDispatcher(dispatcher);
     toggleFavorite.setDispatcher(dispatcher);
   }
@@ -29,6 +31,7 @@ class _$ServerEventActions extends ServerEventActions {
 
 class ServerEventActionsNames {
   static final addEvent = ActionName<Pair<String, ServerEvent>>('ServerEventActions-addEvent');
+  static final selectEvent = ActionName<Pair<String, ServerEvent>>('ServerEventActions-selectEvent');
   static final clearEvents = ActionName<ChannelModel>('ServerEventActions-clearEvents');
   static final toggleFavorite = ActionName<Pair<String, ServerEvent>>('ServerEventActions-toggleFavorite');
 }

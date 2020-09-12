@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:built_collection/built_collection.dart';
+import 'package:flutter/widgets.dart';
 import 'package:multi_debugger/domain/base/base_bloc.dart';
 import 'package:multi_debugger/domain/base/pair.dart';
 import 'package:multi_debugger/domain/models/models.dart';
@@ -9,6 +10,8 @@ import 'package:multi_debugger/domain/states/states.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ActionsViewBloc extends BaseBloc {
+  final ScrollController scrollController = ScrollController();
+
   BehaviorSubject<Pair<ChannelModel, BuiltList<ServerEvent>>> _serverEventListSubject;
   Stream<Pair<ChannelModel, BuiltList<ServerEvent>>> get serverEventStateStream => _serverEventListSubject.stream;
 
@@ -31,6 +34,8 @@ class ActionsViewBloc extends BaseBloc {
   void dispose() {
     _serverEventListSubscription?.cancel();
     _serverEventListSubject.close();
+
+    scrollController.dispose();
 
     super.dispose();
   }
@@ -55,21 +60,34 @@ class ActionsViewBloc extends BaseBloc {
       ServerEventState serverEventState,
       ChannelState channelState,
     ) {
-      final ChannelModel currentChannel = channelState.currentChannel;
-      if (currentChannel == null) {
+      if (currentChannelModel == null) {
         return null;
       }
 
-      BuiltList<ServerEvent> eventList = serverEventState.getEventsForChannel(currentChannel);
+      BuiltList<ServerEvent> eventList = serverEventState.getEventsForChannel(currentChannelModel);
 
-      return Pair(currentChannel, eventList);
-    })
-        // .distinct((List<ServerEvent> prev, List<ServerEvent> next) {
-        //   print('prev = ${prev.hashCode}, next = ${next.hashCode} eq = ${prev == next}');
-        //   return (prev?.length ?? 0) == (next?.length ?? 0); // false; //prev == next;
-        // })
-        .listen((Pair<ChannelModel, BuiltList<ServerEvent>> pair) {
+      return Pair(currentChannelModel, eventList);
+    }).distinct((prev, next) {
+      // print('prev = ${prev.hashCode}, next = ${next.hashCode} eq = ${prev == next}');
+
+      return prev == next;
+    }).listen((Pair<ChannelModel, BuiltList<ServerEvent>> pair) {
       _serverEventListSubject.add(pair);
+
+      // scroll to end
+      if (scrollController.hasClients && currentChannelModel.useAutoScroll) {
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (scrollController == null || !scrollController.hasClients) {
+            return;
+          }
+
+          scrollController.animateTo(
+            scrollController.position.maxScrollExtent,
+            curve: Curves.easeOut,
+            duration: const Duration(milliseconds: 200),
+          );
+        });
+      }
     });
   }
 

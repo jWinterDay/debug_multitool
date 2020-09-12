@@ -1,3 +1,4 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:built_redux/built_redux.dart';
 import 'package:multi_debugger/domain/actions/channel_actions.dart';
 import 'package:multi_debugger/domain/base/pair.dart';
@@ -88,7 +89,7 @@ void _toggleShowWhiteList(ChannelState state, Action<ChannelModel> action, Chann
   final ChannelModel channelModel = action.payload;
 
   final ChannelModel nextChannelModel = channelModel.rebuild((update) {
-    return update.isWhiteListUsed = !channelModel.isWhiteListUsed;
+    return update..isWhiteListUsed = !channelModel.isWhiteListUsed;
   });
 
   Action<ChannelModel> nextAction = Action<ChannelModel>(
@@ -151,9 +152,9 @@ void _addWhiteListItem(ChannelState state, Action<Pair<ChannelModel, String>> ac
   builder.channels.updateValue(
     currentChannelModel.channelId,
     (ChannelModel cm) {
-      final nextWhiteList = cm.whiteList.rebuild((update) => update.add(filter));
-
-      return cm.rebuild((update) => update.whiteList = nextWhiteList.toBuilder());
+      return cm.rebuild((update) => update
+        ..whiteList = cm.whiteList.rebuild((update) => update.add(filter)).toBuilder()
+        ..blackList = cm.blackList.rebuild((update) => update.removeWhere((String f) => f == filter)).toBuilder());
     },
     ifAbsent: () {
       return currentChannelModel;
@@ -170,9 +171,9 @@ void _addBlackListItem(ChannelState state, Action<Pair<ChannelModel, String>> ac
   builder.channels.updateValue(
     currentChannelModel.channelId,
     (ChannelModel cm) {
-      final nextBlackList = cm.blackList.rebuild((update) => update.add(filter));
-
-      return cm.rebuild((update) => update.blackList = nextBlackList.toBuilder());
+      return cm.rebuild((update) => update
+        ..blackList = cm.blackList.rebuild((update) => update.add(filter)).toBuilder()
+        ..whiteList = cm.whiteList.rebuild((update) => update.removeWhere((String f) => f == filter)).toBuilder());
     },
     ifAbsent: () {
       return currentChannelModel;

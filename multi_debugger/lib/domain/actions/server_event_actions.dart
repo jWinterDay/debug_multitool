@@ -12,6 +12,9 @@ abstract class ServerEventActions extends ReduxActions {
   /// <channel id, add server event>
   ActionDispatcher<Pair<String, ServerEvent>> get addEvent;
 
+  /// <channel id, selected server event>
+  ActionDispatcher<Pair<String, ServerEvent>> get selectEvent;
+
   /// channel id
   ActionDispatcher<ChannelModel> get clearEvents;
 

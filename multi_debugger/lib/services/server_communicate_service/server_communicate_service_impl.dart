@@ -28,6 +28,8 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
   StreamSubscription<centrifuge.DisconnectEvent> _disconnectSub;
   StreamSubscription<centrifuge.PublishEvent> _publishSub;
 
+  bool _connected = false;
+
   @override
   void init() {
     super.init();
@@ -46,6 +48,8 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
 
     // connect sub
     _connectSub = _client.connectStream.listen((centrifuge.ConnectEvent event) {
+      _connected = true;
+
       // channel connect status
       ChannelModel channelModelTransfer = ChannelModel((b) {
         b
@@ -73,6 +77,8 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
     _disconnectSub = _client.disconnectStream.listen((centrifuge.DisconnectEvent event) {
       loggerService.d('service disconnect for channel id: ${channelModel.channelId}');
 
+      _connected = false;
+
       // server event -> disconnect
       ServerEvent serverEvent = ServerEvent((b) {
         b
@@ -84,6 +90,10 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
 
       Pair<String, ServerEvent> event = Pair(channelModel.channelId, serverEvent);
       appGlobals.store.actions.serverEventActions.addEvent(event);
+
+      _connectSub?.cancel();
+      _disconnectSub?.cancel();
+      _publishSub?.cancel();
     });
 
     // publish sub
@@ -98,14 +108,9 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
 
   @override
   Future<void> disconnect() async {
-    _client?.disconnect();
-
-    // TODO
-    Future<void>.delayed(const Duration(milliseconds: 200), () {
-      _connectSub?.cancel();
-      _disconnectSub?.cancel();
-      _publishSub?.cancel();
-    });
+    if (_connected) {
+      _client.disconnect();
+    }
 
     _subscription?.unsubscribe();
   }

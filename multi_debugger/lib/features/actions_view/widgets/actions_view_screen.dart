@@ -155,12 +155,10 @@ class _ActionsViewState extends State<ActionsViewScreen> {
                 );
               }
 
-              final Pair<ChannelModel, BuiltList<ServerEvent>> pair = snapshot.data;
-
-              final List<Widget> sliverList = _itemSliverList(pair);
-
               return CustomScrollView(
-                slivers: sliverList,
+                physics: const ClampingScrollPhysics(),
+                controller: _bloc.scrollController,
+                slivers: _itemSliverList(snapshot.data),
               );
             },
           ),
@@ -221,6 +219,7 @@ class _ActionsViewState extends State<ActionsViewScreen> {
                     color: textColor,
                     fontSize: 15.0,
                   ),
+                  overflow: TextOverflow.ellipsis, // ???
                 ),
               ),
 
