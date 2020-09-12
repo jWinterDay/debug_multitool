@@ -38,9 +38,9 @@ class AppColors {
   static const Color channelConnecting = Color(0xFF99D6C5);
 
   /// 153 214 197
-  static const Color channelDisconnected = Colors.blue;
+  static Color get channelDisconnected => gray3;
 
-  static Color serverEventFormatError = Colors.red[100];
+  static Color get serverEventFormatError => red;
 
   static Color channelActiveTitle = Colors.white;
 
