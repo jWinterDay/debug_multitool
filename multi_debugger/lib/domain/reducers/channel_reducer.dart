@@ -27,7 +27,8 @@ NestedReducerBuilder<AppState, AppStateBuilder, ChannelState, ChannelStateBuilde
       ..add<Pair<ChannelModel, String>>(ChannelActionsNames.addWhiteListItem, _addWhiteListItem)
       ..add<Pair<ChannelModel, String>>(ChannelActionsNames.addBlackListItem, _addBlackListItem)
       ..add<Pair<ChannelModel, String>>(ChannelActionsNames.deleteWhiteListItem, _deleteWhiteListItem)
-      ..add<Pair<ChannelModel, String>>(ChannelActionsNames.deleteBlackListItem, _deleteBlackListItem);
+      ..add<Pair<ChannelModel, String>>(ChannelActionsNames.deleteBlackListItem, _deleteBlackListItem)
+      ..add<Pair<ChannelModel, ServerEvent>>(ChannelActionsNames.selectEvent, _selectEvent);
 
 void _addChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {
   final ChannelModel channelModel = action.payload;
@@ -225,6 +226,23 @@ void _deleteBlackListItem(ChannelState state, Action<Pair<ChannelModel, String>>
     },
     ifAbsent: () {
       return currentChannelModel;
+    },
+  );
+}
+
+void _selectEvent(ChannelState state, Action<Pair<ChannelModel, ServerEvent>> action, ChannelStateBuilder builder) {
+  final Pair<ChannelModel, ServerEvent> pair = action.payload;
+
+  final ChannelModel channelModel = pair.first;
+  final ServerEvent serverEvent = pair.second;
+
+  builder.channels.updateValue(
+    channelModel.channelId,
+    (ChannelModel _) {
+      return channelModel.rebuild((b) => b..selectedEvent.replace(serverEvent));
+    },
+    ifAbsent: () {
+      return channelModel;
     },
   );
 }

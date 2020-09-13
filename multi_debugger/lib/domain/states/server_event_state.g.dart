@@ -24,12 +24,6 @@ class _$ServerEventStateSerializer implements StructuredSerializer<ServerEventSt
             const FullType(String),
             const FullType(BuiltList, const [const FullType(ServerEvent)])
           ])),
-      'selectedEvents',
-      serializers.serialize(object.selectedEvents,
-          specifiedType: const FullType(BuiltMap, const [
-            const FullType(String),
-            const FullType(BuiltList, const [const FullType(ServerEvent)])
-          ])),
     ];
 
     return result;
@@ -53,13 +47,6 @@ class _$ServerEventStateSerializer implements StructuredSerializer<ServerEventSt
                 const FullType(BuiltList, const [const FullType(ServerEvent)])
               ])));
           break;
-        case 'selectedEvents':
-          result.selectedEvents.replace(serializers.deserialize(value,
-              specifiedType: const FullType(BuiltMap, const [
-                const FullType(String),
-                const FullType(BuiltList, const [const FullType(ServerEvent)])
-              ])));
-          break;
       }
     }
 
@@ -70,18 +57,13 @@ class _$ServerEventStateSerializer implements StructuredSerializer<ServerEventSt
 class _$ServerEventState extends ServerEventState {
   @override
   final BuiltMap<String, BuiltList<ServerEvent>> events;
-  @override
-  final BuiltMap<String, BuiltList<ServerEvent>> selectedEvents;
 
   factory _$ServerEventState([void Function(ServerEventStateBuilder) updates]) =>
       (new ServerEventStateBuilder()..update(updates)).build();
 
-  _$ServerEventState._({this.events, this.selectedEvents}) : super._() {
+  _$ServerEventState._({this.events}) : super._() {
     if (events == null) {
       throw new BuiltValueNullFieldError('ServerEventState', 'events');
-    }
-    if (selectedEvents == null) {
-      throw new BuiltValueNullFieldError('ServerEventState', 'selectedEvents');
     }
   }
 
@@ -94,20 +76,17 @@ class _$ServerEventState extends ServerEventState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ServerEventState && events == other.events && selectedEvents == other.selectedEvents;
+    return other is ServerEventState && events == other.events;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, events.hashCode), selectedEvents.hashCode));
+    return $jf($jc(0, events.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('ServerEventState')
-          ..add('events', events)
-          ..add('selectedEvents', selectedEvents))
-        .toString();
+    return (newBuiltValueToStringHelper('ServerEventState')..add('events', events)).toString();
   }
 }
 
@@ -119,12 +98,6 @@ class ServerEventStateBuilder implements Builder<ServerEventState, ServerEventSt
       _$this._events ??= new MapBuilder<String, BuiltList<ServerEvent>>();
   set events(MapBuilder<String, BuiltList<ServerEvent>> events) => _$this._events = events;
 
-  MapBuilder<String, BuiltList<ServerEvent>> _selectedEvents;
-  MapBuilder<String, BuiltList<ServerEvent>> get selectedEvents =>
-      _$this._selectedEvents ??= new MapBuilder<String, BuiltList<ServerEvent>>();
-  set selectedEvents(MapBuilder<String, BuiltList<ServerEvent>> selectedEvents) =>
-      _$this._selectedEvents = selectedEvents;
-
   ServerEventStateBuilder() {
     ServerEventState._initializeBuilder(this);
   }
@@ -132,7 +105,6 @@ class ServerEventStateBuilder implements Builder<ServerEventState, ServerEventSt
   ServerEventStateBuilder get _$this {
     if (_$v != null) {
       _events = _$v.events?.toBuilder();
-      _selectedEvents = _$v.selectedEvents?.toBuilder();
       _$v = null;
     }
     return this;
@@ -155,14 +127,12 @@ class ServerEventStateBuilder implements Builder<ServerEventState, ServerEventSt
   _$ServerEventState build() {
     _$ServerEventState _$result;
     try {
-      _$result = _$v ?? new _$ServerEventState._(events: events.build(), selectedEvents: selectedEvents.build());
+      _$result = _$v ?? new _$ServerEventState._(events: events.build());
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'events';
         events.build();
-        _$failedField = 'selectedEvents';
-        selectedEvents.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError('ServerEventState', _$failedField, e.toString());
       }

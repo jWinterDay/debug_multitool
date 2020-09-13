@@ -17,7 +17,7 @@ final appTheme = ThemeData(
       fontSize: 13.0,
       fontWeight: FontWeight.w400,
       fontStyle: FontStyle.normal,
-      fontFamily: "SFProDisplay",
+      fontFamily: 'SFProDisplay',
       color: AppColors.bodyText2Color,
     ),
   ),

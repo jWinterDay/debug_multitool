@@ -48,6 +48,11 @@ class _$ChannelModelSerializer implements StructuredSerializer<ChannelModel> {
     if (object.wsUrl != null) {
       result..add('wsUrl')..add(serializers.serialize(object.wsUrl, specifiedType: const FullType(String)));
     }
+    if (object.selectedEvent != null) {
+      result
+        ..add('selectedEvent')
+        ..add(serializers.serialize(object.selectedEvent, specifiedType: const FullType(ServerEvent)));
+    }
     return result;
   }
 
@@ -107,6 +112,10 @@ class _$ChannelModelSerializer implements StructuredSerializer<ChannelModel> {
           result.blackList.replace(serializers.deserialize(value,
               specifiedType: const FullType(BuiltList, const [const FullType(String)])) as BuiltList<Object>);
           break;
+        case 'selectedEvent':
+          result.selectedEvent
+              .replace(serializers.deserialize(value, specifiedType: const FullType(ServerEvent)) as ServerEvent);
+          break;
       }
     }
 
@@ -143,6 +152,8 @@ class _$ChannelModel extends ChannelModel {
   final BuiltList<String> whiteList;
   @override
   final BuiltList<String> blackList;
+  @override
+  final ServerEvent selectedEvent;
 
   factory _$ChannelModel([void Function(ChannelModelBuilder) updates]) =>
       (new ChannelModelBuilder()..update(updates)).build();
@@ -161,7 +172,8 @@ class _$ChannelModel extends ChannelModel {
       this.serverConnectStatus,
       this.datetime,
       this.whiteList,
-      this.blackList})
+      this.blackList,
+      this.selectedEvent})
       : super._() {
     if (channelId == null) {
       throw new BuiltValueNullFieldError('ChannelModel', 'channelId');
@@ -227,7 +239,8 @@ class _$ChannelModel extends ChannelModel {
         serverConnectStatus == other.serverConnectStatus &&
         datetime == other.datetime &&
         whiteList == other.whiteList &&
-        blackList == other.blackList;
+        blackList == other.blackList &&
+        selectedEvent == other.selectedEvent;
   }
 
   @override
@@ -242,18 +255,22 @@ class _$ChannelModel extends ChannelModel {
                                 $jc(
                                     $jc(
                                         $jc(
-                                            $jc($jc($jc($jc(0, channelId.hashCode), name.hashCode), shortName.hashCode),
-                                                wsUrl.hashCode),
-                                            description.hashCode),
-                                        isWhiteListUsed.hashCode),
-                                    isBlackListUsed.hashCode),
-                                showFavoriteOnly.hashCode),
-                            isCurrent.hashCode),
-                        useAutoScroll.hashCode),
-                    serverConnectStatus.hashCode),
-                datetime.hashCode),
-            whiteList.hashCode),
-        blackList.hashCode));
+                                            $jc(
+                                                $jc(
+                                                    $jc($jc($jc(0, channelId.hashCode), name.hashCode),
+                                                        shortName.hashCode),
+                                                    wsUrl.hashCode),
+                                                description.hashCode),
+                                            isWhiteListUsed.hashCode),
+                                        isBlackListUsed.hashCode),
+                                    showFavoriteOnly.hashCode),
+                                isCurrent.hashCode),
+                            useAutoScroll.hashCode),
+                        serverConnectStatus.hashCode),
+                    datetime.hashCode),
+                whiteList.hashCode),
+            blackList.hashCode),
+        selectedEvent.hashCode));
   }
 
   @override
@@ -272,7 +289,8 @@ class _$ChannelModel extends ChannelModel {
           ..add('serverConnectStatus', serverConnectStatus)
           ..add('datetime', datetime)
           ..add('whiteList', whiteList)
-          ..add('blackList', blackList))
+          ..add('blackList', blackList)
+          ..add('selectedEvent', selectedEvent))
         .toString();
   }
 }
@@ -336,6 +354,10 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
   ListBuilder<String> get blackList => _$this._blackList ??= new ListBuilder<String>();
   set blackList(ListBuilder<String> blackList) => _$this._blackList = blackList;
 
+  ServerEventBuilder _selectedEvent;
+  ServerEventBuilder get selectedEvent => _$this._selectedEvent ??= new ServerEventBuilder();
+  set selectedEvent(ServerEventBuilder selectedEvent) => _$this._selectedEvent = selectedEvent;
+
   ChannelModelBuilder() {
     ChannelModel._initializeBuilder(this);
   }
@@ -356,6 +378,7 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
       _datetime = _$v.datetime;
       _whiteList = _$v.whiteList?.toBuilder();
       _blackList = _$v.blackList?.toBuilder();
+      _selectedEvent = _$v.selectedEvent?.toBuilder();
       _$v = null;
     }
     return this;
@@ -393,7 +416,8 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
               serverConnectStatus: serverConnectStatus,
               datetime: datetime,
               whiteList: whiteList.build(),
-              blackList: blackList.build());
+              blackList: blackList.build(),
+              selectedEvent: _selectedEvent?.build());
     } catch (_) {
       String _$failedField;
       try {
@@ -401,6 +425,8 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
         whiteList.build();
         _$failedField = 'blackList';
         blackList.build();
+        _$failedField = 'selectedEvent';
+        _selectedEvent?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError('ChannelModel', _$failedField, e.toString());
       }

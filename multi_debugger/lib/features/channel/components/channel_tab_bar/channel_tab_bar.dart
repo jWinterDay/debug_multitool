@@ -332,7 +332,14 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
                           ),
                         );
                       },
-                    ),
+                    )
+                  else
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15.0),
+                      child: SizedBox(
+                        width: 220.0 - 8.0,
+                      ),
+                    )
                 ],
               );
             },

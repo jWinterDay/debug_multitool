@@ -41,4 +41,7 @@ abstract class ChannelActions extends ReduxActions {
   ActionDispatcher<Pair<ChannelModel, String>> get deleteBlackListItem;
 
   ActionDispatcher<BuiltMap<ChannelModel, ServerConnectStatus>> get setChannelServerConnectStatus;
+
+  /// selected server event
+  ActionDispatcher<Pair<ChannelModel, ServerEvent>> get selectEvent;
 }

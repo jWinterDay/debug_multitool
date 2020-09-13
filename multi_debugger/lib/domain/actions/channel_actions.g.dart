@@ -31,6 +31,7 @@ class _$ChannelActions extends ChannelActions {
   final deleteBlackListItem = ActionDispatcher<Pair<ChannelModel, String>>('ChannelActions-deleteBlackListItem');
   final setChannelServerConnectStatus =
       ActionDispatcher<BuiltMap<ChannelModel, ServerConnectStatus>>('ChannelActions-setChannelServerConnectStatus');
+  final selectEvent = ActionDispatcher<Pair<ChannelModel, ServerEvent>>('ChannelActions-selectEvent');
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
@@ -49,6 +50,7 @@ class _$ChannelActions extends ChannelActions {
     deleteWhiteListItem.setDispatcher(dispatcher);
     deleteBlackListItem.setDispatcher(dispatcher);
     setChannelServerConnectStatus.setDispatcher(dispatcher);
+    selectEvent.setDispatcher(dispatcher);
   }
 }
 
@@ -69,4 +71,5 @@ class ChannelActionsNames {
   static final deleteBlackListItem = ActionName<Pair<ChannelModel, String>>('ChannelActions-deleteBlackListItem');
   static final setChannelServerConnectStatus =
       ActionName<BuiltMap<ChannelModel, ServerConnectStatus>>('ChannelActions-setChannelServerConnectStatus');
+  static final selectEvent = ActionName<Pair<ChannelModel, ServerEvent>>('ChannelActions-selectEvent');
 }

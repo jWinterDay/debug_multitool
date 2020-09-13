@@ -176,6 +176,8 @@ class _ActionsViewState extends State<ActionsViewScreen> {
 
       final bool isDelimiter = serverEvent.serverEventType == ServerEventType.delimiter;
       final bool isFormatError = serverEvent.serverEventType == ServerEventType.formatError;
+      final bool canSelect = serverEvent.serverEventType != ServerEventType.delimiter;
+      final bool selected = serverEvent == currentChannelModel.selectedEvent;
 
       // delimiter
       if (isDelimiter) {
@@ -193,13 +195,13 @@ class _ActionsViewState extends State<ActionsViewScreen> {
       Color textColor = AppColors.bodyText2Color;
       switch (serverEvent.serverEventType) {
         case ServerEventType.connect:
-          textColor = AppColors.positive;
+          textColor = selected ? AppColors.background : AppColors.positive;
           break;
         case ServerEventType.disconnect:
-          textColor = AppColors.channelDisconnected;
+          textColor = selected ? AppColors.background : AppColors.channelDisconnected;
           break;
         case ServerEventType.formatError:
-          textColor = AppColors.serverEventFormatError;
+          textColor = selected ? AppColors.background : AppColors.serverEventFormatError;
           break;
 
         default:
@@ -207,25 +209,31 @@ class _ActionsViewState extends State<ActionsViewScreen> {
 
       return SliverToBoxAdapter(
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12.0).copyWith(left: 15.0),
-          decoration: const BoxDecoration(
-            border: Border(
+          decoration: BoxDecoration(
+            border: const Border(
               bottom: BorderSide(
                 color: AppColors.gray3,
               ),
             ),
+            color: selected ? AppColors.positive : AppColors.transparent,
           ),
           child: Row(
             children: [
               // action name
               Expanded(
-                child: Text(
-                  '$index) ${serverEvent.action}',
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: 15.0,
+                child: InkWell(
+                  onTap: canSelect ? () => _bloc.toggleSelectServerEvent(serverEvent) : null,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12.0).copyWith(left: 15.0),
+                    child: Text(
+                      '$index) ${serverEvent.action}',
+                      style: TextStyle(
+                        color: textColor,
+                        fontSize: 15.0,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                  overflow: TextOverflow.ellipsis, // ???
                 ),
               ),
 

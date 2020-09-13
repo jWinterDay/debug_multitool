@@ -4,6 +4,7 @@ import 'package:multi_debugger/features/actions_view/widgets/actions_view_screen
 import 'package:multi_debugger/features/channel/components/channel_actions_widget/channel_actions_widget.dart';
 import 'package:multi_debugger/features/channel/components/channel_tab/channel_tab.dart';
 import 'package:multi_debugger/features/channel/components/channel_tab_bar/channel_tab_bar.dart';
+import 'package:multi_debugger/features/payload_view/widgets/payload_view_screen.dart';
 
 class ChannelScreen extends StatelessWidget {
   const ChannelScreen({
@@ -100,6 +101,7 @@ class ChannelScreen extends StatelessWidget {
                             ],
                             color: AppColors.background,
                           ),
+                          child: const PayloadViewScreen(),
                         ),
                       ),
                     ],

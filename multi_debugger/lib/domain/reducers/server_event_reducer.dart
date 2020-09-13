@@ -11,7 +11,6 @@ NestedReducerBuilder<AppState, AppStateBuilder, ServerEventState, ServerEventSta
   return NestedReducerBuilder<AppState, AppStateBuilder, ServerEventState, ServerEventStateBuilder>(
       (state) => state.serverEventState, (builder) => builder.serverEventState)
     ..add<Pair<String, ServerEvent>>(ServerEventActionsNames.addEvent, _addEvent)
-    ..add<Pair<String, ServerEvent>>(ServerEventActionsNames.selectEvent, _selectEvent)
     ..add<ChannelModel>(ServerEventActionsNames.clearEvents, _clearEvents)
     ..add<Pair<String, ServerEvent>>(ServerEventActionsNames.toggleFavorite, _toggleFavorite);
 }
@@ -23,25 +22,6 @@ void _addEvent(ServerEventState state, Action<Pair<String, ServerEvent>> action,
   final ServerEvent serverEvent = serverEventPair.second;
 
   builder.events.updateValue(
-    channelId,
-    (BuiltList<ServerEvent> update) {
-      return update.rebuild((ListBuilder b) {
-        b.add(serverEvent);
-      });
-    },
-    ifAbsent: () {
-      return BuiltList<ServerEvent>.from(<ServerEvent>[serverEvent]);
-    },
-  );
-}
-
-void _selectEvent(ServerEventState state, Action<Pair<String, ServerEvent>> action, ServerEventStateBuilder builder) {
-  final Pair<String, ServerEvent> serverEventPair = action.payload;
-
-  final String channelId = serverEventPair.first;
-  final ServerEvent serverEvent = serverEventPair.second;
-
-  builder.selectedEvents.updateValue(
     channelId,
     (BuiltList<ServerEvent> update) {
       return update.rebuild((ListBuilder b) {

@@ -1,7 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
-import 'package:multi_debugger/domain/models/models.dart' show ServerConnectStatus;
+import 'package:multi_debugger/domain/models/models.dart';
 import 'package:uuid/uuid.dart';
 
 part 'channel_model.g.dart';
@@ -52,6 +52,9 @@ abstract class ChannelModel implements Built<ChannelModel, ChannelModelBuilder> 
   BuiltList<String> get whiteList;
 
   BuiltList<String> get blackList;
+
+  @nullable
+  ServerEvent get selectedEvent;
 
   static Serializer<ChannelModel> get serializer => _$channelModelSerializer;
 }

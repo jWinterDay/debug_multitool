@@ -121,4 +121,10 @@ class ActionsViewBloc extends BaseBloc {
       appGlobals.store.actions.channelActions.addBlackListItem(pair);
     }
   }
+
+  void toggleSelectServerEvent(ServerEvent serverEvent) {
+    final Pair<ChannelModel, ServerEvent> pair = Pair(currentChannelModel, serverEvent);
+
+    appGlobals.store.actions.channelActions.selectEvent(pair);
+  }
 }
