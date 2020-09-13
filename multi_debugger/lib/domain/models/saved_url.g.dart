@@ -6,6 +6,51 @@ part of 'saved_url.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
+Serializer<SavedUrl> _$savedUrlSerializer = new _$SavedUrlSerializer();
+
+class _$SavedUrlSerializer implements StructuredSerializer<SavedUrl> {
+  @override
+  final Iterable<Type> types = const [SavedUrl, _$SavedUrl];
+  @override
+  final String wireName = 'SavedUrl';
+
+  @override
+  Iterable<Object> serialize(Serializers serializers, SavedUrl object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[
+      'url',
+      serializers.serialize(object.url, specifiedType: const FullType(String)),
+      'custom',
+      serializers.serialize(object.custom, specifiedType: const FullType(bool)),
+    ];
+
+    return result;
+  }
+
+  @override
+  SavedUrl deserialize(Serializers serializers, Iterable<Object> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new SavedUrlBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case 'url':
+          result.url = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          break;
+        case 'custom':
+          result.custom = serializers.deserialize(value, specifiedType: const FullType(bool)) as bool;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
 class _$SavedUrl extends SavedUrl {
   @override
   final String url;

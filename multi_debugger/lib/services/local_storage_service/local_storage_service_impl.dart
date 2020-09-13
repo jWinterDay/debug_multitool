@@ -11,8 +11,10 @@ import 'package:multi_debugger/domain/models/models.dart';
 
 import 'local_storage_service.dart';
 
-const String _kChannelStateName = 'channelState';
-const String _kChannelStateKey = 'state';
+const String _kMultiDebuggerName = 'multiDebugger';
+
+const String _kChannelStateKey = 'channelState';
+const String _kSavedUrlKey = 'savedUrl';
 
 class LocalStorageServiceImpl extends LocalStorageService {
   LocalStorageServiceImpl({
@@ -20,7 +22,7 @@ class LocalStorageServiceImpl extends LocalStorageService {
   }) : assert(loggerService != null);
   final LoggerService loggerService;
 
-  Box<String> _channelStateBox;
+  Box<String> _localStorageBox;
 
   @override
   void init() {
@@ -29,42 +31,78 @@ class LocalStorageServiceImpl extends LocalStorageService {
 
   @override
   void dispose() {
-    _channelStateBox.close();
+    _localStorageBox.close();
 
     super.dispose();
   }
 
+  Future<void> _checkBoxOpen() async {
+    final bool open = _localStorageBox?.isOpen ?? false;
+
+    if (!open) {
+      _localStorageBox = await Hive.openBox<String>(_kMultiDebuggerName);
+    }
+  }
+
   @override
   Future<void> initStorage() async {
-    final Directory appDocumentDirectory =
-        await path_provider.getDownloadsDirectory(); // getApplicationDocumentsDirectory();
+    final Directory appDocumentDirectory = await path_provider.getTemporaryDirectory(); //getDownloadsDirectory();
     Hive.init(appDocumentDirectory.path);
   }
 
   @override
   Future<List<SavedUrl>> fetchSavedUrlList() async {
-    return [
-      SavedUrl((b) => b
-        ..url = 'ws://localhost:8001/connection/websocket?format=protobuf'
-        ..custom = false),
-      SavedUrl((b) => b
-        ..url = 'ws://172.16.55.141:8001/connection/websocket?format=protobuf'
-        ..custom = true)
-    ];
+    await _checkBoxOpen();
+
+    List<SavedUrl> savedUrlList;
+    String data;
+
+    try {
+      data = await _localStorageBox.get(_kSavedUrlKey);
+
+      final SavedUrlState savedUrlState = serializers.deserializeWith(SavedUrlState.serializer, json.decode(data));
+
+      savedUrlList = savedUrlState.urls.values.map((SavedUrl su) => su).toList();
+    } catch (error, stackTrace) {
+      if (data != null) {
+        loggerService.e(error, error.runtimeType, stackTrace);
+      }
+
+      // return default list
+      savedUrlList = [
+        SavedUrl((b) => b
+          ..url = 'ws://localhost:8001/connection/websocket?format=protobuf'
+          ..custom = false),
+        SavedUrl((b) => b
+          ..url = 'ws://172.16.55.141:8001/connection/websocket?format=protobuf'
+          ..custom = true)
+      ];
+    }
+
+    return savedUrlList;
+  }
+
+  @override
+  Future<void> saveSavedUrls(SavedUrlState savedUrlState) async {
+    await _checkBoxOpen();
+
+    try {
+      final String savedUrlsStateStr = json.encode(serializers.serializeWith(SavedUrlState.serializer, savedUrlState));
+
+      await _localStorageBox.put(_kSavedUrlKey, savedUrlsStateStr);
+    } catch (error, stackTrace) {
+      loggerService.e(error, error.runtimeType, stackTrace);
+    }
   }
 
   @override
   Future<void> saveChannelState(ChannelState channelState) async {
-    final bool open = _channelStateBox?.isOpen ?? false;
-
-    if (!open) {
-      _channelStateBox = await Hive.openBox<String>(_kChannelStateName);
-    }
+    await _checkBoxOpen();
 
     try {
-      final String channelStateStr = json.encode(serializers.serialize(channelState));
+      final String channelStateStr = json.encode(serializers.serializeWith(ChannelState.serializer, channelState));
 
-      await _channelStateBox.put(_kChannelStateKey, channelStateStr);
+      await _localStorageBox.put(_kChannelStateKey, channelStateStr);
     } catch (error, stackTrace) {
       loggerService.e(error, error.runtimeType, stackTrace);
     }
@@ -72,37 +110,40 @@ class LocalStorageServiceImpl extends LocalStorageService {
 
   @override
   Future<List<ChannelModel>> fetchSavedChannelsList() async {
-    final bool open = _channelStateBox?.isOpen ?? false;
+    await _checkBoxOpen();
 
-    if (!open) {
-      _channelStateBox = await Hive.openBox<String>(_kChannelStateName);
-    }
+    List<ChannelModel> channelModelList;
+    String data;
 
     try {
-      final String data = await _channelStateBox.get(_kChannelStateKey);
+      data = await _localStorageBox.get(_kChannelStateKey);
 
       final ChannelState channelState = serializers.deserializeWith(ChannelState.serializer, json.decode(data));
 
-      List<ChannelModel> fmtChannelModelList = channelState.channels.values.map((ChannelModel cm) {
+      channelModelList = channelState.channels.values.map((ChannelModel cm) {
         return cm.rebuild((b) => b.serverConnectStatus = ServerConnectStatus.disconnected);
       }).toList();
 
-      return fmtChannelModelList;
+      // return channelModelList;
     } catch (error, stackTrace) {
-      loggerService.e(error, error.runtimeType, stackTrace);
+      if (data != null) {
+        loggerService.e(error, error.runtimeType, stackTrace);
+      }
+
+      // return default model list
+      channelModelList = [
+        ChannelModel((b) => b
+          ..name = 'dev'
+          ..shortName = 'dev'),
+        ChannelModel((b) => b
+          ..name = 'testing'
+          ..shortName = 'testing'),
+        ChannelModel((b) => b
+          ..name = 'analytics'
+          ..shortName = 'analytics'),
+      ];
     }
 
-    // return default model list
-    return [
-      ChannelModel((b) => b
-        ..name = 'dev'
-        ..shortName = 'dev'),
-      ChannelModel((b) => b
-        ..name = 'testing'
-        ..shortName = 'testing'),
-      ChannelModel((b) => b
-        ..name = 'analytics'
-        ..shortName = 'analytics'),
-    ];
+    return channelModelList;
   }
 }

@@ -4,6 +4,7 @@ import 'package:multi_debugger/domain/actions/actions.dart';
 import 'package:multi_debugger/domain/actions/app_config_actions.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/selectors/channel_selectors.dart';
+import 'package:multi_debugger/domain/selectors/saved_url_selectors.dart';
 import 'package:multi_debugger/domain/states/states.dart';
 import 'package:multi_debugger/services/local_station_service/local_station_service.dart';
 import 'package:multi_debugger/services/local_storage_service/local_storage_service.dart';
@@ -68,13 +69,34 @@ class LocalEpic {
 
   // save channel state local
   Stream saveChannelStateLocal(
-      Stream<Action<dynamic>> stream, MiddlewareApi<AppState, AppStateBuilder, AppActions> api) {
-    return stream.where((Action<dynamic> action) {
-      return ChannelSelectors.channelActionsForLocalStorage.contains(action.name);
-    }).doOnData((Action<dynamic> action) async {
-      await localStorageService.saveChannelState(api.state.channelState);
-    }).handleError((dynamic error) {
-      loggerService.e('saveChannelStateLocal error: $error');
-    });
+    Stream<Action<dynamic>> stream,
+    MiddlewareApi<AppState, AppStateBuilder, AppActions> api,
+  ) {
+    return stream
+        .where((Action<dynamic> action) {
+          return ChannelSelectors.actionNames.contains(action.name);
+        })
+        .debounceTime(const Duration(milliseconds: 100))
+        .doOnData((Action<dynamic> action) async {
+          await localStorageService.saveChannelState(api.state.channelState);
+        })
+        .handleError((dynamic error) {
+          loggerService.e('saveChannelStateLocal error: $error');
+        });
+  }
+
+  // save saved urls local
+  Stream saveSavedUrlsLocal(Stream<Action<dynamic>> stream, MiddlewareApi<AppState, AppStateBuilder, AppActions> api) {
+    return stream
+        .where((Action<dynamic> action) {
+          return SavedUrlSelectors.actionNames.contains(action.name);
+        })
+        .debounceTime(const Duration(milliseconds: 100))
+        .doOnData((Action<dynamic> action) async {
+          await localStorageService.saveSavedUrls(api.state.savedUrlState);
+        })
+        .handleError((dynamic error) {
+          loggerService.e('saveChannelStateLocal error: $error');
+        });
   }
 }

@@ -1,4 +1,5 @@
 import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 
 part 'app_route.g.dart';
 
@@ -22,4 +23,6 @@ abstract class AppRoute implements Built<AppRoute, AppRouteBuilder> {
   @BuiltValueField(serialize: false)
   @nullable
   Object get bundle;
+
+  static Serializer<AppRoute> get serializer => _$appRouteSerializer;
 }

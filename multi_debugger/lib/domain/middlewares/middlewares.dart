@@ -21,6 +21,7 @@ Iterable<Middleware<AppState, AppStateBuilder, AppActions>> get appMiddlewares =
       createEpicMiddleware([
         di.get<LocalEpic>().getComputerName,
         di.get<LocalEpic>().getSavedUrls,
+        di.get<LocalEpic>().saveSavedUrlsLocal,
         di.get<LocalEpic>().getSavedChannels,
         di.get<LocalEpic>().saveChannelStateLocal,
         di.get<ServerConnectEpic>().connect,

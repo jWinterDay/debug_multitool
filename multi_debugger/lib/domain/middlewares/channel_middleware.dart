@@ -3,6 +3,8 @@ import 'package:multi_debugger/di/app_di.dart';
 import 'package:multi_debugger/domain/actions/actions.dart';
 import 'package:multi_debugger/domain/actions/channel_actions.dart';
 import 'package:multi_debugger/domain/models/channel_model.dart';
+import 'package:multi_debugger/domain/models/saved_url.dart';
+import 'package:multi_debugger/domain/models/server_connect_status.dart';
 import 'package:multi_debugger/domain/states/states.dart';
 import 'package:multi_debugger/services/server_communicate_service/server_communicate_service.dart';
 
@@ -12,7 +14,8 @@ MiddlewareBuilder<AppState, AppStateBuilder, AppActions> createChannelMiddleware
     ..add<Iterable<ChannelModel>>(ChannelActionsNames.addAllChannel, _addAllChannel)
     ..add<ChannelModel>(ChannelActionsNames.removeChannel, _removeChannel)
     ..add<ChannelModel>(ChannelActionsNames.updateChannel, _updateChannel)
-    ..add<ChannelModel>(ChannelActionsNames.setCurrentChannel, _setCurrentChannel);
+    ..add<ChannelModel>(ChannelActionsNames.setCurrentChannel, _setCurrentChannel)
+    ..add<ChannelModel>(ChannelActionsNames.changeConnectStatus, _changeConnectStatus);
 }
 
 void _addChannel(
@@ -78,4 +81,23 @@ void _setCurrentChannel(
   Action<ChannelModel> action,
 ) {
   next(action);
+}
+
+void _changeConnectStatus(
+  MiddlewareApi<AppState, AppStateBuilder, AppActions> api,
+  ActionHandler next,
+  Action<ChannelModel> action,
+) {
+  next(action);
+
+  final ChannelModel channelModel = action.payload;
+
+  // add url to list
+  if (channelModel.serverConnectStatus == ServerConnectStatus.connecting) {
+    final SavedUrl savedUrl = SavedUrl((b) => b
+      ..url = channelModel.wsUrl
+      ..custom = true);
+
+    api.actions.savedUrlActions.addUrl(savedUrl);
+  }
 }

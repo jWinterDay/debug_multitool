@@ -6,6 +6,57 @@ part of 'app_route.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
+Serializer<AppRoute> _$appRouteSerializer = new _$AppRouteSerializer();
+
+class _$AppRouteSerializer implements StructuredSerializer<AppRoute> {
+  @override
+  final Iterable<Type> types = const [AppRoute, _$AppRoute];
+  @override
+  final String wireName = 'AppRoute';
+
+  @override
+  Iterable<Object> serialize(Serializers serializers, AppRoute object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[
+      'route',
+      serializers.serialize(object.route, specifiedType: const FullType(String)),
+    ];
+    if (object.payload != null) {
+      result..add('payload')..add(serializers.serialize(object.payload, specifiedType: const FullType(String)));
+    }
+    if (object.screenTitle != null) {
+      result..add('screenTitle')..add(serializers.serialize(object.screenTitle, specifiedType: const FullType(String)));
+    }
+    return result;
+  }
+
+  @override
+  AppRoute deserialize(Serializers serializers, Iterable<Object> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new AppRouteBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case 'route':
+          result.route = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          break;
+        case 'payload':
+          result.payload = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          break;
+        case 'screenTitle':
+          result.screenTitle = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
 class _$AppRoute extends AppRoute {
   @override
   final String route;

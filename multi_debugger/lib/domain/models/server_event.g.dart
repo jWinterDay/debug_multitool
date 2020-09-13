@@ -6,6 +6,78 @@ part of 'server_event.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
+Serializer<ServerEvent> _$serverEventSerializer = new _$ServerEventSerializer();
+
+class _$ServerEventSerializer implements StructuredSerializer<ServerEvent> {
+  @override
+  final Iterable<Type> types = const [ServerEvent, _$ServerEvent];
+  @override
+  final String wireName = 'ServerEvent';
+
+  @override
+  Iterable<Object> serialize(Serializers serializers, ServerEvent object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[
+      'serverEventId',
+      serializers.serialize(object.serverEventId, specifiedType: const FullType(String)),
+      'action',
+      serializers.serialize(object.action, specifiedType: const FullType(String)),
+      'serverEventType',
+      serializers.serialize(object.serverEventType, specifiedType: const FullType(ServerEventType)),
+      'datetime',
+      serializers.serialize(object.datetime, specifiedType: const FullType(DateTime)),
+      'favorite',
+      serializers.serialize(object.favorite, specifiedType: const FullType(bool)),
+    ];
+    if (object.payload != null) {
+      result..add('payload')..add(serializers.serialize(object.payload, specifiedType: const FullType(JsonObject)));
+    }
+    if (object.state != null) {
+      result..add('state')..add(serializers.serialize(object.state, specifiedType: const FullType(JsonObject)));
+    }
+    return result;
+  }
+
+  @override
+  ServerEvent deserialize(Serializers serializers, Iterable<Object> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new ServerEventBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case 'serverEventId':
+          result.serverEventId = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          break;
+        case 'action':
+          result.action = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          break;
+        case 'payload':
+          result.payload = serializers.deserialize(value, specifiedType: const FullType(JsonObject)) as JsonObject;
+          break;
+        case 'state':
+          result.state = serializers.deserialize(value, specifiedType: const FullType(JsonObject)) as JsonObject;
+          break;
+        case 'serverEventType':
+          result.serverEventType =
+              serializers.deserialize(value, specifiedType: const FullType(ServerEventType)) as ServerEventType;
+          break;
+        case 'datetime':
+          result.datetime = serializers.deserialize(value, specifiedType: const FullType(DateTime)) as DateTime;
+          break;
+        case 'favorite':
+          result.favorite = serializers.deserialize(value, specifiedType: const FullType(bool)) as bool;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
 class _$ServerEvent extends ServerEvent {
   @override
   final String serverEventId;

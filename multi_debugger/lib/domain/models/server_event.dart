@@ -1,5 +1,6 @@
 import 'package:built_value/built_value.dart';
 import 'package:built_value/json_object.dart';
+import 'package:built_value/serializer.dart';
 import 'package:multi_debugger/domain/enums/server_event_type.dart';
 import 'package:uuid/uuid.dart';
 
@@ -31,4 +32,6 @@ abstract class ServerEvent implements Built<ServerEvent, ServerEventBuilder> {
   DateTime get datetime;
 
   bool get favorite;
+
+  static Serializer<ServerEvent> get serializer => _$serverEventSerializer;
 }

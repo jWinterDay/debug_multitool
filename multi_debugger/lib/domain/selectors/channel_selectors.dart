@@ -2,7 +2,7 @@ import 'package:multi_debugger/domain/actions/channel_actions.dart';
 
 class ChannelSelectors {
   /// actions to save local channel state
-  static List<String> channelActionsForLocalStorage = [
+  static List<String> actionNames = [
     // ChannelActionsNames.addAllChannel.name,
     ChannelActionsNames.addBlackListItem.name,
     ChannelActionsNames.addChannel.name,
@@ -14,5 +14,6 @@ class ChannelSelectors {
     ChannelActionsNames.toggleShowWhiteList.name,
     ChannelActionsNames.toggleShowBlackList.name,
     ChannelActionsNames.toggleShowFavorites.name,
+    ChannelActionsNames.updateChannel.name,
   ];
 }
