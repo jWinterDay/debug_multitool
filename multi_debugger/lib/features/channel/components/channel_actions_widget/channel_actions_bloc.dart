@@ -129,14 +129,5 @@ class ChannelActionsBloc extends BaseBloc {
     }
 
     appGlobals.store.actions.serverEventActions.clearEvents(currentChannelModel);
-
-    final ChannelModel nextChannelModel = ChannelModel((b) {
-      b
-        ..replace(currentChannelModel)
-        ..selectedEvent = null;
-      return b;
-    });
-
-    appGlobals.store.actions.channelActions.updateChannel(nextChannelModel);
   }
 }

@@ -166,6 +166,23 @@ class _ActionsViewState extends State<ActionsViewScreen> {
     final ChannelModel currentChannelModel = pair.first;
     final BuiltList<ServerEvent> serverEventList = pair.second;
 
+    if (serverEventList.isEmpty) {
+      return [
+        const SliverFillRemaining(
+          child: Center(
+            child: Text(
+              'No actions',
+              style: const TextStyle(
+                color: AppColors.gray6,
+                fontSize: 17.0,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ];
+    }
+
     return List.generate(serverEventList.length, (int index) {
       final ServerEvent serverEvent = serverEventList[index];
 

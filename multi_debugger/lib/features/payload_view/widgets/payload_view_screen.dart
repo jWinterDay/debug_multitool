@@ -48,37 +48,38 @@ class _PayloadViewState extends State<PayloadViewScreen> {
       builder: (_, snapshot) {
         final PayloadViewType currentPayloadViewType = snapshot.data;
 
-        return Column(
-          children: [
-            // tab bar
-            Row(
+        return StreamBuilder<ServerEvent>(
+          stream: _bloc.selectedEventStream,
+          builder: (_, snapshot) {
+            final ServerEvent currentServerEvent = snapshot.data;
+
+            return Column(
               children: [
-                _tabBarItem(
-                  'ACTION PAYLOAD',
-                  payloadViewType: PayloadViewType.actionPayload,
-                  currentPayloadViewType: currentPayloadViewType,
-                ),
-                _tabBarItem(
-                  'STATE',
-                  payloadViewType: PayloadViewType.state,
-                  currentPayloadViewType: currentPayloadViewType,
-                ),
-                _tabBarItem(
-                  'DIFF',
-                  payloadViewType: PayloadViewType.diff,
-                  currentPayloadViewType: currentPayloadViewType,
-                ),
-              ],
-            ),
+                // tab bar
+                if (snapshot.hasData)
+                  Row(
+                    children: [
+                      _tabBarItem(
+                        'ACTION PAYLOAD',
+                        payloadViewType: PayloadViewType.actionPayload,
+                        currentPayloadViewType: currentPayloadViewType,
+                      ),
+                      _tabBarItem(
+                        'STATE',
+                        payloadViewType: PayloadViewType.state,
+                        currentPayloadViewType: currentPayloadViewType,
+                      ),
+                      _tabBarItem(
+                        'DIFF',
+                        payloadViewType: PayloadViewType.diff,
+                        currentPayloadViewType: currentPayloadViewType,
+                      ),
+                    ],
+                  ),
 
-            // data
-            Expanded(
-              child: StreamBuilder<ServerEvent>(
-                stream: _bloc.selectedEventStream,
-                builder: (_, snapshot) {
-                  final ServerEvent currentServerEvent = snapshot.data;
-
-                  return CustomScrollView(
+                // data
+                Expanded(
+                  child: CustomScrollView(
                     physics: const ClampingScrollPhysics(),
                     slivers: [
                       // no data
@@ -99,11 +100,11 @@ class _PayloadViewState extends State<PayloadViewScreen> {
                       else
                         _sliverItem(currentServerEvent, currentPayloadViewType),
                     ],
-                  );
-                },
-              ),
-            ),
-          ],
+                  ),
+                ),
+              ],
+            );
+          },
         );
       },
     );
