@@ -16,6 +16,7 @@ class _$ChannelActions extends ChannelActions {
   _$ChannelActions._() : super._();
 
   final addChannel = ActionDispatcher<ChannelModel>('ChannelActions-addChannel');
+  final addAllChannel = ActionDispatcher<Iterable<ChannelModel>>('ChannelActions-addAllChannel');
   final removeChannel = ActionDispatcher<ChannelModel>('ChannelActions-removeChannel');
   final updateChannel = ActionDispatcher<ChannelModel>('ChannelActions-updateChannel');
   final changeConnectStatus = ActionDispatcher<ChannelModel>('ChannelActions-changeConnectStatus');
@@ -34,6 +35,7 @@ class _$ChannelActions extends ChannelActions {
   @override
   void setDispatcher(Dispatcher dispatcher) {
     addChannel.setDispatcher(dispatcher);
+    addAllChannel.setDispatcher(dispatcher);
     removeChannel.setDispatcher(dispatcher);
     updateChannel.setDispatcher(dispatcher);
     changeConnectStatus.setDispatcher(dispatcher);
@@ -52,6 +54,7 @@ class _$ChannelActions extends ChannelActions {
 
 class ChannelActionsNames {
   static final addChannel = ActionName<ChannelModel>('ChannelActions-addChannel');
+  static final addAllChannel = ActionName<Iterable<ChannelModel>>('ChannelActions-addAllChannel');
   static final removeChannel = ActionName<ChannelModel>('ChannelActions-removeChannel');
   static final updateChannel = ActionName<ChannelModel>('ChannelActions-updateChannel');
   static final changeConnectStatus = ActionName<ChannelModel>('ChannelActions-changeConnectStatus');

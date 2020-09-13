@@ -1,4 +1,3 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:built_redux/built_redux.dart';
 import 'package:multi_debugger/domain/actions/channel_actions.dart';
 import 'package:multi_debugger/domain/base/pair.dart';
@@ -12,6 +11,7 @@ NestedReducerBuilder<AppState, AppStateBuilder, ChannelState, ChannelStateBuilde
       (builder) => builder.channelState,
     )
       ..add<ChannelModel>(ChannelActionsNames.addChannel, _addChannel)
+      ..add<Iterable<ChannelModel>>(ChannelActionsNames.addAllChannel, _addAllChannel)
       ..add<ChannelModel>(ChannelActionsNames.removeChannel, _removeChannel)
       ..add<ChannelModel>(ChannelActionsNames.updateChannel, _updateChannel)
       ..add<ChannelModel>(ChannelActionsNames.changeConnectStatus, _changeConnectStatus)
@@ -39,6 +39,16 @@ void _addChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBu
 
   // channel list
   builder.channels.putIfAbsent(channelModel.channelId, () => channelModel);
+}
+
+void _addAllChannel(ChannelState state, Action<Iterable<ChannelModel>> action, ChannelStateBuilder builder) {
+  final Iterable<ChannelModel> channelModelList = action.payload;
+
+  final Map<String, ChannelModel> savedChannelsAsMap = {
+    for (ChannelModel savedChannel in channelModelList) (savedChannel).channelId: savedChannel,
+  };
+
+  builder.channels.addAll(savedChannelsAsMap);
 }
 
 void _removeChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {

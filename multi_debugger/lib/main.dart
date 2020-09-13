@@ -15,7 +15,8 @@ Future<void> main() async {
       await di.get<AppGlobals>().init();
 
       di.get<AppGlobals>().store.actions.appConfigActions.fetchComputerName();
-      di.get<AppGlobals>().store.actions.appConfigActions.fetchLocalSettings();
+      di.get<AppGlobals>().store.actions.appConfigActions.fetchSavedUrls();
+      di.get<AppGlobals>().store.actions.appConfigActions.fetchSavedChannels();
 
       runApp(const App());
     },

@@ -10,9 +10,13 @@ abstract class AppConfigActions extends ReduxActions {
 
   ActionDispatcher<LocalSettingsState> get setLocalSettings;
 
+  // computer name
   ActionDispatcher<void> get fetchComputerName;
   ActionDispatcher<String> get setComputerName;
 
-  ActionDispatcher<void> get fetchLocalSettings;
-  ActionDispatcher<String> get setSavedUrls;
+  // saved url list
+  ActionDispatcher<void> get fetchSavedUrls;
+
+  // saved url list
+  ActionDispatcher<void> get fetchSavedChannels;
 }

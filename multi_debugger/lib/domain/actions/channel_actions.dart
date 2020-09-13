@@ -12,6 +12,8 @@ abstract class ChannelActions extends ReduxActions {
 
   ActionDispatcher<ChannelModel> get addChannel;
 
+  ActionDispatcher<Iterable<ChannelModel>> get addAllChannel;
+
   ActionDispatcher<ChannelModel> get removeChannel;
 
   ActionDispatcher<ChannelModel> get updateChannel;

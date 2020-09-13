@@ -18,36 +18,6 @@ class ChannelTabBar extends StatefulWidget {
 
 class _ChannelTabBarState extends State<ChannelTabBar> {
   TabBarBloc _bloc;
-  final InputDecoration _inputDecoration = InputDecoration(
-    filled: true,
-    hintText: 'URL',
-    fillColor: AppColors.background,
-    suffixIcon: Icon(
-      LoggerIcons.clearInput_1x,
-      color: AppColors.gray5,
-    ),
-    // icon: Icon(LoggerIcons.clearInput_1x),
-    border: OutlineInputBorder(
-      borderSide: const BorderSide(color: AppColors.gray3),
-      borderRadius: BorderRadius.circular(6.0),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderSide: const BorderSide(color: AppColors.gray3),
-      borderRadius: BorderRadius.circular(6.0),
-    ),
-    disabledBorder: OutlineInputBorder(
-      borderSide: const BorderSide(color: AppColors.gray3),
-      borderRadius: BorderRadius.circular(6.0),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderSide: const BorderSide(color: AppColors.gray3),
-      borderRadius: BorderRadius.circular(6.0),
-    ),
-    hintStyle: const TextStyle(
-      color: AppColors.gray5,
-      fontSize: 15.0,
-    ),
-  );
 
   @override
   void initState() {
@@ -274,6 +244,7 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
                       padding: const EdgeInsets.only(left: 15.0),
                       child: TextField(
                         controller: _bloc.urlTextController,
+                        maxLines: null,
                         autofocus: true,
                         enabled: urlEnabled,
                         cursorColor: AppColors.positive,
@@ -282,8 +253,42 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
                           fontSize: 15.0,
                         ),
                         textAlign: TextAlign.center,
-                        decoration:
-                            inConnect ? _inputDecoration.copyWith(fillColor: AppColors.gray5) : _inputDecoration,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.zero,
+                          filled: true,
+                          hintText: 'URL',
+                          fillColor: AppColors.background, // inConnect ? AppColors.gray5 : AppColors.background,
+                          suffixIcon: InkWell(
+                            onTap: () => _bloc.urlTextController.text = '',
+                            child: const Icon(
+                              LoggerIcons.clearInput_1x,
+                              color: AppColors.gray5,
+                              size: 18.0,
+                            ),
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: const BorderSide(color: AppColors.gray3),
+                            borderRadius: BorderRadius.circular(6.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: AppColors.gray3),
+                            borderRadius: BorderRadius.circular(6.0),
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: AppColors.gray3),
+                            borderRadius: BorderRadius.circular(6.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(color: AppColors.gray3),
+                            borderRadius: BorderRadius.circular(6.0),
+                          ),
+                          hintStyle: const TextStyle(
+                            color: AppColors.gray5,
+                            fontSize: 15.0,
+                          ),
+                        ),
+                        // decoration:
+                        //     inConnect ? _inputDecoration.copyWith(fillColor: AppColors.gray5) : _inputDecoration,
                       ),
                     ),
                   ),

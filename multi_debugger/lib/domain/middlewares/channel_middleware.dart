@@ -9,6 +9,7 @@ import 'package:multi_debugger/services/server_communicate_service/server_commun
 MiddlewareBuilder<AppState, AppStateBuilder, AppActions> createChannelMiddleware() {
   return MiddlewareBuilder<AppState, AppStateBuilder, AppActions>()
     ..add<ChannelModel>(ChannelActionsNames.addChannel, _addChannel)
+    ..add<Iterable<ChannelModel>>(ChannelActionsNames.addAllChannel, _addAllChannel)
     ..add<ChannelModel>(ChannelActionsNames.removeChannel, _removeChannel)
     ..add<ChannelModel>(ChannelActionsNames.updateChannel, _updateChannel)
     ..add<ChannelModel>(ChannelActionsNames.setCurrentChannel, _setCurrentChannel);
@@ -26,9 +27,25 @@ void _addChannel(
   // create and add communicate service
   final ServerCommunicateService service = di.get<ServerCommunicateService>();
 
-  api.state.serverCommunicateServicesState.services.putIfAbsent(channelModel.name, () {
+  api.state.serverCommunicateServicesState.services.putIfAbsent(channelModel.channelId, () {
     return service;
   });
+}
+
+void _addAllChannel(
+  MiddlewareApi<AppState, AppStateBuilder, AppActions> api,
+  ActionHandler next,
+  Action<Iterable<ChannelModel>> action,
+) {
+  next(action);
+
+  final Iterable<ChannelModel> channelModelList = action.payload;
+
+  final Map<String, ServerCommunicateService> channelModelListAsMap = {
+    for (ChannelModel channelModel in channelModelList) (channelModel).channelId: di.get<ServerCommunicateService>(),
+  };
+
+  api.state.serverCommunicateServicesState.services.addAll(channelModelListAsMap);
 }
 
 void _removeChannel(

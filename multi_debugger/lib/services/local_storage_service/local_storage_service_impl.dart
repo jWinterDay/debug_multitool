@@ -15,16 +15,28 @@ class LocalStorageServiceImpl extends LocalStorageService {
 
   @override
   Future<List<SavedUrl>> fetchSavedUrlList() async {
-    SavedUrl savedUrl = SavedUrl((b) => b
-      ..url = 'ws://localhost:8001/connection/websocket?format=protobuf'
-      ..custom = false);
-    SavedUrl savedUrl2 = SavedUrl((b) => b
-      ..url = 'ws://172.16.55.141:8001/connection/websocket?format=protobuf'
-      ..custom = true);
-
     return [
-      savedUrl,
-      savedUrl2,
+      SavedUrl((b) => b
+        ..url = 'ws://localhost:8001/connection/websocket?format=protobuf'
+        ..custom = false),
+      SavedUrl((b) => b
+        ..url = 'ws://172.16.55.141:8001/connection/websocket?format=protobuf'
+        ..custom = true)
+    ];
+  }
+
+  @override
+  Future<List<ChannelModel>> fetchSavedChannelsList() async {
+    return [
+      ChannelModel((b) => b
+        ..name = 'dev'
+        ..shortName = 'dev'),
+      ChannelModel((b) => b
+        ..name = 'testing'
+        ..shortName = 'testing'),
+      ChannelModel((b) => b
+        ..name = 'analytics'
+        ..shortName = 'analytics'),
     ];
   }
 }

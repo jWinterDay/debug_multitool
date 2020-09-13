@@ -22,7 +22,8 @@ class ServerConnectEpic {
       final ChannelModel channelModel = action.payload as ChannelModel;
 
       final ServerConnectStatus nextStatus = channelModel.serverConnectStatus;
-      final ServerCommunicateService service = api.state.serverCommunicateServicesState.services[channelModel.name];
+      final ServerCommunicateService service =
+          api.state.serverCommunicateServicesState.services[channelModel.channelId];
 
       switch (nextStatus) {
         case ServerConnectStatus.disconnected:
