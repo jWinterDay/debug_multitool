@@ -8,6 +8,8 @@ part of 'server_event.dart';
 
 class _$ServerEvent extends ServerEvent {
   @override
+  final String serverEventId;
+  @override
   final String action;
   @override
   final JsonObject payload;
@@ -23,8 +25,12 @@ class _$ServerEvent extends ServerEvent {
   factory _$ServerEvent([void Function(ServerEventBuilder) updates]) =>
       (new ServerEventBuilder()..update(updates)).build();
 
-  _$ServerEvent._({this.action, this.payload, this.state, this.serverEventType, this.datetime, this.favorite})
+  _$ServerEvent._(
+      {this.serverEventId, this.action, this.payload, this.state, this.serverEventType, this.datetime, this.favorite})
       : super._() {
+    if (serverEventId == null) {
+      throw new BuiltValueNullFieldError('ServerEvent', 'serverEventId');
+    }
     if (action == null) {
       throw new BuiltValueNullFieldError('ServerEvent', 'action');
     }
@@ -49,6 +55,7 @@ class _$ServerEvent extends ServerEvent {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is ServerEvent &&
+        serverEventId == other.serverEventId &&
         action == other.action &&
         payload == other.payload &&
         state == other.state &&
@@ -60,7 +67,9 @@ class _$ServerEvent extends ServerEvent {
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc($jc($jc(0, action.hashCode), payload.hashCode), state.hashCode), serverEventType.hashCode),
+        $jc(
+            $jc($jc($jc($jc($jc(0, serverEventId.hashCode), action.hashCode), payload.hashCode), state.hashCode),
+                serverEventType.hashCode),
             datetime.hashCode),
         favorite.hashCode));
   }
@@ -68,6 +77,7 @@ class _$ServerEvent extends ServerEvent {
   @override
   String toString() {
     return (newBuiltValueToStringHelper('ServerEvent')
+          ..add('serverEventId', serverEventId)
           ..add('action', action)
           ..add('payload', payload)
           ..add('state', state)
@@ -80,6 +90,10 @@ class _$ServerEvent extends ServerEvent {
 
 class ServerEventBuilder implements Builder<ServerEvent, ServerEventBuilder> {
   _$ServerEvent _$v;
+
+  String _serverEventId;
+  String get serverEventId => _$this._serverEventId;
+  set serverEventId(String serverEventId) => _$this._serverEventId = serverEventId;
 
   String _action;
   String get action => _$this._action;
@@ -111,6 +125,7 @@ class ServerEventBuilder implements Builder<ServerEvent, ServerEventBuilder> {
 
   ServerEventBuilder get _$this {
     if (_$v != null) {
+      _serverEventId = _$v.serverEventId;
       _action = _$v.action;
       _payload = _$v.payload;
       _state = _$v.state;
@@ -139,6 +154,7 @@ class ServerEventBuilder implements Builder<ServerEvent, ServerEventBuilder> {
   _$ServerEvent build() {
     final _$result = _$v ??
         new _$ServerEvent._(
+            serverEventId: serverEventId,
             action: action,
             payload: payload,
             state: state,

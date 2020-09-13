@@ -118,8 +118,8 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
       final Map<String, dynamic> messageMap = message as Map<String, dynamic>;
 
       String action = (messageMap['action'] ?? 'Unknown action').toString();
-      JsonObject payload = JsonObject(messageMap['action'].toString());
-      JsonObject state = JsonObject(messageMap['state'].toString());
+      JsonObject payload = JsonObject(messageMap['payload']);
+      JsonObject state = JsonObject(messageMap['state']);
 
       ServerEvent serverEvent = ServerEvent((b) {
         b

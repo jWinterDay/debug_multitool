@@ -38,11 +38,6 @@ class _ActionsViewState extends State<ActionsViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-
-    final double w = math.max(size.width / 3, 380);
-    final double h = math.max(size.height / 3, 316);
-
     return Column(
       children: [
         // titles
@@ -177,7 +172,7 @@ class _ActionsViewState extends State<ActionsViewScreen> {
       final bool isDelimiter = serverEvent.serverEventType == ServerEventType.delimiter;
       final bool isFormatError = serverEvent.serverEventType == ServerEventType.formatError;
       final bool canSelect = serverEvent.serverEventType != ServerEventType.delimiter;
-      final bool selected = serverEvent == currentChannelModel.selectedEvent;
+      final bool selected = serverEvent?.serverEventId == currentChannelModel.selectedEvent?.serverEventId;
 
       // delimiter
       if (isDelimiter) {

@@ -34,9 +34,11 @@ void _addEvent(ServerEventState state, Action<Pair<String, ServerEvent>> action,
   );
 }
 
+// clear all events in channel model
 void _clearEvents(ServerEventState state, Action<ChannelModel> action, ServerEventStateBuilder builder) {
   final ChannelModel channelModel = action.payload;
 
+  // events
   builder.events.updateValue(
     channelModel.channelId,
     (BuiltList<ServerEvent> update) {

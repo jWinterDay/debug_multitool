@@ -2,6 +2,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart';
 import 'package:multi_debugger/domain/enums/filter_list_type.dart';
+import 'package:multi_debugger/domain/enums/payload_view_type.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/models/server_event.dart';
 import 'package:multi_debugger/domain/enums/server_event_type.dart';
@@ -24,6 +25,7 @@ part 'serializers.g.dart';
   ServerEvent,
   ServerEventType,
   FilterListType,
+  PayloadViewType,
 ])
 final Serializers serializers = (_$serializers.toBuilder()
       ..addBuilderFactory(
