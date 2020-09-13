@@ -22,6 +22,9 @@ class AppDI {
   static Future<void> init() async {
     final LoggerService loggerService = LoggerServiceImpl()..init();
 
+    LocalStorageServiceImpl localStorage = LocalStorageServiceImpl(loggerService: loggerService)..init();
+    await localStorage.initStorage();
+
     di
       // logger
       ..map<LoggerService>(
@@ -36,8 +39,9 @@ class AppDI {
       )
 
       // local storage
+
       ..map<LocalStorageService>(
-        (Injector injector) => LocalStorageServiceImpl()..init(),
+        (Injector injector) => localStorage,
         isSingleton: true,
       )
 

@@ -1,11 +1,8 @@
 import 'package:built_redux/built_redux.dart';
-import 'package:multi_debugger/di/app_di.dart';
 import 'package:multi_debugger/domain/actions/actions.dart';
-import 'package:multi_debugger/domain/actions/channel_actions.dart';
 import 'package:multi_debugger/domain/actions/server_event_actions.dart';
 import 'package:multi_debugger/domain/models/channel_model.dart';
 import 'package:multi_debugger/domain/states/states.dart';
-import 'package:multi_debugger/services/server_communicate_service/server_communicate_service.dart';
 
 MiddlewareBuilder<AppState, AppStateBuilder, AppActions> createServerEventMiddleware() {
   return MiddlewareBuilder<AppState, AppStateBuilder, AppActions>()

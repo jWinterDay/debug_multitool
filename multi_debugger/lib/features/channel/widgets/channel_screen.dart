@@ -64,7 +64,7 @@ class ChannelScreen extends StatelessWidget {
                     ],
                     color: AppColors.gray1,
                   ),
-                  child: ChannelActionsWidget(),
+                  child: const ChannelActionsWidget(),
                 ),
                 const SizedBox(height: 1.0),
 

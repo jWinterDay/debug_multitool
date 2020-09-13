@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:multi_debugger/app/app.dart';
 import 'package:multi_debugger/app_globals.dart';

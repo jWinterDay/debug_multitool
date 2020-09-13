@@ -13,7 +13,7 @@ abstract class ChannelModel implements Built<ChannelModel, ChannelModelBuilder> 
 
   static void _initializeBuilder(ChannelModelBuilder b) => b
     ..channelId = Uuid().v4()
-    ..datetime = DateTime.now()
+    ..datetime = DateTime.now().toUtc()
     ..description = ''
     ..isBlackListUsed = false
     ..isCurrent = false

@@ -73,7 +73,6 @@ void _updateChannel(ChannelState state, Action<ChannelModel> action, ChannelStat
   );
 }
 
-// TODO remake
 void _changeConnectStatus(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {
   _updateChannel(state, action, builder);
 }

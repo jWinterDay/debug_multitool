@@ -4,7 +4,6 @@ import 'package:built_collection/built_collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_debugger/app/colors.dart';
-import 'package:multi_debugger/domain/base/pair.dart';
 import 'package:multi_debugger/domain/enums/filter_list_type.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/features/filter_list/blocks/filter_list_bloc.dart';
@@ -44,8 +43,6 @@ class _FilterListState extends State<FilterListScreen> {
 
     super.dispose();
   }
-
-  int _cnt = 0;
 
   @override
   Widget build(BuildContext context) {

@@ -1,18 +1,10 @@
-import 'dart:math' as math;
-
-import 'package:built_collection/built_collection.dart';
-import 'package:built_value/json_object.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_debugger/app/colors.dart';
-import 'package:multi_debugger/domain/base/pair.dart';
 import 'package:multi_debugger/domain/enums/payload_view_type.dart';
-import 'package:multi_debugger/domain/enums/server_event_type.dart';
 import 'package:multi_debugger/domain/models/models.dart';
-import 'package:multi_debugger/features/actions_view/blocs/actions_view_bloc.dart';
 import 'package:multi_debugger/features/payload_view/blocs/payload_view_bloc.dart';
 import 'package:multi_debugger/tools/common_tools.dart' as common_tools;
-import 'package:multi_debugger/tools/logger_icons.dart';
 
 class PayloadViewScreen extends StatefulWidget {
   const PayloadViewScreen({

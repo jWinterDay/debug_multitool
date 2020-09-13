@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:multi_debugger/domain/actions/actions.dart';
 import 'package:multi_debugger/domain/actions/app_config_actions.dart';
 import 'package:multi_debugger/domain/models/models.dart';
+import 'package:multi_debugger/domain/selectors/channel_selectors.dart';
 import 'package:multi_debugger/domain/states/states.dart';
 import 'package:multi_debugger/services/local_station_service/local_station_service.dart';
 import 'package:multi_debugger/services/local_storage_service/local_storage_service.dart';
@@ -21,7 +22,7 @@ class LocalEpic {
   final LocalStorageService localStorageService;
   final LoggerService loggerService;
 
-  // saved urls
+  // get saved urls
   Stream getSavedUrls(Stream<Action<dynamic>> stream, MiddlewareApi<AppState, AppStateBuilder, AppActions> api) {
     return stream.where((Action<dynamic> action) {
       return action.name == AppConfigActionsNames.fetchSavedUrls.name;
@@ -34,7 +35,7 @@ class LocalEpic {
     });
   }
 
-  // saved urls
+  // get saved channels
   Stream getSavedChannels(Stream<Action<dynamic>> stream, MiddlewareApi<AppState, AppStateBuilder, AppActions> api) {
     return stream.where((Action<dynamic> action) {
       return action.name == AppConfigActionsNames.fetchSavedChannels.name;
@@ -63,5 +64,17 @@ class LocalEpic {
         .handleError((dynamic error) {
           loggerService.e('getComputerName error: $error');
         });
+  }
+
+  // save channel state local
+  Stream saveChannelStateLocal(
+      Stream<Action<dynamic>> stream, MiddlewareApi<AppState, AppStateBuilder, AppActions> api) {
+    return stream.where((Action<dynamic> action) {
+      return ChannelSelectors.channelActionsForLocalStorage.contains(action.name);
+    }).doOnData((Action<dynamic> action) async {
+      await localStorageService.saveChannelState(api.state.channelState);
+    }).handleError((dynamic error) {
+      loggerService.e('saveChannelStateLocal error: $error');
+    });
   }
 }
