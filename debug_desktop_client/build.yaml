@@ -1,7 +1,0 @@
-targets:
-    $default:
-        sources:
-            - lib/mobx/**
-            - pubspec.*
-            - $package$
-            - lib/$lib$
