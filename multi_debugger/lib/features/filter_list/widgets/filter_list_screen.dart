@@ -98,9 +98,44 @@ class _FilterListState extends State<FilterListScreen> {
 
                         final ChannelModel currentChannelModel = snapshot.data;
 
+                        BuiltList<String> filterList;
+
+                        switch (widget.filterListType) {
+                          case FilterListType.white:
+                            filterList = currentChannelModel.whiteList;
+                            break;
+                          case FilterListType.black:
+                            filterList = currentChannelModel.blackList;
+                            break;
+                          default:
+                            filterList = BuiltList<String>.from(<String>[]);
+                        }
+
                         return CustomScrollView(
                           physics: const ClampingScrollPhysics(),
-                          slivers: _itemSliverList(currentChannelModel),
+                          slivers: [
+                            if (filterList.isEmpty)
+                              const SliverFillRemaining(
+                                child: Center(
+                                  child: Text(
+                                    'No filters',
+                                    style: const TextStyle(
+                                      fontSize: 17.0,
+                                      color: AppColors.gray6,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            else
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) {
+                                    return _item(filterList[index]);
+                                  },
+                                  childCount: filterList.length,
+                                ),
+                              ),
+                          ],
                         );
                       },
                     ),
@@ -112,104 +147,42 @@ class _FilterListState extends State<FilterListScreen> {
         ),
       ),
     );
-
-    // return Center(
-    //   child: ClipRRect(
-    //     borderRadius: BorderRadius.circular(6.0),
-    //     child: SizedBox(
-    //       width: w,
-    //       height: h,
-    //       child: Scaffold(
-    //         backgroundColor: AppColors.background,
-    //         body: StreamBuilder<ChannelModel>(
-    //           initialData: _bloc.currentChannelModel,
-    //           stream: _bloc.currentChannelModelStream,
-    //           builder: (_, snapshot) {
-    //             if (!snapshot.hasData) {
-    //               return Container();
-    //             }
-
-    //             final ChannelModel currentChannelModel = snapshot.data;
-
-    //             return CustomScrollView(
-    //               physics: const ClampingScrollPhysics(),
-    //               slivers: _itemSliverList(currentChannelModel),
-    //             );
-    //           },
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
   }
 
-  List<Widget> _itemSliverList(ChannelModel currentChannelModel) {
-    BuiltList<String> filterList = BuiltList<String>.from(<String>[]);
-
-    switch (widget.filterListType) {
-      case FilterListType.white:
-        filterList = currentChannelModel.whiteList;
-        break;
-
-      case FilterListType.black:
-        filterList = currentChannelModel.blackList;
-        break;
-    }
-
-    // no data
-    if (filterList.isEmpty) {
-      return [
-        const SliverFillRemaining(
-          child: Center(
+  Widget _item(String filter) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12.0).copyWith(left: 15.0),
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.gray3,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          // name
+          Expanded(
             child: Text(
-              'No filters',
-              style: const TextStyle(
-                fontSize: 17.0,
-                color: AppColors.gray6,
+              filter,
+              style: const TextStyle(fontSize: 15.0),
+            ),
+          ),
+
+          // remove
+          Container(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: InkWell(
+              onTap: () => _bloc.deleteItem(widget.filterListType, filter),
+              child: const Icon(
+                LoggerIcons.trash_1x,
+                size: 20.0,
+                color: AppColors.red,
               ),
             ),
           ),
-        ),
-      ];
-    }
-
-    return filterList.map((String filter) {
-      return SliverToBoxAdapter(
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12.0).copyWith(left: 15.0),
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: AppColors.gray3,
-              ),
-            ),
-          ),
-          child: Row(
-            children: [
-              // name
-              Expanded(
-                child: Text(
-                  filter,
-                  style: const TextStyle(fontSize: 15.0),
-                ),
-              ),
-
-              // remove
-              Container(
-                padding: const EdgeInsets.only(right: 20.0),
-                child: InkWell(
-                  onTap: () => _bloc.deleteItem(widget.filterListType, filter),
-                  child: const Icon(
-                    LoggerIcons.trash_1x,
-                    size: 20.0,
-                    color: AppColors.red,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }).toList();
+        ],
+      ),
+    );
   }
 }

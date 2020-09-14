@@ -90,12 +90,12 @@ class _SelectUrlState extends State<SelectUrlScreen> {
                             // constant urls
                             _sliverTitle('CONSTANT'),
 
-                            ..._sliverItems(constSavedUrlList),
+                            _sliverItems(constSavedUrlList),
 
                             // custom urls
                             _sliverTitle('CUSTOM'),
 
-                            ..._sliverItems(customSavedUrlList, canRemove: true),
+                            _sliverItems(customSavedUrlList, canRemove: true),
                           ],
                         );
                       },
@@ -110,61 +110,66 @@ class _SelectUrlState extends State<SelectUrlScreen> {
     );
   }
 
-  List<Widget> _sliverItems(List<SavedUrl> savedUrlList, {bool canRemove = false}) {
-    return savedUrlList.map((SavedUrl savedUrl) {
-      return SliverToBoxAdapter(
-        child: InkWell(
-          onTap: () => _bloc.pop(context, savedUrl.url),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 12.0),
-            decoration: const BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: AppColors.gray3,
-                ),
-              ),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    savedUrl.url,
-                    style: const TextStyle(
-                      fontSize: 15.0,
-                    ),
+  Widget _sliverItems(List<SavedUrl> savedUrlList, {bool canRemove = false}) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) {
+          SavedUrl savedUrl = savedUrlList[index];
+
+          return InkWell(
+            onTap: () => _bloc.pop(context, savedUrl.url),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 12.0),
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: AppColors.gray3,
                   ),
                 ),
-                if (canRemove)
-                  Container(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(20.0),
-                      hoverColor: AppColors.gray2,
-                      onTap: () => _bloc.deletetUrl(savedUrl),
-                      child: Container(
-                        color: AppColors.transparent,
-                        padding: const EdgeInsets.all(8.0),
-                        alignment: Alignment.topCenter,
-                        child: const Icon(
-                          LoggerIcons.trash_1x,
-                          size: 20.0,
-                          color: AppColors.red,
-                        ),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      savedUrl.url,
+                      style: const TextStyle(
+                        fontSize: 15.0,
                       ),
                     ),
                   ),
-              ],
+                  if (canRemove)
+                    Container(
+                      padding: const EdgeInsets.only(left: 5.0),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(20.0),
+                        hoverColor: AppColors.gray2,
+                        onTap: () => _bloc.deletetUrl(savedUrl),
+                        child: Container(
+                          color: AppColors.transparent,
+                          padding: const EdgeInsets.all(8.0),
+                          alignment: Alignment.topCenter,
+                          child: const Icon(
+                            LoggerIcons.trash_1x,
+                            size: 20.0,
+                            color: AppColors.red,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
-        ),
-      );
-    }).toList();
+          );
+        },
+        childCount: savedUrlList.length,
+      ),
+    );
   }
 
   Widget _sliverTitle(String title) {
     return SliverToBoxAdapter(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0).copyWith(top: 15.0, bottom: 10.0),
+        padding: const EdgeInsets.all(15.0).copyWith(bottom: 10.0),
         decoration: const BoxDecoration(
           border: Border(
             bottom: BorderSide(

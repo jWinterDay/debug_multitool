@@ -43,11 +43,23 @@ class _ChannelTabState extends State<ChannelTab> {
       builder: (_, snapshot) {
         final ChannelState channelState = snapshot.data;
 
+        final List<ChannelModel> channels = !snapshot.hasData ? [] : channelState.channels.values.toList();
+
         return CustomScrollView(
           controller: _scrollController,
           slivers: [
             // channels
-            ..._sliverChannels(channelState),
+            if (channelState != null)
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return _item(
+                      channels[index],
+                    );
+                  },
+                  childCount: channels.length,
+                ),
+              ),
 
             // add new
             SliverToBoxAdapter(
@@ -78,55 +90,49 @@ class _ChannelTabState extends State<ChannelTab> {
     );
   }
 
-  Iterable<Widget> _sliverChannels(ChannelState channelState) {
-    if (channelState == null) {
-      return [];
+  Widget _item(ChannelModel channelModel) {
+    if (channelModel == null) {
+      return Container();
     }
 
-    final BuiltMap<String, ChannelModel> channels = channelState.channels;
+    final bool connected = channelModel.serverConnectStatus == ServerConnectStatus.connected;
+    final Color bgColor = connected ? AppColors.positive : AppColors.background;
+    final Color textColor = connected ? AppColors.channelActiveTitle : AppColors.channelInactiveTitle;
 
-    return channels.values.map((ChannelModel channelModel) {
-      final bool connected = channelModel.serverConnectStatus == ServerConnectStatus.connected;
-      final Color bgColor = connected ? AppColors.positive : AppColors.background;
-      final Color textColor = connected ? AppColors.channelActiveTitle : AppColors.channelInactiveTitle;
+    return Stack(
+      overflow: Overflow.visible,
+      children: [
+        // is current
+        if (channelModel.isCurrent)
+          const Positioned(
+            top: 20.0,
+            child: _CurrentWidget(),
+          ),
 
-      return SliverToBoxAdapter(
-        child: Stack(
-          overflow: Overflow.visible,
-          children: [
-            // is current
-            if (channelModel.isCurrent)
-              const Positioned(
-                top: 20.0,
-                child: _CurrentWidget(),
-              ),
-
-            // channel
-            _Button(
-              bgColor: bgColor,
-              child: RepaintBoundary(
-                child: Text(
-                  channelModel.shortName,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: textColor),
-                ),
-              ),
-              callback: () => _bloc.setCurrent(channelModel),
+        // channel
+        _Button(
+          bgColor: bgColor,
+          child: RepaintBoundary(
+            child: Text(
+              channelModel.shortName,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: textColor),
             ),
-
-            // status
-            Positioned(
-              left: 70.0 - 5.0,
-              top: 70.0,
-              child: ConnectStatusWidget(
-                serverConnectStatus: channelModel.serverConnectStatus,
-              ),
-            ),
-          ],
+          ),
+          callback: () => _bloc.setCurrent(channelModel),
         ),
-      );
-    });
+
+        // status
+        Positioned(
+          left: 70.0 - 5.0,
+          top: 70.0,
+          child: ConnectStatusWidget(
+            serverConnectStatus: channelModel.serverConnectStatus,
+          ),
+        ),
+      ],
+    );
   }
 }
 

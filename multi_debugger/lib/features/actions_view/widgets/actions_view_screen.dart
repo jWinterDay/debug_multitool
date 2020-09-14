@@ -148,10 +148,42 @@ class _ActionsViewState extends State<ActionsViewScreen> {
                 );
               }
 
+              final Pair<ChannelModel, BuiltList<ServerEvent>> pair = snapshot.data;
+              final ChannelModel currentChannelModel = pair.first;
+              final BuiltList<ServerEvent> serverEventList = pair.second;
+
               return CustomScrollView(
+                cacheExtent: 100.0,
                 physics: const ClampingScrollPhysics(),
                 controller: _bloc.scrollController,
-                slivers: _itemSliverList(snapshot.data),
+                slivers: [
+                  if (serverEventList.isEmpty)
+                    const SliverFillRemaining(
+                      child: Center(
+                        child: Text(
+                          'No actions',
+                          style: TextStyle(
+                            color: AppColors.gray6,
+                            fontSize: 17.0,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    )
+                  else
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return _item(
+                            currentChannelModel,
+                            serverEventList[index],
+                            index: index,
+                          );
+                        },
+                        childCount: serverEventList.length,
+                      ),
+                    ),
+                ],
               );
             },
           ),
@@ -160,149 +192,121 @@ class _ActionsViewState extends State<ActionsViewScreen> {
     );
   }
 
-  List<Widget> _itemSliverList(Pair<ChannelModel, BuiltList<ServerEvent>> pair) {
-    final ChannelModel currentChannelModel = pair.first;
-    final BuiltList<ServerEvent> serverEventList = pair.second;
+  Widget _item(ChannelModel channelModel, ServerEvent serverEvent, {@required int index}) {
+    final bool isDelimiter = serverEvent.serverEventType == ServerEventType.delimiter;
+    final bool isFormatError = serverEvent.serverEventType == ServerEventType.formatError;
+    final bool canSelect = serverEvent.serverEventType != ServerEventType.delimiter;
+    final bool selected = serverEvent.serverEventId == channelModel.selectedEvent?.serverEventId;
 
-    if (serverEventList.isEmpty) {
-      return [
-        const SliverFillRemaining(
-          child: Center(
-            child: Text(
-              'No actions',
-              style: const TextStyle(
-                color: AppColors.gray6,
-                fontSize: 17.0,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-      ];
+    // delimiter
+    if (isDelimiter) {
+      return Container(
+        height: 4.0,
+        color: AppColors.eventDelimiter,
+      );
     }
 
-    return List.generate(serverEventList.length, (int index) {
-      final ServerEvent serverEvent = serverEventList[index];
+    final bool inWhiteList = channelModel.whiteList.contains(serverEvent.action);
+    final bool inBlackList = channelModel.blackList.contains(serverEvent.action);
 
-      final bool isDelimiter = serverEvent.serverEventType == ServerEventType.delimiter;
-      final bool isFormatError = serverEvent.serverEventType == ServerEventType.formatError;
-      final bool canSelect = serverEvent.serverEventType != ServerEventType.delimiter;
-      final bool selected = serverEvent?.serverEventId == currentChannelModel.selectedEvent?.serverEventId;
+    Color textColor = AppColors.bodyText2Color;
+    switch (serverEvent.serverEventType) {
+      case ServerEventType.connect:
+        textColor = selected ? AppColors.background : AppColors.positive;
+        break;
+      case ServerEventType.disconnect:
+        textColor = selected ? AppColors.background : AppColors.channelDisconnected;
+        break;
+      case ServerEventType.formatError:
+        textColor = selected ? AppColors.background : AppColors.serverEventFormatError;
+        break;
 
-      // delimiter
-      if (isDelimiter) {
-        return SliverToBoxAdapter(
-          child: Container(
-            height: 4.0,
-            color: AppColors.eventDelimiter,
-          ),
-        );
-      }
+      default:
+    }
 
-      final bool inWhiteList = currentChannelModel.whiteList.contains(serverEvent.action);
-      final bool inBlackList = currentChannelModel.blackList.contains(serverEvent.action);
-
-      Color textColor = AppColors.bodyText2Color;
-      switch (serverEvent.serverEventType) {
-        case ServerEventType.connect:
-          textColor = selected ? AppColors.background : AppColors.positive;
-          break;
-        case ServerEventType.disconnect:
-          textColor = selected ? AppColors.background : AppColors.channelDisconnected;
-          break;
-        case ServerEventType.formatError:
-          textColor = selected ? AppColors.background : AppColors.serverEventFormatError;
-          break;
-
-        default:
-      }
-
-      return SliverToBoxAdapter(
-        child: Container(
-          decoration: BoxDecoration(
-            border: const Border(
-              bottom: BorderSide(
-                color: AppColors.gray3,
-              ),
-            ),
-            color: selected ? AppColors.positive : AppColors.transparent,
-          ),
-          child: Row(
-            children: [
-              // action name
-              Expanded(
-                child: InkWell(
-                  onTap: canSelect ? () => _bloc.toggleSelectServerEvent(serverEvent) : null,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0).copyWith(left: 15.0),
-                    child: Text(
-                      '$index) ${serverEvent.action}',
-                      style: TextStyle(
-                        color: textColor,
-                        fontSize: 15.0,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-              ),
-
-              // repeat
-              if (!isFormatError)
-                const Padding(
-                  padding: EdgeInsets.only(right: 20.0),
-                  child: Icon(
-                    LoggerIcons.repeat_1x,
-                    color: AppColors.gray3,
-                    size: 20.0,
-                  ),
-                ),
-
-              // favorite
-              if (!isFormatError)
-                InkWell(
-                  onTap: () => _bloc.toggleFavorite(serverEvent),
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 20.0),
-                    child: Icon(
-                      serverEvent.favorite ? LoggerIcons.favoriteActive_1x : LoggerIcons.favoriteNull_1x,
-                      color: serverEvent.favorite ? AppColors.selected : AppColors.gray3,
-                      size: 20.0,
-                    ),
-                  ),
-                ),
-
-              // white list
-              if (!isFormatError)
-                InkWell(
-                  onTap: () => _bloc.toggleWhiteList(serverEvent),
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 20.0),
-                    child: Icon(
-                      inWhiteList ? LoggerIcons.whitelistActive_1x : LoggerIcons.whitelistNull_1x,
-                      color: inWhiteList ? AppColors.primaryColor : AppColors.gray3,
-                      size: 20.0,
-                    ),
-                  ),
-                ),
-
-              // black list
-              if (!isFormatError)
-                InkWell(
-                  onTap: () => _bloc.toggleBlackList(serverEvent),
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 34.0),
-                    child: Icon(
-                      inBlackList ? LoggerIcons.blacklistActive_1x : LoggerIcons.blacklistNull_1x,
-                      color: inBlackList ? AppColors.gray6 : AppColors.gray3,
-                      size: 20.0,
-                    ),
-                  ),
-                ),
-            ],
+    return Container(
+      decoration: BoxDecoration(
+        border: const Border(
+          bottom: BorderSide(
+            color: AppColors.gray3,
           ),
         ),
-      );
-    });
+        color: selected ? AppColors.positive : AppColors.transparent,
+      ),
+      child: Row(
+        children: [
+          // action name
+          Expanded(
+            child: InkWell(
+              onTap: canSelect ? () => _bloc.toggleSelectServerEvent(serverEvent) : null,
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 12.0).copyWith(left: 15.0),
+                child: Text(
+                  '$index) ${serverEvent.action}',
+                  style: TextStyle(
+                    color: textColor,
+                    fontSize: 15.0,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          ),
+
+          // repeat
+          if (!isFormatError)
+            const Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: Icon(
+                LoggerIcons.repeat_1x,
+                color: AppColors.gray3,
+                size: 20.0,
+              ),
+            ),
+
+          // favorite
+          if (!isFormatError)
+            InkWell(
+              onTap: () => _bloc.toggleFavorite(serverEvent),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 20.0),
+                child: Icon(
+                  serverEvent.favorite ? LoggerIcons.favoriteActive_1x : LoggerIcons.favoriteNull_1x,
+                  color: serverEvent.favorite ? AppColors.selected : AppColors.gray3,
+                  size: 20.0,
+                ),
+              ),
+            ),
+
+          // white list
+          if (!isFormatError)
+            InkWell(
+              onTap: () => _bloc.toggleWhiteList(serverEvent),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 20.0),
+                child: Icon(
+                  inWhiteList ? LoggerIcons.whitelistActive_1x : LoggerIcons.whitelistNull_1x,
+                  color: inWhiteList ? AppColors.primaryColor : AppColors.gray3,
+                  size: 20.0,
+                ),
+              ),
+            ),
+
+          // black list
+          if (!isFormatError)
+            InkWell(
+              onTap: () => _bloc.toggleBlackList(serverEvent),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 34.0),
+                child: Icon(
+                  inBlackList ? LoggerIcons.blacklistActive_1x : LoggerIcons.blacklistNull_1x,
+                  color: inBlackList ? AppColors.gray6 : AppColors.gray3,
+                  size: 20.0,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }
