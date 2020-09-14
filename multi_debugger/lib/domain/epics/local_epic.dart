@@ -78,7 +78,8 @@ class LocalEpic {
         })
         .debounceTime(const Duration(milliseconds: 100))
         .doOnData((Action<dynamic> action) async {
-          await localStorageService.saveChannelState(api.state.channelState);
+          // ignore: unawaited_futures
+          localStorageService.saveChannelState(api.state.channelState);
         })
         .handleError((dynamic error) {
           loggerService.e('saveChannelStateLocal error: $error');
@@ -93,7 +94,8 @@ class LocalEpic {
         })
         .debounceTime(const Duration(milliseconds: 100))
         .doOnData((Action<dynamic> action) async {
-          await localStorageService.saveSavedUrls(api.state.savedUrlState);
+          // ignore: unawaited_futures
+          localStorageService.saveSavedUrls(api.state.savedUrlState);
         })
         .handleError((dynamic error) {
           loggerService.e('saveChannelStateLocal error: $error');
