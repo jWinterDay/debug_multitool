@@ -44,8 +44,13 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
   @override
   Future<void> connect(ChannelModel channelModel, {centrifuge.ClientConfig clientConfig}) async {
     loggerService.d('service connect for channel id: ${channelModel.channelId}');
+
+    String computerName = appGlobals.store.state.appConfigState.computerName?.trim() ?? '';
+    String compositeChannelName = computerName + '_' + channelModel.name;
+
     _client = centrifuge.createClient(channelModel.wsUrl);
-    _subscription = _client.getSubscription(channelModel.name);
+    _subscription = _client.getSubscription(compositeChannelName);
+    print('channelModel.name = ${channelModel.name}');
 
     // connect sub
     _connectSub = _client.connectStream.listen((centrifuge.ConnectEvent event) {
@@ -118,8 +123,8 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
       final Map<String, dynamic> messageMap = message as Map<String, dynamic>;
 
       String action = (messageMap['action'] ?? 'Unknown action').toString();
-      JsonObject payload = JsonObject(messageMap['payload']);
-      JsonObject state = JsonObject(messageMap['state']);
+      JsonObject payload = JsonObject(messageMap['payload'] ?? 'Unknown payload');
+      JsonObject state = JsonObject(messageMap['state'] ?? 'Unknown state');
 
       ServerEvent serverEvent = ServerEvent((b) {
         b

@@ -14,7 +14,7 @@ abstract class ServerEvent implements Built<ServerEvent, ServerEventBuilder> {
   static void _initializeBuilder(ServerEventBuilder b) => b
     ..serverEventId = Uuid().v4()
     ..serverEventType = ServerEventType.action
-    ..datetime = DateTime.now()
+    ..datetime = DateTime.now().toUtc()
     ..favorite = false;
 
   String get serverEventId;
