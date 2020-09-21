@@ -1,9 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:multi_debugger/app/theme.dart';
 import 'package:multi_debugger/app_globals.dart';
 import 'package:multi_debugger/di/app_di.dart';
 import 'package:multi_debugger/features/channel/widgets/channel_screen.dart';
+
+const _kDesktopStream = const EventChannel('github.com/jWinterDay/platform_messages');
 
 class App extends StatefulWidget {
   const App({
@@ -16,16 +21,25 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> with WidgetsBindingObserver {
   final AppGlobals _appGlobals = di.get<AppGlobals>();
+  StreamSubscription _desktopStreamSub;
 
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
+
+    //
+    _desktopStreamSub = _kDesktopStream.receiveBroadcastStream().listen((dynamic event) {
+      // print('--------event = $event');
+    });
   }
 
   @override
   void dispose() {
+    _desktopStreamSub?.cancel();
     WidgetsBinding.instance.removeObserver(this);
+
     super.dispose();
   }
 

@@ -4,7 +4,6 @@ import (
 	flutter "github.com/go-flutter-desktop/go-flutter"
 	"github.com/go-flutter-desktop/go-flutter/plugin"
 
-	"log"
 	"os"
 )
 
@@ -20,8 +19,6 @@ type OsInfoFlutterPlugin struct {
 var _ flutter.Plugin = &OsInfoFlutterPlugin{}
 
 func (p *OsInfoFlutterPlugin) InitPlugin(messenger plugin.BinaryMessenger) error {
-	log.Println("init os info plugin")
-
 	p.channel = plugin.NewMethodChannel(messenger, CHANNEL_NAME, plugin.StandardMethodCodec{})
 	p.channel.HandleFunc(METHOD, handleGetOsInfo)
 

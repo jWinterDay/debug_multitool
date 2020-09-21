@@ -40,17 +40,50 @@ var options = []flutter.Option{
 }
 
 type ScreenSizeSettings struct {
-	window *glfw.Window
+	// stop      chan bool
+	window    *glfw.Window
+	widthChan chan int
 }
 
 var _ flutter.Plugin = &ScreenSizeSettings{}     // compile-time type check
 var _ flutter.PluginGLFW = &ScreenSizeSettings{} // compile-time type check
 
 func (p *ScreenSizeSettings) InitPlugin(messenger plugin.BinaryMessenger) error {
+	// p.stop = make(chan bool)
+
+	channel := plugin.NewEventChannel(messenger, "github.com/jWinterDay/platform_messages", plugin.StandardMethodCodec{})
+	channel.Handle(p)
+
 	return nil
 }
 
 func (p *ScreenSizeSettings) InitPluginGLFW(window *glfw.Window) error {
-	window.SetSizeLimits(minW, minH, maxW, maxH)
+	p.window = window
+
 	return nil
+}
+
+func (p *ScreenSizeSettings) OnListen(arguments interface{}, sink *plugin.EventSink) {
+	// size callback
+	onSetSizeCallback := glfw.SizeCallback(func(w *glfw.Window, width int, height int) {
+		sink.Success(map[interface{}]interface{}{
+			"type":   "resize",
+			"width":  int64(width),
+			"height": int64(height),
+		})
+	})
+	// close callback
+	onCloseCallback := glfw.CloseCallback(func(window *glfw.Window) {
+		sink.Success(map[interface{}]interface{}{
+			"type": "close",
+		})
+
+		sink.EndOfStream()
+	})
+
+	p.window.SetSizeCallback(onSetSizeCallback)
+	p.window.SetCloseCallback(onCloseCallback)
+}
+
+func (p *ScreenSizeSettings) OnCancel(arguments interface{}) {
 }
