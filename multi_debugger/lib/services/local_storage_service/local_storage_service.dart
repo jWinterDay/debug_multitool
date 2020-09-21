@@ -1,8 +1,8 @@
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/states.dart';
-import 'package:multi_debugger/services/service.dart';
+import 'package:multi_debugger/domain/base/base_service.dart';
 
-abstract class LocalStorageService extends Service {
+abstract class LocalStorageService extends BaseService {
   Future<void> initStorage();
 
   // saved urls

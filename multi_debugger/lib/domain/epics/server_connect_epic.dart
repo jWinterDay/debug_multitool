@@ -2,6 +2,7 @@ import 'package:built_redux/built_redux.dart';
 import 'package:flutter/foundation.dart';
 import 'package:multi_debugger/domain/actions/actions.dart';
 import 'package:multi_debugger/domain/actions/channel_actions.dart';
+import 'package:multi_debugger/domain/base/pair.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/states.dart';
 import 'package:multi_debugger/services/logger_service/logger_service.dart';
@@ -19,9 +20,11 @@ class ServerConnectEpic {
     return stream.where((Action<dynamic> action) {
       return action.name == ChannelActionsNames.changeConnectStatus.name;
     }).doOnData((Action<dynamic> action) {
-      final ChannelModel channelModel = action.payload as ChannelModel;
+      final Pair<ChannelModel, ServerConnectStatus> pair = action.payload as Pair<ChannelModel, ServerConnectStatus>;
 
-      final ServerConnectStatus nextStatus = channelModel.serverConnectStatus;
+      final ServerConnectStatus nextStatus = pair.second;
+      final ChannelModel channelModel = pair.first;
+
       final ServerCommunicateService service =
           api.state.serverCommunicateServicesState.services[channelModel.channelId];
 

@@ -56,14 +56,8 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
       _connected = true;
 
       // channel connect status
-      ChannelModel channelModelTransfer = ChannelModel((b) {
-        b
-          ..replace(channelModel)
-          ..serverConnectStatus = ServerConnectStatus.connected;
-
-        return b;
-      });
-      appGlobals.store.actions.channelActions.changeConnectStatus(channelModelTransfer);
+      Pair<ChannelModel, ServerConnectStatus> pair = Pair(channelModel, ServerConnectStatus.connected);
+      appGlobals.store.actions.channelActions.changeConnectStatus(pair);
 
       // server event -> connect
       ServerEvent serverEvent = ServerEvent((b) {
@@ -84,6 +78,10 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
 
       _connected = false;
 
+      // channel connect status
+      Pair<ChannelModel, ServerConnectStatus> channelPair = Pair(channelModel, ServerConnectStatus.disconnected);
+      appGlobals.store.actions.channelActions.changeConnectStatus(channelPair);
+
       // server event -> disconnect
       ServerEvent serverEvent = ServerEvent((b) {
         b
@@ -93,8 +91,13 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
         return b;
       });
 
-      Pair<String, ServerEvent> event = Pair(channelModel.channelId, serverEvent);
-      appGlobals.store.actions.serverEventActions.addEvent(event);
+      Pair<String, ServerEvent> eventPair = Pair(channelModel.channelId, serverEvent);
+      appGlobals.store.actions.serverEventActions.addEvent(eventPair);
+
+      // server is shutdown
+      // if (event.shouldReconnect) {
+      //   return;
+      // }
 
       _connectSub?.cancel();
       _disconnectSub?.cancel();

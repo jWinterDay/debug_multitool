@@ -2,6 +2,7 @@ import 'package:built_redux/built_redux.dart';
 import 'package:multi_debugger/di/app_di.dart';
 import 'package:multi_debugger/domain/actions/actions.dart';
 import 'package:multi_debugger/domain/actions/channel_actions.dart';
+import 'package:multi_debugger/domain/base/pair.dart';
 import 'package:multi_debugger/domain/models/channel_model.dart';
 import 'package:multi_debugger/domain/models/saved_url.dart';
 import 'package:multi_debugger/domain/models/server_connect_status.dart';
@@ -15,7 +16,7 @@ MiddlewareBuilder<AppState, AppStateBuilder, AppActions> createChannelMiddleware
     ..add<ChannelModel>(ChannelActionsNames.removeChannel, _removeChannel)
     ..add<ChannelModel>(ChannelActionsNames.updateChannel, _updateChannel)
     ..add<ChannelModel>(ChannelActionsNames.setCurrentChannel, _setCurrentChannel)
-    ..add<ChannelModel>(ChannelActionsNames.changeConnectStatus, _changeConnectStatus);
+    ..add<Pair<ChannelModel, ServerConnectStatus>>(ChannelActionsNames.changeConnectStatus, _changeConnectStatus);
 }
 
 void _addChannel(
@@ -89,14 +90,17 @@ void _setCurrentChannel(
 void _changeConnectStatus(
   MiddlewareApi<AppState, AppStateBuilder, AppActions> api,
   ActionHandler next,
-  Action<ChannelModel> action,
+  Action<Pair<ChannelModel, ServerConnectStatus>> action,
 ) {
   next(action);
 
-  final ChannelModel channelModel = action.payload;
+  Pair<ChannelModel, ServerConnectStatus> pair = action.payload;
+
+  final ChannelModel channelModel = pair.first;
+  final ServerConnectStatus status = pair.second;
 
   // add url to list
-  if (channelModel.serverConnectStatus == ServerConnectStatus.connecting) {
+  if (status == ServerConnectStatus.connecting) {
     final SavedUrl savedUrl = SavedUrl((b) => b
       ..url = channelModel.wsUrl
       ..custom = true);

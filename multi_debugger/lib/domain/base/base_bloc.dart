@@ -14,6 +14,8 @@ abstract class BaseBloc {
 
   ChannelModel get currentChannelModel => appGlobals.store.state.channelState.currentChannel;
 
+  String get computerName => appGlobals.store.state.appConfigState.computerName ?? '';
+
   @mustCallSuper
   void init() {
     appStateStream = appGlobals.store.nextSubstate((AppState state) {

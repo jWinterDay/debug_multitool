@@ -1,6 +1,6 @@
-import 'package:multi_debugger/services/service.dart';
+import 'package:multi_debugger/domain/base/base_service.dart';
 
-abstract class RemoteStorageService extends Service {
+abstract class RemoteStorageService extends BaseService {
   @override
   void init() {
     super.init();

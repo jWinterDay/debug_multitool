@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-abstract class Service {
+abstract class BaseService {
   @mustCallSuper
   void init() {}
 

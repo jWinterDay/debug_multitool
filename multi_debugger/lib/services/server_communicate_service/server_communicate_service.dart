@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:multi_debugger/app_globals.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/services/logger_service/logger_service.dart';
-import 'package:multi_debugger/services/service.dart';
+import 'package:multi_debugger/domain/base/base_service.dart';
 
-abstract class ServerCommunicateService extends Service {
+abstract class ServerCommunicateService extends BaseService {
   ServerCommunicateService({
     @required this.loggerService,
     @required this.appGlobals,

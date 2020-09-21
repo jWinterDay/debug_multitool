@@ -19,7 +19,8 @@ class _$ChannelActions extends ChannelActions {
   final addAllChannel = ActionDispatcher<Iterable<ChannelModel>>('ChannelActions-addAllChannel');
   final removeChannel = ActionDispatcher<ChannelModel>('ChannelActions-removeChannel');
   final updateChannel = ActionDispatcher<ChannelModel>('ChannelActions-updateChannel');
-  final changeConnectStatus = ActionDispatcher<ChannelModel>('ChannelActions-changeConnectStatus');
+  final changeConnectStatus =
+      ActionDispatcher<Pair<ChannelModel, ServerConnectStatus>>('ChannelActions-changeConnectStatus');
   final setCurrentChannel = ActionDispatcher<ChannelModel>('ChannelActions-setCurrentChannel');
   final toggleShowFavorites = ActionDispatcher<ChannelModel>('ChannelActions-toggleShowFavorites');
   final toggleShowWhiteList = ActionDispatcher<ChannelModel>('ChannelActions-toggleShowWhiteList');
@@ -59,7 +60,8 @@ class ChannelActionsNames {
   static final addAllChannel = ActionName<Iterable<ChannelModel>>('ChannelActions-addAllChannel');
   static final removeChannel = ActionName<ChannelModel>('ChannelActions-removeChannel');
   static final updateChannel = ActionName<ChannelModel>('ChannelActions-updateChannel');
-  static final changeConnectStatus = ActionName<ChannelModel>('ChannelActions-changeConnectStatus');
+  static final changeConnectStatus =
+      ActionName<Pair<ChannelModel, ServerConnectStatus>>('ChannelActions-changeConnectStatus');
   static final setCurrentChannel = ActionName<ChannelModel>('ChannelActions-setCurrentChannel');
   static final toggleShowFavorites = ActionName<ChannelModel>('ChannelActions-toggleShowFavorites');
   static final toggleShowWhiteList = ActionName<ChannelModel>('ChannelActions-toggleShowWhiteList');

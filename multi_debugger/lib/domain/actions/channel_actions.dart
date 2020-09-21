@@ -18,7 +18,7 @@ abstract class ChannelActions extends ReduxActions {
 
   ActionDispatcher<ChannelModel> get updateChannel;
 
-  ActionDispatcher<ChannelModel> get changeConnectStatus;
+  ActionDispatcher<Pair<ChannelModel, ServerConnectStatus>> get changeConnectStatus;
 
   ActionDispatcher<ChannelModel> get setCurrentChannel;
 

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:multi_debugger/app_routes.dart';
 import 'package:multi_debugger/domain/base/base_bloc.dart';
+import 'package:multi_debugger/domain/base/pair.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:rxdart/subjects.dart';
 
@@ -110,14 +111,8 @@ class TabBarBloc extends BaseBloc {
       default:
     }
 
-    ChannelModel nextChannelModel = ChannelModel((b) {
-      b
-        ..replace(currentChannelModel)
-        ..serverConnectStatus = resStatus;
+    Pair<ChannelModel, ServerConnectStatus> pair = Pair(currentChannelModel, resStatus);
 
-      return b;
-    });
-
-    appGlobals.store.actions.channelActions.changeConnectStatus(nextChannelModel);
+    appGlobals.store.actions.channelActions.changeConnectStatus(pair);
   }
 }

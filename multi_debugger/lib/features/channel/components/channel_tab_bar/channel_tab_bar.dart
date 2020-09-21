@@ -66,7 +66,7 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
                         Container(
                           padding: const EdgeInsets.only(left: 10.0),
                           child: Text(
-                            currentChannelModel.name,
+                            _bloc.computerName + '_' + currentChannelModel.name,
                             style: const TextStyle(
                               color: AppColors.gray6,
                               fontWeight: FontWeight.w700,
@@ -149,7 +149,7 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
           StreamBuilder<ChannelModel>(
             initialData: _bloc.currentChannelModel,
             stream: _bloc.currentChannelModelStream,
-            builder: (context, snapshot) {
+            builder: (_, snapshot) {
               final ChannelModel channelModel = snapshot.data;
 
               final bool hasCurrentChannel = channelModel != null;
