@@ -8,4 +8,6 @@ class AppRoutes {
   static const String selectUrl = 'selectUrl';
 
   static const String filterList = 'filterList';
+
+  static const String showChannelActions = 'showChannelActions';
 }

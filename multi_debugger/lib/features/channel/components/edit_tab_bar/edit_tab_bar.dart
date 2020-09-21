@@ -7,6 +7,22 @@ import 'package:multi_debugger/domain/models/models.dart';
 
 import 'edit_tab_bar_bloc.dart';
 
+final InputDecoration _kInputDecoration = InputDecoration(
+  contentPadding: const EdgeInsets.all(0.0),
+  border: OutlineInputBorder(
+    borderSide: const BorderSide(color: AppColors.gray3),
+    borderRadius: BorderRadius.circular(6.0),
+  ),
+  focusedBorder: OutlineInputBorder(
+    borderSide: const BorderSide(color: AppColors.gray3),
+    borderRadius: BorderRadius.circular(6.0),
+  ),
+  hintStyle: const TextStyle(
+    color: AppColors.gray5,
+    fontSize: 15.0,
+  ),
+);
+
 class EditTabBarScreen extends StatefulWidget {
   const EditTabBarScreen({
     Key key,
@@ -27,28 +43,25 @@ class EditTabBarScreen extends StatefulWidget {
 
 class _EditTabBarScreenState extends State<EditTabBarScreen> {
   EditTabBarBloc _bloc;
+  bool get _existsChannel => widget.channelModel != null;
 
-  final InputDecoration _inputDecoration = InputDecoration(
-    contentPadding: const EdgeInsets.all(0.0),
-    border: OutlineInputBorder(
-      borderSide: const BorderSide(color: AppColors.gray3),
-      borderRadius: BorderRadius.circular(6.0),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderSide: const BorderSide(color: AppColors.gray3),
-      borderRadius: BorderRadius.circular(6.0),
-    ),
-    hintStyle: const TextStyle(
-      color: AppColors.gray5,
-      fontSize: 15.0,
-    ),
-  );
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _shortNameController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
     _bloc = EditTabBarBloc()..init();
+
+    if (_existsChannel) {
+      final String name = widget.channelModel.name;
+      final String shortName = widget.channelModel.shortName;
+
+      _nameController.text = name;
+      _shortNameController.text = shortName;
+      _bloc.toggleInitialValues(name: name, shortName: shortName);
+    }
   }
 
   @override
@@ -77,10 +90,10 @@ class _EditTabBarScreenState extends State<EditTabBarScreen> {
               child: Column(
                 children: [
                   // caption
-                  Container(
+                  Padding(
                     padding: const EdgeInsets.only(top: 25.0),
-                    child: const Text(
-                      'Add new channel',
+                    child: Text(
+                      _existsChannel ? 'Edit channel name' : 'Add new channel',
                       style: const TextStyle(
                         color: AppColors.gray6,
                         fontWeight: FontWeight.w700,
@@ -127,6 +140,7 @@ class _EditTabBarScreenState extends State<EditTabBarScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0).copyWith(top: 10.0),
                     child: TextField(
+                      controller: _nameController,
                       autofocus: true,
                       onChanged: _bloc.onNameChanged,
                       cursorColor: AppColors.positive,
@@ -135,16 +149,16 @@ class _EditTabBarScreenState extends State<EditTabBarScreen> {
                         fontSize: 15.0,
                       ),
                       textAlign: TextAlign.center,
-                      decoration: _inputDecoration.copyWith(hintText: 'Channel name'),
+                      decoration: _kInputDecoration.copyWith(hintText: 'Channel name'),
                     ),
                   ),
 
                   // short name caption
-                  Container(
-                    padding: const EdgeInsets.only(top: 25.0),
-                    child: const Text(
+                  const Padding(
+                    padding: EdgeInsets.only(top: 25.0),
+                    child: Text(
                       'Short channel name (max: 15 symbols):',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.gray6,
                         fontSize: 15.0,
                       ),
@@ -152,9 +166,10 @@ class _EditTabBarScreenState extends State<EditTabBarScreen> {
                   ),
 
                   // short name
-                  Container(
+                  Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0).copyWith(top: 10.0),
                     child: TextField(
+                      controller: _shortNameController,
                       onChanged: _bloc.onShortNameChanged,
                       cursorColor: AppColors.positive,
                       style: const TextStyle(
@@ -162,7 +177,7 @@ class _EditTabBarScreenState extends State<EditTabBarScreen> {
                         fontSize: 15.0,
                       ),
                       textAlign: TextAlign.center,
-                      decoration: _inputDecoration.copyWith(hintText: 'Short name'),
+                      decoration: _kInputDecoration.copyWith(hintText: 'Short name'),
                     ),
                   ),
 
@@ -190,20 +205,26 @@ class _EditTabBarScreenState extends State<EditTabBarScreen> {
                           ),
                         ),
                         StreamBuilder<bool>(
+                          initialData: _existsChannel,
                           stream: _bloc.correctFormStream,
                           builder: (_, snapshot) {
                             final bool correct = snapshot.data ?? false;
 
                             return RaisedButton(
-                              onPressed: correct ? () => _bloc.addChannel(context) : null,
+                              onPressed: correct
+                                  ? () {
+                                      _existsChannel ? _bloc.updateChannel(widget.channelModel) : _bloc.addChannel();
+                                      _bloc.pop(context);
+                                    }
+                                  : null,
                               color: AppColors.positive,
                               textColor: AppColors.background,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(6.0),
                               ),
-                              child: const Text(
-                                'ADD CHANNEL',
-                                style: TextStyle(fontSize: 17.0),
+                              child: Text(
+                                _existsChannel ? 'EDIT CHANNEL' : 'ADD CHANNEL',
+                                style: const TextStyle(fontSize: 17.0),
                               ),
                             );
                           },

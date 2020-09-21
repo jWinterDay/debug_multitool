@@ -50,7 +50,6 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
 
     _client = centrifuge.createClient(channelModel.wsUrl);
     _subscription = _client.getSubscription(compositeChannelName);
-    print('channelModel.name = ${channelModel.name}');
 
     // connect sub
     _connectSub = _client.connectStream.listen((centrifuge.ConnectEvent event) {

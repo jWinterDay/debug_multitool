@@ -33,6 +33,11 @@ class EditTabBarBloc extends BaseBloc {
     super.dispose();
   }
 
+  void toggleInitialValues({@required String name, @required String shortName}) {
+    _nameSubject.add(name);
+    _shortNameSubject.add(shortName);
+  }
+
   @override
   void init() {
     super.init();
@@ -83,7 +88,7 @@ class EditTabBarBloc extends BaseBloc {
     _shortNameSubject.add(name);
   }
 
-  void addChannel(BuildContext context) {
+  void addChannel() {
     final String name = _nameSubject.value;
     final String shortName = _shortNameSubject.value;
 
@@ -102,11 +107,21 @@ class EditTabBarBloc extends BaseBloc {
     });
 
     appGlobals.store.actions.channelActions.addChannel(channelModel);
-
-    pop(context);
   }
 
-  void updateChannel() {
-    //
+  void updateChannel(ChannelModel channelModel) {
+    final String name = _nameSubject.value;
+    final String shortName = _shortNameSubject.value;
+
+    ChannelModel nextChannelModel = ChannelModel((b) {
+      b
+        ..replace(channelModel)
+        ..name = name
+        ..shortName = shortName;
+
+      return b;
+    });
+
+    appGlobals.store.actions.channelActions.updateChannel(nextChannelModel);
   }
 }

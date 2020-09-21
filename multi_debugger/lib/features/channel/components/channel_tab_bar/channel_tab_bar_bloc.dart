@@ -81,6 +81,15 @@ class TabBarBloc extends BaseBloc {
     );
   }
 
+  void showChannelActions(BuildContext context) {
+    appGlobals.store.actions.routeTo(
+      AppRoute((builder) => builder
+        ..route = AppRoutes.showChannelActions
+        ..bundle = currentChannelModel
+        ..context = context),
+    );
+  }
+
   void connect() {
     if (currentChannelModel == null) {
       return;
@@ -111,22 +120,4 @@ class TabBarBloc extends BaseBloc {
 
     appGlobals.store.actions.channelActions.changeConnectStatus(nextChannelModel);
   }
-
-  // void showAddChannel(BuildContext context) {
-  //   appGlobals.store.actions.routeTo(
-  //     AppRoute((builder) => builder
-  //       ..route = AppRoutes.editChannel
-  //       ..context = context),
-  //   );
-  // }
-
-  // void setCurrent(ChannelModel channelModel) {
-  //   appGlobals.store.actions.channelActions.setCurrentChannel(channelModel);
-  //   // appGlobals.store.actions.routeTo(
-  //   //   AppRoute((builder) => builder
-  //   //     ..route = AppRoutes.editChannel
-  //   //     ..context = context
-  //   //     ..bundle = channelModel),
-  //   // );
-  // }
 }

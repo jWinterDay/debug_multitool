@@ -56,15 +56,18 @@ void _removeChannel(
   ActionHandler next,
   Action<ChannelModel> action,
 ) {
-  next(action);
-
   final ChannelModel channelModel = action.payload;
 
   // close and remove communicate service
-  final ServerCommunicateService service = api.state.serverCommunicateServicesState.services[channelModel.name];
-  service.disconnect();
-  service.dispose();
-  api.state.serverCommunicateServicesState.services.remove(channelModel.name);
+  api.state.serverCommunicateServicesState.services[channelModel.channelId]
+    ..disconnect()
+    ..dispose();
+  api.state.serverCommunicateServicesState.services.remove(channelModel.channelId);
+
+  // clear logs
+  api.actions.serverEventActions.clearEvents(channelModel);
+
+  next(action);
 }
 
 void _updateChannel(

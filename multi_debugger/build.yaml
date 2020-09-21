@@ -2,16 +2,12 @@ targets:
   $default:
     sources:
       include:
-        - lib/presentation/**
-        - lib/data/**
+        - $package$
+        - lib/$lib$
         - lib/di/**
         - lib/domain/**
         - lib/feature/**
-        - lib/repository/**
-        - lib/utilities/**
-        - lib/blocs/**
-        - lib/components/**
-        - $package$
-        - lib/$lib$
+        - lib/services/**
+        - lib/tools/**
       exclude:
         - test/**

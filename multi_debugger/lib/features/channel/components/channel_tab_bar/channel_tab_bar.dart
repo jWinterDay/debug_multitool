@@ -53,39 +53,42 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
 
                   final ChannelModel currentChannelModel = snapshot.data;
 
-                  return Row(
-                    children: [
-                      // status
-                      ConnectStatusWidget(
-                        serverConnectStatus: currentChannelModel.serverConnectStatus,
-                      ),
+                  return InkWell(
+                    onTap: () => _bloc.showChannelActions(context),
+                    child: Row(
+                      children: [
+                        // status
+                        ConnectStatusWidget(
+                          serverConnectStatus: currentChannelModel.serverConnectStatus,
+                        ),
 
-                      // channel name
-                      Container(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Text(
-                          currentChannelModel.name,
-                          style: const TextStyle(
-                            color: AppColors.gray6,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 22.0,
+                        // channel name
+                        Container(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: Text(
+                            currentChannelModel.name,
+                            style: const TextStyle(
+                              color: AppColors.gray6,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 22.0,
+                            ),
                           ),
                         ),
-                      ),
 
-                      // arrow
-                      Container(
-                        padding: const EdgeInsets.only(left: 6.0),
-                        child: const RotatedBox(
-                          quarterTurns: 0,
-                          child: Icon(
-                            LoggerIcons.arrowDown_1x,
-                            size: 25.0,
-                            color: AppColors.gray6,
+                        // arrow
+                        Container(
+                          padding: const EdgeInsets.only(left: 6.0),
+                          child: const RotatedBox(
+                            quarterTurns: 0,
+                            child: Icon(
+                              LoggerIcons.arrowDown_1x,
+                              size: 25.0,
+                              color: AppColors.gray6,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   );
                 },
               ),

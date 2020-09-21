@@ -75,6 +75,10 @@ class ActionsViewBloc extends BaseBloc {
       _serverEventListSubject.add(pair);
 
       // scroll to end
+      if (currentChannelModel == null) {
+        return;
+      }
+
       if (scrollController.hasClients && currentChannelModel.useAutoScroll) {
         Future.delayed(const Duration(milliseconds: 100), () {
           if (scrollController == null || !scrollController.hasClients) {
