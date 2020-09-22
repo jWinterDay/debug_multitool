@@ -17,19 +17,21 @@ class _$AppActions extends AppActions {
 
   final routeTo = ActionDispatcher<AppRoute>('AppActions-routeTo');
 
-  final channelActions = ChannelActions();
   final appConfigActions = AppConfigActions();
+  final channelActions = ChannelActions();
   final savedUrlActions = SavedUrlActions();
   final serverEventActions = ServerEventActions();
+  final platformEventActions = PlatformEventActions();
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
     routeTo.setDispatcher(dispatcher);
 
-    channelActions.setDispatcher(dispatcher);
     appConfigActions.setDispatcher(dispatcher);
+    channelActions.setDispatcher(dispatcher);
     savedUrlActions.setDispatcher(dispatcher);
     serverEventActions.setDispatcher(dispatcher);
+    platformEventActions.setDispatcher(dispatcher);
   }
 }
 

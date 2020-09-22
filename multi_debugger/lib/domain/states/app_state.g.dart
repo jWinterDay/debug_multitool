@@ -16,6 +16,8 @@ class _$AppState extends AppState {
   @override
   final ServerEventState serverEventState;
   @override
+  final PlatformEventState platformEventState;
+  @override
   final ServerCommunicateServicesState serverCommunicateServicesState;
 
   factory _$AppState([void Function(AppStateBuilder) updates]) => (new AppStateBuilder()..update(updates)).build();
@@ -25,6 +27,7 @@ class _$AppState extends AppState {
       this.channelState,
       this.savedUrlState,
       this.serverEventState,
+      this.platformEventState,
       this.serverCommunicateServicesState})
       : super._() {
     if (appConfigState == null) {
@@ -38,6 +41,9 @@ class _$AppState extends AppState {
     }
     if (serverEventState == null) {
       throw new BuiltValueNullFieldError('AppState', 'serverEventState');
+    }
+    if (platformEventState == null) {
+      throw new BuiltValueNullFieldError('AppState', 'platformEventState');
     }
     if (serverCommunicateServicesState == null) {
       throw new BuiltValueNullFieldError('AppState', 'serverCommunicateServicesState');
@@ -58,14 +64,17 @@ class _$AppState extends AppState {
         channelState == other.channelState &&
         savedUrlState == other.savedUrlState &&
         serverEventState == other.serverEventState &&
+        platformEventState == other.platformEventState &&
         serverCommunicateServicesState == other.serverCommunicateServicesState;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc($jc(0, appConfigState.hashCode), channelState.hashCode), savedUrlState.hashCode),
-            serverEventState.hashCode),
+        $jc(
+            $jc($jc($jc($jc(0, appConfigState.hashCode), channelState.hashCode), savedUrlState.hashCode),
+                serverEventState.hashCode),
+            platformEventState.hashCode),
         serverCommunicateServicesState.hashCode));
   }
 
@@ -76,6 +85,7 @@ class _$AppState extends AppState {
           ..add('channelState', channelState)
           ..add('savedUrlState', savedUrlState)
           ..add('serverEventState', serverEventState)
+          ..add('platformEventState', platformEventState)
           ..add('serverCommunicateServicesState', serverCommunicateServicesState))
         .toString();
   }
@@ -100,6 +110,11 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   ServerEventStateBuilder get serverEventState => _$this._serverEventState ??= new ServerEventStateBuilder();
   set serverEventState(ServerEventStateBuilder serverEventState) => _$this._serverEventState = serverEventState;
 
+  PlatformEventStateBuilder _platformEventState;
+  PlatformEventStateBuilder get platformEventState => _$this._platformEventState ??= new PlatformEventStateBuilder();
+  set platformEventState(PlatformEventStateBuilder platformEventState) =>
+      _$this._platformEventState = platformEventState;
+
   ServerCommunicateServicesState _serverCommunicateServicesState;
   ServerCommunicateServicesState get serverCommunicateServicesState => _$this._serverCommunicateServicesState;
   set serverCommunicateServicesState(ServerCommunicateServicesState serverCommunicateServicesState) =>
@@ -113,6 +128,7 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
       _channelState = _$v.channelState?.toBuilder();
       _savedUrlState = _$v.savedUrlState?.toBuilder();
       _serverEventState = _$v.serverEventState?.toBuilder();
+      _platformEventState = _$v.platformEventState?.toBuilder();
       _serverCommunicateServicesState = _$v.serverCommunicateServicesState;
       _$v = null;
     }
@@ -142,6 +158,7 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
               channelState: channelState.build(),
               savedUrlState: savedUrlState.build(),
               serverEventState: serverEventState.build(),
+              platformEventState: platformEventState.build(),
               serverCommunicateServicesState: serverCommunicateServicesState);
     } catch (_) {
       String _$failedField;
@@ -154,6 +171,8 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
         savedUrlState.build();
         _$failedField = 'serverEventState';
         serverEventState.build();
+        _$failedField = 'platformEventState';
+        platformEventState.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError('AppState', _$failedField, e.toString());
       }

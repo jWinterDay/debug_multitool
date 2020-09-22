@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:built_redux/built_redux.dart';
@@ -6,10 +7,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:multi_debugger/domain/actions/actions.dart';
 import 'package:multi_debugger/domain/middlewares/middlewares.dart';
+import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/states.dart';
 import 'package:multi_debugger/domain/reducers/reducer_builder.dart';
 import 'package:multi_debugger/domain/serializers.dart';
 import 'package:multi_debugger/services/logger_service/logger_service.dart';
+
+const _kDesktopStream = const EventChannel('github.com/jWinterDay/platform_messages');
 
 class AppGlobals {
   AppGlobals({
@@ -28,6 +32,18 @@ class AppGlobals {
     await _initLocalSettingsState();
 
     loggerService.setLoggerLevel(_store.state.appConfigState.localSettings.loggerLevel);
+  }
+
+  Future<void> initDesktopPlatformListener() async {
+    _kDesktopStream.receiveBroadcastStream().listen((dynamic data) {
+      if (data != null) {
+        final PlatformEvent platformEvent = serializers.deserializeWith(PlatformEvent.serializer, data);
+        _store.actions.platformEventActions.addEvent(platformEvent);
+        return;
+      }
+
+      _store.actions.platformEventActions.addEvent(null); //PlatformEvent());
+    });
   }
 
   // init redux store

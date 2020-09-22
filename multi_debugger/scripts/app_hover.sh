@@ -8,7 +8,7 @@ HOVER_PORT=50300
 # app.sh
 bash scripts/app.sh
 
-hover run --observatory-port=$HOVER_PORT --omit-embedder
+hover run # --observatory-port=$HOVER_PORT # --omit-embedder
 
 # if [ "$1" = "install_linux" ]; then
 #     sudo apt install golang-go
