@@ -20,6 +20,8 @@ class _$ServerEventSerializer implements StructuredSerializer<ServerEvent> {
     final result = <Object>[
       'serverEventId',
       serializers.serialize(object.serverEventId, specifiedType: const FullType(String)),
+      'index',
+      serializers.serialize(object.index, specifiedType: const FullType(int)),
       'action',
       serializers.serialize(object.action, specifiedType: const FullType(String)),
       'serverEventType',
@@ -52,6 +54,9 @@ class _$ServerEventSerializer implements StructuredSerializer<ServerEvent> {
         case 'serverEventId':
           result.serverEventId = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
           break;
+        case 'index':
+          result.index = serializers.deserialize(value, specifiedType: const FullType(int)) as int;
+          break;
         case 'action':
           result.action = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
           break;
@@ -82,6 +87,8 @@ class _$ServerEvent extends ServerEvent {
   @override
   final String serverEventId;
   @override
+  final int index;
+  @override
   final String action;
   @override
   final JsonObject payload;
@@ -98,10 +105,20 @@ class _$ServerEvent extends ServerEvent {
       (new ServerEventBuilder()..update(updates)).build();
 
   _$ServerEvent._(
-      {this.serverEventId, this.action, this.payload, this.state, this.serverEventType, this.datetime, this.favorite})
+      {this.serverEventId,
+      this.index,
+      this.action,
+      this.payload,
+      this.state,
+      this.serverEventType,
+      this.datetime,
+      this.favorite})
       : super._() {
     if (serverEventId == null) {
       throw new BuiltValueNullFieldError('ServerEvent', 'serverEventId');
+    }
+    if (index == null) {
+      throw new BuiltValueNullFieldError('ServerEvent', 'index');
     }
     if (action == null) {
       throw new BuiltValueNullFieldError('ServerEvent', 'action');
@@ -128,6 +145,7 @@ class _$ServerEvent extends ServerEvent {
     if (identical(other, this)) return true;
     return other is ServerEvent &&
         serverEventId == other.serverEventId &&
+        index == other.index &&
         action == other.action &&
         payload == other.payload &&
         state == other.state &&
@@ -140,7 +158,9 @@ class _$ServerEvent extends ServerEvent {
   int get hashCode {
     return $jf($jc(
         $jc(
-            $jc($jc($jc($jc($jc(0, serverEventId.hashCode), action.hashCode), payload.hashCode), state.hashCode),
+            $jc(
+                $jc($jc($jc($jc($jc(0, serverEventId.hashCode), index.hashCode), action.hashCode), payload.hashCode),
+                    state.hashCode),
                 serverEventType.hashCode),
             datetime.hashCode),
         favorite.hashCode));
@@ -150,6 +170,7 @@ class _$ServerEvent extends ServerEvent {
   String toString() {
     return (newBuiltValueToStringHelper('ServerEvent')
           ..add('serverEventId', serverEventId)
+          ..add('index', index)
           ..add('action', action)
           ..add('payload', payload)
           ..add('state', state)
@@ -166,6 +187,10 @@ class ServerEventBuilder implements Builder<ServerEvent, ServerEventBuilder> {
   String _serverEventId;
   String get serverEventId => _$this._serverEventId;
   set serverEventId(String serverEventId) => _$this._serverEventId = serverEventId;
+
+  int _index;
+  int get index => _$this._index;
+  set index(int index) => _$this._index = index;
 
   String _action;
   String get action => _$this._action;
@@ -198,6 +223,7 @@ class ServerEventBuilder implements Builder<ServerEvent, ServerEventBuilder> {
   ServerEventBuilder get _$this {
     if (_$v != null) {
       _serverEventId = _$v.serverEventId;
+      _index = _$v.index;
       _action = _$v.action;
       _payload = _$v.payload;
       _state = _$v.state;
@@ -227,6 +253,7 @@ class ServerEventBuilder implements Builder<ServerEvent, ServerEventBuilder> {
     final _$result = _$v ??
         new _$ServerEvent._(
             serverEventId: serverEventId,
+            index: index,
             action: action,
             payload: payload,
             state: state,

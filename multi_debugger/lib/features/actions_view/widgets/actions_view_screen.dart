@@ -242,7 +242,7 @@ class _ActionsViewState extends State<ActionsViewScreen> {
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 12.0).copyWith(left: 15.0),
                 child: Text(
-                  '$index) ${serverEvent.action}',
+                  '${serverEvent.index}) ${serverEvent.action}',
                   style: TextStyle(
                     color: textColor,
                     fontSize: 15.0,

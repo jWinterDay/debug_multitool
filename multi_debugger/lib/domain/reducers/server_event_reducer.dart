@@ -2,6 +2,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_redux/built_redux.dart';
 import 'package:multi_debugger/domain/actions/server_event_actions.dart';
 import 'package:multi_debugger/domain/base/pair.dart';
+import 'package:multi_debugger/domain/enums/server_event_type.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/server_event_state.dart';
 import 'package:multi_debugger/domain/states/states.dart';
@@ -24,8 +25,18 @@ void _addEvent(ServerEventState state, Action<Pair<String, ServerEvent>> action,
   builder.events.updateValue(
     channelId,
     (BuiltList<ServerEvent> update) {
+      final int len = update.length;
+      // check prev and current events are delimiters
+      final ServerEvent prevServerEvent = state.getPrevServerEvent(len, channelId);
+      final bool isDelimiter = serverEvent.serverEventType == ServerEventType.delimiter;
+      final bool isPrevDelimiter = prevServerEvent?.serverEventType == ServerEventType.delimiter;
+
+      if (isDelimiter && isPrevDelimiter) {
+        return update;
+      }
+
       return update.rebuild((ListBuilder b) {
-        b.add(serverEvent);
+        b.add(serverEvent.rebuild((seb) => seb.index = len));
       });
     },
     ifAbsent: () {

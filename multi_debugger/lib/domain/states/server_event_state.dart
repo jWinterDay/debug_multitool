@@ -21,11 +21,13 @@ abstract class ServerEventState implements Built<ServerEventState, ServerEventSt
   BuiltList<ServerEvent> getEventsForChannel(ChannelModel currentChannel) {
     assert(currentChannel != null);
 
-    if (events[currentChannel?.channelId] == null) {
+    BuiltList<ServerEvent> list = events[currentChannel?.channelId];
+
+    if (list == null) {
       return BuiltList();
     }
 
-    List<ServerEvent> serverEventList = events[currentChannel.channelId].where((ServerEvent serverEvent) {
+    List<ServerEvent> serverEventList = list.where((ServerEvent serverEvent) {
       // favorites
       final bool show = !currentChannel.showFavoriteOnly || serverEvent.favorite;
 
@@ -43,6 +45,23 @@ abstract class ServerEventState implements Built<ServerEventState, ServerEventSt
     }).toList();
 
     return BuiltList.from(serverEventList);
+  }
+
+  ServerEvent getPrevServerEvent(int index, String channelId) {
+    assert(index != null);
+    assert(channelId != null);
+
+    BuiltList<ServerEvent> list = events[channelId];
+
+    if (list == null || list.isEmpty) {
+      return null;
+    }
+
+    if (index == 0) {
+      return null;
+    }
+
+    return list[index - 1];
   }
 
   static Serializer<ServerEventState> get serializer => _$serverEventStateSerializer;
