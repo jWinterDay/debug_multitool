@@ -36,13 +36,13 @@ class AppGlobals {
 
   Future<void> initDesktopPlatformListener() async {
     _kDesktopStream.receiveBroadcastStream().listen((dynamic data) {
-      if (data != null) {
-        final PlatformEvent platformEvent = serializers.deserializeWith(PlatformEvent.serializer, data);
-        _store.actions.platformEventActions.addEvent(platformEvent);
-        return;
-      }
+      // if (data != null) {
+      //   final PlatformEvent platformEvent = serializers.deserializeWith(PlatformEvent.serializer, data);
+      //   _store.actions.platformEventActions.addEvent(platformEvent);
+      //   return;
+      // }
 
-      _store.actions.platformEventActions.addEvent(null); //PlatformEvent());
+      // _store.actions.platformEventActions.addEvent(null); //PlatformEvent());
     });
   }
 

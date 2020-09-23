@@ -60,6 +60,8 @@ func (p *ScreenSizeSettings) InitPlugin(messenger plugin.BinaryMessenger) error 
 func (p *ScreenSizeSettings) InitPluginGLFW(window *glfw.Window) error {
 	p.window = window
 
+	window.SetSizeLimits(minW, minH, maxW, maxH)
+
 	return nil
 }
 
