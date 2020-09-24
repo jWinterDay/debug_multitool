@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:multi_debugger/app/colors.dart';
 import 'package:multi_debugger/domain/enums/filter_list_type.dart';
 import 'package:multi_debugger/domain/models/models.dart';
-import 'package:multi_debugger/features/filter_list/blocks/filter_list_bloc.dart';
+import 'package:multi_debugger/features/filter_list/blocs/filter_list_bloc.dart';
 import 'package:multi_debugger/tools/logger_icons.dart';
 
 class FilterListScreen extends StatefulWidget {

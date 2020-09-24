@@ -1,5 +1,7 @@
+import 'package:built_value/json_object.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:json_diff/json_diff.dart';
 import 'package:multi_debugger/app/colors.dart';
 import 'package:multi_debugger/domain/enums/payload_view_type.dart';
 import 'package:multi_debugger/domain/models/models.dart';
@@ -102,21 +104,8 @@ class _PayloadViewState extends State<PayloadViewScreen> {
     );
   }
 
-  // {"action": "action1", "payload": {"a": 1, "b": 2, "c": [2,3,4]}, "state": {"s1": "s1", "s2": {"a": 6, "b": 7, "c": true, "d": [1,2]}}}
-  Widget _sliverItem(ServerEvent serverEvent, PayloadViewType payloadViewType) {
-    String content = 'No data';
-
-    switch (payloadViewType) {
-      case PayloadViewType.actionPayload:
-        content = serverEvent.payload == null ? 'No data' : common_tools.convertJsonObject(serverEvent.payload);
-        break;
-      case PayloadViewType.state:
-        content = serverEvent.state == null ? 'No data' : common_tools.convertJsonObject(serverEvent.state);
-        break;
-      case PayloadViewType.diff:
-        content = serverEvent.payload == null ? 'No data' : 'ToDo';
-        break;
-    }
+  Widget _simpleSliverItem(JsonObject obj) {
+    String content = obj == null ? 'No data' : common_tools.convertJsonObject(obj);
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -130,6 +119,113 @@ class _PayloadViewState extends State<PayloadViewScreen> {
         ),
       ),
     );
+  }
+
+  Widget _diffTitle(String title) {
+    return Text(
+      '$title:',
+      style: const TextStyle(
+        fontSize: 15.0,
+        fontWeight: FontWeight.w600,
+      ),
+    );
+  }
+
+  List<Widget> _diffItems(BeautifulDiffType type, List<BeautifulDiffResult> items) {
+    String title = '';
+    Color textColor = AppColors.background;
+    TextDecoration textDecoration = TextDecoration.none;
+    FontStyle fontStyle = FontStyle.normal;
+
+    switch (type) {
+      case BeautifulDiffType.added:
+        textColor = AppColors.positive;
+        title = 'Added';
+        break;
+      case BeautifulDiffType.changed:
+        textColor = AppColors.primaryColor;
+        title = 'Changed';
+        break;
+      case BeautifulDiffType.moved:
+        textColor = AppColors.primaryColor;
+        title = 'Moved';
+        break;
+      case BeautifulDiffType.removed:
+        textColor = AppColors.red;
+        title = 'Removed';
+        textDecoration = TextDecoration.lineThrough;
+        fontStyle = FontStyle.italic;
+        break;
+
+      default:
+    }
+
+    final List<Widget> result = items
+        .where((BeautifulDiffResult item) {
+          return item.diffType == type;
+        })
+        .map((BeautifulDiffResult item) {
+          return Text(
+            item.toStringForWidget(),
+            style: TextStyle(
+              color: textColor,
+              decoration: textDecoration,
+              fontStyle: fontStyle,
+            ),
+          );
+        })
+        .cast<Widget>()
+        .toList();
+
+    if (result.isNotEmpty) {
+      result.insert(0, _diffTitle(title));
+      result.add(const SizedBox(height: 18.0));
+    }
+
+    return result;
+  }
+
+  Widget _diffSliverItem(DiffNode diffNode) {
+    final List<BeautifulDiffResult> beautifulDiff = DiffNodeExt.beautifulDiff(diffNode);
+
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ..._diffItems(BeautifulDiffType.added, beautifulDiff),
+            ..._diffItems(BeautifulDiffType.changed, beautifulDiff),
+            ..._diffItems(BeautifulDiffType.moved, beautifulDiff),
+            ..._diffItems(BeautifulDiffType.removed, beautifulDiff),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // {"action": "action1", "payload": {"a": 1, "b": 2, "c": [2,3,4]}, "state": {"s1": "s1", "s2": {"a": 6, "b": 7, "c": true, "d": [1,2]}}}
+  Widget _sliverItem(ServerEvent serverEvent, PayloadViewType payloadViewType) {
+    // action or payload
+    if ([PayloadViewType.actionPayload, PayloadViewType.state].contains(payloadViewType)) {
+      final JsonObject data =
+          payloadViewType == PayloadViewType.actionPayload ? serverEvent.payload : serverEvent.state;
+      return _simpleSliverItem(data);
+    }
+
+    // diff
+    final DiffNode diffNode = _bloc.getDiffNode(serverEvent);
+    if (diffNode == null) {
+      return const SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Text('Prev state is null. No diff'),
+        ),
+      );
+    }
+
+    return _diffSliverItem(diffNode);
   }
 
   Widget _tabBarItem(

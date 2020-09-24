@@ -26,6 +26,8 @@ dependencies:
     git:
       url: git://github.com/jWinterDay/go_flutter_utils.git
   hive: ^1.4.3
+  json_diff:
+    path: packages/json_diff
   logger_flutter: ^0.7.1
   path_provider: ^1.6.11
   path_provider_linux: ^0.0.1+2

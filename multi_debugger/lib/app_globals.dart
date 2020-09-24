@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:multi_debugger/domain/actions/actions.dart';
 import 'package:multi_debugger/domain/middlewares/middlewares.dart';
-import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/states.dart';
 import 'package:multi_debugger/domain/reducers/reducer_builder.dart';
 import 'package:multi_debugger/domain/serializers.dart';

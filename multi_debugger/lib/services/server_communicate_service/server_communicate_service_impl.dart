@@ -63,6 +63,15 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
       ServerEvent serverEvent = ServerEvent((b) {
         b
           ..action = 'connect'
+          // test
+          ..state = JsonObject({
+            'state': {
+              'userstate': {'logged': false, 'stub': 'value'},
+              'livestate': {'count': 0, 'video': 0},
+              'linestate': [1, 2, 3]
+            },
+            'sub': false,
+          })
           ..serverEventType = ServerEventType.connect;
 
         return b;
@@ -86,6 +95,15 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
       ServerEvent serverEvent = ServerEvent((b) {
         b
           ..action = 'disconnect'
+          // test
+          ..state = JsonObject({
+            'state': {
+              'userstate': {'logged': false, 'name': 'Vasya'},
+              'livestate': {'count': 1, 'video': 5},
+              'linestate': [2, 1, 4]
+            },
+            'sub': true,
+          })
           ..serverEventType = ServerEventType.disconnect;
 
         return b;
