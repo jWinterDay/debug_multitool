@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_simple_dependency_injection/injector.dart';
 import 'package:multi_debugger/app_globals.dart';
 import 'package:multi_debugger/domain/epics/local_epic.dart';
@@ -11,6 +12,7 @@ import 'package:multi_debugger/services/local_storage_service/local_storage_serv
 import 'package:multi_debugger/services/local_storage_service/local_storage_service_impl.dart';
 import 'package:multi_debugger/services/logger_service/logger_service.dart';
 import 'package:multi_debugger/services/logger_service/logger_service_impl.dart';
+import 'package:multi_debugger/services/logger_service/logger_service_web_impl.dart';
 import 'package:multi_debugger/services/remove_storage_service/remote_storage_service.dart';
 import 'package:multi_debugger/services/remove_storage_service/remote_storage_service_impl.dart';
 import 'package:multi_debugger/services/server_communicate_service/server_communicate_service.dart';
@@ -20,9 +22,10 @@ final Injector di = Injector.getInjector();
 
 class AppDI {
   static Future<void> init() async {
-    final LoggerService loggerService = LoggerServiceImpl()..init();
+    final LoggerService loggerService = kIsWeb ? LoggerServiceWebImpl() : LoggerServiceImpl();
+    loggerService.init();
 
-    LocalStorageServiceImpl localStorage = LocalStorageServiceImpl(loggerService: loggerService)..init();
+    LocalStorageService localStorage = LocalStorageServiceImpl(loggerService: loggerService)..init();
     await localStorage.initStorage();
 
     di

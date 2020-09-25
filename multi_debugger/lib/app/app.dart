@@ -6,6 +6,7 @@ import 'package:multi_debugger/app/theme.dart';
 import 'package:multi_debugger/app_globals.dart';
 import 'package:multi_debugger/di/app_di.dart';
 import 'package:multi_debugger/features/channel/widgets/channel_screen.dart';
+import 'package:multi_debugger/features/not_allowed_platform/widgets/not_allowed_platform.dart';
 
 class App extends StatefulWidget {
   const App({
@@ -47,7 +48,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const ChannelScreen(),
+      home: _appGlobals.platformIsAllowed ? const ChannelScreen() : const NotAllowedPlatformScreen(),
       theme: appTheme,
       navigatorKey: _appGlobals.rootNavigatorKey,
       localizationsDelegates: [

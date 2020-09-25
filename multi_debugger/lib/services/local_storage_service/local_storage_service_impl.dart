@@ -46,8 +46,10 @@ class LocalStorageServiceImpl extends LocalStorageService {
 
   @override
   Future<void> initStorage() async {
-    final Directory appDocumentDirectory = await path_provider.getTemporaryDirectory(); //getDownloadsDirectory();
-    Hive.init(appDocumentDirectory.path);
+    if (!kIsWeb) {
+      final Directory appDocumentDirectory = await path_provider.getTemporaryDirectory(); //getDownloadsDirectory();
+      Hive.init(appDocumentDirectory.path);
+    }
   }
 
   @override

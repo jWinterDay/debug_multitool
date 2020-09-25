@@ -43,16 +43,15 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
 
   @override
   Future<void> connect(ChannelModel channelModel, {centrifuge.ClientConfig clientConfig}) async {
-    loggerService.d('service connect for channel id: ${channelModel.channelId}');
-
     String computerName = appGlobals.store.state.appConfigState.computerName?.trim() ?? '';
     String compositeChannelName = computerName + '_' + channelModel.name;
+    loggerService.d('service connect for composite channel name: $compositeChannelName');
 
     _client = centrifuge.createClient(channelModel.wsUrl);
     _subscription = _client.getSubscription(compositeChannelName);
 
     // connect sub
-    _connectSub = _client.connectStream.listen((centrifuge.ConnectEvent event) {
+    _connectSub = _client.connectStream.listen((centrifuge.ConnectEvent connectEent) {
       _connected = true;
 
       // channel connect status
@@ -82,7 +81,7 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
     });
 
     // disconnect sub
-    _disconnectSub = _client.disconnectStream.listen((centrifuge.DisconnectEvent event) {
+    _disconnectSub = _client.disconnectStream.listen((centrifuge.DisconnectEvent disconnectEvent) {
       loggerService.d('service disconnect for channel id: ${channelModel.channelId}');
 
       _connected = false;

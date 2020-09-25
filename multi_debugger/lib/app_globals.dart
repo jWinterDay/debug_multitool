@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:built_redux/built_redux.dart';
 import 'package:flutter/foundation.dart';
@@ -24,6 +25,11 @@ class AppGlobals {
   final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
   Store<AppState, AppStateBuilder, AppActions> _store;
   Store<AppState, AppStateBuilder, AppActions> get store => _store;
+
+  bool get platformIsAllowed {
+    // return !kIsWeb && (Platform.isWindows || Platform.isFuchsia || Platform.isLinux || Platform.isMacOS);
+    return kIsWeb || (Platform.isWindows || Platform.isFuchsia || Platform.isLinux || Platform.isMacOS);
+  }
 
   // init globals
   Future<void> init() async {

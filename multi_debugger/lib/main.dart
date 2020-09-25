@@ -11,7 +11,9 @@ Future<void> main() async {
       WidgetsFlutterBinding.ensureInitialized();
 
       await AppDI.init();
-      await di.get<AppGlobals>().init();
+
+      final AppGlobals appGlobals = di.get<AppGlobals>();
+      await appGlobals.init();
 
       di.get<AppGlobals>().store.actions.appConfigActions.fetchComputerName();
       di.get<AppGlobals>().store.actions.appConfigActions.fetchSavedUrls();

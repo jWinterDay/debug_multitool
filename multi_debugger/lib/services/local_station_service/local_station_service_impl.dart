@@ -26,8 +26,13 @@ class LocalStationServiceImpl extends LocalStationService {
 
   @override
   Future<String> fetchComputerName({Duration timeout}) async {
+    // TODO(jWinterDay): remake
     Map<String, dynamic> info;
     String hostName = 'unknown';
+
+    if (kIsWeb) {
+      return 'web_platform';
+    }
 
     try {
       info = await _goFlutterUtils.getInfo();
