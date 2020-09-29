@@ -109,9 +109,9 @@ packages:
   centrifuge:
     dependency: "direct main"
     description:
-      name: centrifuge
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "packages/centrifuge"
+      relative: true
+    source: path
     version: "0.5.1"
   characters:
     dependency: transitive
