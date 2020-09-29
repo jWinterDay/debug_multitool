@@ -28,4 +28,4 @@ example:
 
 Platform | Hover | Web | Linux/MacOs/Windows
 :------------ | :-------------| :-------------| :-------------
-support | :heavy_check_mark: |  :heavy_check_mark: | :white_check_mark:
+support | :heavy_check_mark: |  :heavy_check_mark: | :x:
