@@ -23,3 +23,9 @@ multi_debugger позволяет просматривать логи, отла�
 
 example:
 ![Screenshot](screenshots/Screenshot_1.png)
+
+# Process
+
+Platform | Hover | Web | Linux/MacOs/Windows
+:------------ | :-------------| :-------------| :-------------
+support | :heavy_check_mark: |  :heavy_check_mark: | :white_check_mark:
