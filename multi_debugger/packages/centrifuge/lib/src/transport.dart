@@ -48,7 +48,12 @@ abstract class GeneratedMessageSender {
 }
 
 class Transport implements GeneratedMessageSender {
-  Transport(this._socketBuilder, this._config, this._commandEncoder, this._replyDecoder);
+  Transport(
+    this._socketBuilder,
+    this._config,
+    this._commandEncoder,
+    this._replyDecoder,
+  );
 
   final WebSocketBuilder _socketBuilder;
   WebSocket _socket;

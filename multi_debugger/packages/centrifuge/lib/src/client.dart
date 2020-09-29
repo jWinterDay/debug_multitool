@@ -215,7 +215,9 @@ class ClientImpl implements Client, GeneratedMessageSender {
       _state = _ClientState.connecting;
 
       _transport = _transportBuilder(
-          url: _url, config: TransportConfig(headers: _config.headers, pingInterval: _config.pingInterval));
+        url: _url,
+        config: TransportConfig(headers: _config.headers, pingInterval: _config.pingInterval),
+      );
 
       await _transport.open(
         _onPush,
