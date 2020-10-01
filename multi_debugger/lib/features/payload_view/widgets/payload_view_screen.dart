@@ -134,7 +134,6 @@ class _PayloadViewState extends State<PayloadViewScreen> {
   List<Widget> _diffItems(BeautifulDiffType type, List<BeautifulDiffResult> items) {
     String title = '';
     Color textColor = AppColors.background;
-    TextDecoration textDecoration = TextDecoration.none;
     FontStyle fontStyle = FontStyle.normal;
 
     switch (type) {
@@ -153,7 +152,6 @@ class _PayloadViewState extends State<PayloadViewScreen> {
       case BeautifulDiffType.removed:
         textColor = AppColors.red;
         title = 'Removed';
-        textDecoration = TextDecoration.lineThrough;
         fontStyle = FontStyle.italic;
         break;
 
@@ -165,12 +163,33 @@ class _PayloadViewState extends State<PayloadViewScreen> {
           return item.diffType == type;
         })
         .map((BeautifulDiffResult item) {
-          return Text(
-            item.toStringForWidget(),
-            style: TextStyle(
-              color: textColor,
-              decoration: textDecoration,
-              fontStyle: fontStyle,
+          return RichText(
+            text: TextSpan(
+              text: item.beautyPath.toString(),
+              style: TextStyle(
+                color: textColor,
+                fontWeight: FontWeight.bold,
+                fontStyle: fontStyle,
+              ),
+              children: <TextSpan>[
+                // key
+                TextSpan(
+                  text: item.beautyKey.toString(),
+                  style: const TextStyle(
+                    color: AppColors.bodyText2Color,
+                    fontWeight: FontWeight.normal,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+
+                // value
+                TextSpan(
+                  text: item.beautyValue.toString() + '\n',
+                  style: const TextStyle(
+                    color: AppColors.bodyText2Color,
+                  ),
+                ),
+              ],
             ),
           );
         })

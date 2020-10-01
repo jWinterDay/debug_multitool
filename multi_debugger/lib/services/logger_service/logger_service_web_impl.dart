@@ -19,7 +19,7 @@ class LoggerServiceWebImpl extends LoggerService {
 
   @override
   void d(dynamic message, [dynamic error, StackTrace stackTrace]) {
-    // if (!kDebugMode) return;
+    if (!kDebugMode) return;
 
     // ignore: avoid_print
     print(message);

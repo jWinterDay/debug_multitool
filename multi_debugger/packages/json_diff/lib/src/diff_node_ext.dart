@@ -21,23 +21,29 @@ class BeautifulDiffResult {
   final Object key;
   final List<Object> path;
 
-  String get _path => path.join('->');
+  Object get beautyPath {
+    return '[' + path.join('->') + '] ';
+  }
 
-  Object get _value {
+  Object get beautyKey {
+    return '$key: ';
+  }
+
+  Object get beautyValue {
     if (diffType == BeautifulDiffType.changed) {
-      return (value as List<Object>).join('->');
+      return '\n' + (value as List<Object>).join('->');
     }
 
     return value;
   }
 
   String toStringForWidget() {
-    return '[$_path] "$key": $_value';
+    return '$beautyPath "$key": $beautyValue';
   }
 
   @override
   String toString() {
-    return 'diffType: $diffType, key: $key, path: $_path, value: $_value';
+    return 'diffType: $diffType, key: $key, path: $beautyPath, value: $beautyValue';
   }
 }
 

@@ -65,7 +65,7 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
                         // channel name
                         Container(
                           padding: const EdgeInsets.only(left: 10.0),
-                          child: Text(
+                          child: SelectableText(
                             _bloc.computerName + '_' + currentChannelModel.name,
                             style: const TextStyle(
                               color: AppColors.gray6,

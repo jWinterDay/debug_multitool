@@ -30,6 +30,30 @@ DiffNode getDiff(ServerEvent prevServerEvent, ServerEvent curServerEvent) {
   JsonObject prev = prevServerEvent?.state;
   JsonObject cur = curServerEvent?.state;
 
-  final JsonDiffer differ = JsonDiffer.fromJson((prev?.asMap ?? 'null'), cur.asMap);
+  final JsonDiffer differ = JsonDiffer.fromJson(_castJson(prev), _castJson(cur));
   return differ.diff();
+}
+
+Object _castJson(JsonObject obj) {
+  if (obj == null) {
+    return 'null';
+  }
+
+  if (obj.isBool) {
+    return obj.asBool;
+  }
+
+  if (obj.isList) {
+    return obj.asList;
+  }
+
+  if (obj.isMap) {
+    return obj.asMap;
+  }
+
+  if (obj.isNum) {
+    return obj.asNum;
+  }
+
+  return obj.asString;
 }
