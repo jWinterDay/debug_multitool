@@ -63,7 +63,6 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
         b
           ..action = 'connect'
           // test
-          ..state = JsonObject('kttt')
           // ..state = JsonObject({
           //   'state': {
           //     'userstate': {
@@ -101,19 +100,19 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
         b
           ..action = 'disconnect'
           // test
-          ..state = JsonObject({
-            'state': {
-              'userstate': {
-                'logged': false,
-                'name': 'Vasya',
-                'k': {'kVal': false}
-              },
-              'livestate': {'count': 1, 'video': 5},
-              'linestate': [1, 2, 3]
-            },
-            'sub': true,
-            'else': 'else1'
-          })
+          // ..state = JsonObject({
+          //   'state': {
+          //     'userstate': {
+          //       'logged': false,
+          //       'name': 'Vasya',
+          //       'k': {'kVal': false}
+          //     },
+          //     'livestate': {'count': 1, 'video': 5},
+          //     'linestate': [1, 2, 3]
+          //   },
+          //   'sub': true,
+          //   'else': 'else1'
+          // })
           ..serverEventType = ServerEventType.disconnect;
 
         return b;

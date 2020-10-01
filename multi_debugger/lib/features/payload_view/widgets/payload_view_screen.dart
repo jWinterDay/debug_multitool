@@ -133,7 +133,7 @@ class _PayloadViewState extends State<PayloadViewScreen> {
 
   List<Widget> _diffItems(BeautifulDiffType type, List<BeautifulDiffResult> items) {
     String title = '';
-    Color textColor = AppColors.background;
+    Color textColor = AppColors.bodyText2Color;
     FontStyle fontStyle = FontStyle.normal;
 
     switch (type) {
@@ -170,6 +170,7 @@ class _PayloadViewState extends State<PayloadViewScreen> {
                 color: textColor,
                 fontWeight: FontWeight.bold,
                 fontStyle: fontStyle,
+                fontSize: 15.0,
               ),
               children: <TextSpan>[
                 // key
@@ -178,7 +179,7 @@ class _PayloadViewState extends State<PayloadViewScreen> {
                   style: const TextStyle(
                     color: AppColors.bodyText2Color,
                     fontWeight: FontWeight.normal,
-                    decoration: TextDecoration.underline,
+                    // decoration: TextDecoration.underline,
                   ),
                 ),
 
@@ -214,6 +215,14 @@ class _PayloadViewState extends State<PayloadViewScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            if (beautifulDiff?.isEmpty ?? true)
+              const Text(
+                'No diff',
+                style: TextStyle(
+                  color: AppColors.bodyText2Color,
+                  fontSize: 15.0,
+                ),
+              ),
             ..._diffItems(BeautifulDiffType.added, beautifulDiff),
             ..._diffItems(BeautifulDiffType.changed, beautifulDiff),
             ..._diffItems(BeautifulDiffType.moved, beautifulDiff),
@@ -239,7 +248,10 @@ class _PayloadViewState extends State<PayloadViewScreen> {
       return const SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
-          child: Text('Prev state is null. No diff'),
+          child: Text(
+            'No diff',
+            style: TextStyle(fontSize: 15.0),
+          ),
         ),
       );
     }

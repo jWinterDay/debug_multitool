@@ -103,7 +103,15 @@ class _ChannelScreenState extends State<ChannelScreen> {
                       // actions
                       Expanded(
                         flex: _flex,
-                        child: const ActionsViewScreen(),
+                        child: Container(
+                          decoration: const BoxDecoration(boxShadow: [
+                            BoxShadow(
+                              color: AppColors.gray3,
+                              offset: Offset(1, 0),
+                            )
+                          ], color: AppColors.gray1),
+                          child: const ActionsViewScreen(),
+                        ),
                       ),
 
                       const SizedBox(width: 1.0),

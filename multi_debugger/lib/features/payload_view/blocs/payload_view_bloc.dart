@@ -55,7 +55,7 @@ class PayloadViewBloc extends BaseBloc {
     final ServerEvent cur = _selectedEventSubject.value;
     final ServerEvent prev = channelState.getPrevServerEvent(selectedEvent.index, channelId);
 
-    if (prev == null) {
+    if (prev == null || (cur?.state == null && prev?.state == null)) {
       return null;
     }
 

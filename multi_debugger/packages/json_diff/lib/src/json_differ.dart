@@ -52,6 +52,11 @@ class JsonDiffer {
     } else if (leftJson is List && rightJson is List) {
       return _diffLists(leftJson as List, rightJson as List, null, []);
     }
+
+    if (leftJson == rightJson) {
+      return DiffNode([]);
+    }
+
     return DiffNode([])..changed[''] = [leftJson, rightJson];
   }
 
