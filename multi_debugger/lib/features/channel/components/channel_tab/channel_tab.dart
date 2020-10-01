@@ -108,16 +108,14 @@ class _ChannelTabState extends State<ChannelTab> {
             child: _CurrentWidget(),
           ),
 
-        // channel
+        // short name
         _Button(
           bgColor: bgColor,
-          child: RepaintBoundary(
-            child: Text(
-              channelModel.shortName,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: textColor),
-            ),
+          child: Text(
+            channelModel.shortName,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: textColor),
           ),
           callback: () => _bloc.setCurrent(channelModel),
         ),
@@ -127,7 +125,8 @@ class _ChannelTabState extends State<ChannelTab> {
           left: 70.0 - 5.0,
           top: 70.0,
           child: ConnectStatusWidget(
-            serverConnectStatus: channelModel.serverConnectStatus,
+            channelModel: channelModel,
+            useCounter: true,
           ),
         ),
       ],

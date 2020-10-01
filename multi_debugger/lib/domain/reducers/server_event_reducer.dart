@@ -22,6 +22,8 @@ void _addEvent(ServerEventState state, Action<Pair<String, ServerEvent>> action,
   final String channelId = serverEventPair.first;
   final ServerEvent serverEvent = serverEventPair.second;
 
+  builder.channelIdForLastEvent = channelId;
+
   builder.events.updateValue(
     channelId,
     (BuiltList<ServerEvent> update) {

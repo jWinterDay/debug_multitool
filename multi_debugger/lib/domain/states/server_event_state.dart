@@ -18,6 +18,9 @@ abstract class ServerEventState implements Built<ServerEventState, ServerEventSt
   /// <channel id, server event list>
   BuiltMap<String, BuiltList<ServerEvent>> get events;
 
+  @nullable
+  String get channelIdForLastEvent;
+
   BuiltList<ServerEvent> getEventsForChannel(ChannelModel currentChannel) {
     assert(currentChannel != null);
 

@@ -47,12 +47,12 @@ class ActionsViewBloc extends BaseBloc {
     _serverEventListSubject = BehaviorSubject<Pair<ChannelModel, BuiltList<ServerEvent>>>();
 
     // combine server event stream
-    Stream<ServerEventState> serverEventStateStream = appStateStream.map((AppState appState) {
+    Stream<ServerEventState> serverEventStateStream = appGlobals.store.nextSubstate((AppState appState) {
       return appState.serverEventState;
     });
 
     // combine channel stream
-    Stream<ChannelState> channelStateStream = appStateStream.map((AppState appState) {
+    Stream<ChannelState> channelStateStream = appGlobals.store.nextSubstate((AppState appState) {
       return appState.channelState;
     });
 

@@ -26,7 +26,7 @@ class FilterListBloc extends BaseBloc {
 
     _currentChannelModelSubject = BehaviorSubject<ChannelModel>();
 
-    _channelStateSubscription = appStateStream.map((AppState state) {
+    _channelStateSubscription = appGlobals.store.nextSubstate((AppState state) {
       return state.channelState;
     }).listen((ChannelState state) {
       _currentChannelModelSubject.add(state.currentChannel);

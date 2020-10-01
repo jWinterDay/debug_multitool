@@ -59,7 +59,7 @@ class _ChannelTabBarState extends State<ChannelTabBar> {
                       children: [
                         // status
                         ConnectStatusWidget(
-                          serverConnectStatus: currentChannelModel.serverConnectStatus,
+                          channelModel: currentChannelModel,
                         ),
 
                         // channel name

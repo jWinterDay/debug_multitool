@@ -25,7 +25,11 @@ class _$ServerEventStateSerializer implements StructuredSerializer<ServerEventSt
             const FullType(BuiltList, const [const FullType(ServerEvent)])
           ])),
     ];
-
+    if (object.channelIdForLastEvent != null) {
+      result
+        ..add('channelIdForLastEvent')
+        ..add(serializers.serialize(object.channelIdForLastEvent, specifiedType: const FullType(String)));
+    }
     return result;
   }
 
@@ -47,6 +51,10 @@ class _$ServerEventStateSerializer implements StructuredSerializer<ServerEventSt
                 const FullType(BuiltList, const [const FullType(ServerEvent)])
               ])));
           break;
+        case 'channelIdForLastEvent':
+          result.channelIdForLastEvent =
+              serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          break;
       }
     }
 
@@ -57,11 +65,13 @@ class _$ServerEventStateSerializer implements StructuredSerializer<ServerEventSt
 class _$ServerEventState extends ServerEventState {
   @override
   final BuiltMap<String, BuiltList<ServerEvent>> events;
+  @override
+  final String channelIdForLastEvent;
 
   factory _$ServerEventState([void Function(ServerEventStateBuilder) updates]) =>
       (new ServerEventStateBuilder()..update(updates)).build();
 
-  _$ServerEventState._({this.events}) : super._() {
+  _$ServerEventState._({this.events, this.channelIdForLastEvent}) : super._() {
     if (events == null) {
       throw new BuiltValueNullFieldError('ServerEventState', 'events');
     }
@@ -76,17 +86,20 @@ class _$ServerEventState extends ServerEventState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ServerEventState && events == other.events;
+    return other is ServerEventState && events == other.events && channelIdForLastEvent == other.channelIdForLastEvent;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, events.hashCode));
+    return $jf($jc($jc(0, events.hashCode), channelIdForLastEvent.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('ServerEventState')..add('events', events)).toString();
+    return (newBuiltValueToStringHelper('ServerEventState')
+          ..add('events', events)
+          ..add('channelIdForLastEvent', channelIdForLastEvent))
+        .toString();
   }
 }
 
@@ -98,6 +111,10 @@ class ServerEventStateBuilder implements Builder<ServerEventState, ServerEventSt
       _$this._events ??= new MapBuilder<String, BuiltList<ServerEvent>>();
   set events(MapBuilder<String, BuiltList<ServerEvent>> events) => _$this._events = events;
 
+  String _channelIdForLastEvent;
+  String get channelIdForLastEvent => _$this._channelIdForLastEvent;
+  set channelIdForLastEvent(String channelIdForLastEvent) => _$this._channelIdForLastEvent = channelIdForLastEvent;
+
   ServerEventStateBuilder() {
     ServerEventState._initializeBuilder(this);
   }
@@ -105,6 +122,7 @@ class ServerEventStateBuilder implements Builder<ServerEventState, ServerEventSt
   ServerEventStateBuilder get _$this {
     if (_$v != null) {
       _events = _$v.events?.toBuilder();
+      _channelIdForLastEvent = _$v.channelIdForLastEvent;
       _$v = null;
     }
     return this;
@@ -127,7 +145,7 @@ class ServerEventStateBuilder implements Builder<ServerEventState, ServerEventSt
   _$ServerEventState build() {
     _$ServerEventState _$result;
     try {
-      _$result = _$v ?? new _$ServerEventState._(events: events.build());
+      _$result = _$v ?? new _$ServerEventState._(events: events.build(), channelIdForLastEvent: channelIdForLastEvent);
     } catch (_) {
       String _$failedField;
       try {

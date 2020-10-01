@@ -30,7 +30,7 @@ class ChannelActionsBloc extends BaseBloc {
 
     _currentChannelModelSubject = BehaviorSubject<ChannelModel>();
 
-    _channelSubscription = appStateStream.map((AppState state) {
+    _channelSubscription = appGlobals.store.nextSubstate((AppState state) {
       return state.channelState;
     }).listen((ChannelState state) {
       final ChannelModel currentChannelModel = state.currentChannel;

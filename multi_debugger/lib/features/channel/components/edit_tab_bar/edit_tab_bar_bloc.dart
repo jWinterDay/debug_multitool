@@ -65,7 +65,7 @@ class EditTabBarBloc extends BaseBloc {
 
     _computerNameSubject = BehaviorSubject<String>();
 
-    _computerNameSubscription = appStateStream.map((AppState state) {
+    _computerNameSubscription = appGlobals.store.nextSubstate((AppState state) {
       return state.appConfigState;
     }).listen((AppConfigState state) {
       _computerNameSubject.add(state.computerName);

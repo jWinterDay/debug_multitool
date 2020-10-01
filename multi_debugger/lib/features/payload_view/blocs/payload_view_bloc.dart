@@ -35,7 +35,7 @@ class PayloadViewBloc extends BaseBloc {
     _payloadViewTypeSubject = BehaviorSubject<PayloadViewType>();
     _selectedEventSubject = BehaviorSubject<ServerEvent>();
 
-    _channelStateSubscription = appStateStream.map((AppState state) {
+    _channelStateSubscription = appGlobals.store.nextSubstate((AppState state) {
       return state.channelState;
     }).listen((ChannelState state) {
       final ServerEvent selectedEvent = state.currentChannel?.selectedEvent;

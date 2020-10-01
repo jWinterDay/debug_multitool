@@ -63,7 +63,7 @@ class TabBarBloc extends BaseBloc {
     _enabledConnectBtnSubject = BehaviorSubject<bool>.seeded(false);
 
     // state
-    _currentChannelModelSubscription = appStateStream.map((state) {
+    _currentChannelModelSubscription = appGlobals.store.nextSubstate((state) {
       return state.channelState.currentChannel;
     }).listen((ChannelModel channelModel) {
       if (channelModel?.wsUrl != urlTextController.text) {

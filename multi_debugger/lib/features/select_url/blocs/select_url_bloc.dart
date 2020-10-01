@@ -29,7 +29,7 @@ class SelectUrlBloc extends BaseBloc {
 
     _savedUrlStateSubject = BehaviorSubject<SavedUrlState>();
 
-    _savedUrlStateSubscription = appStateStream.map((AppState state) {
+    _savedUrlStateSubscription = appGlobals.store.nextSubstate((AppState state) {
       return state.savedUrlState;
     }).listen((SavedUrlState state) {
       _savedUrlStateSubject.add(state);
