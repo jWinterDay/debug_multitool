@@ -9,6 +9,8 @@ import 'package:multi_debugger/domain/states/server_event_state.dart';
 import 'package:multi_debugger/domain/states/states.dart';
 import 'package:rxdart/rxdart.dart';
 
+const double kActionsItemExtent = 42.0;
+
 class ActionsViewBloc extends BaseBloc {
   final ScrollController scrollController = ScrollController();
 
@@ -16,7 +18,8 @@ class ActionsViewBloc extends BaseBloc {
   Stream<Pair<ChannelModel, BuiltList<ServerEvent>>> get serverEventStateStream => _serverEventListSubject.stream;
 
   // event list stream
-  StreamSubscription<Pair<ChannelModel, BuiltList<ServerEvent>>> _serverEventListSubscription;
+  StreamSubscription<Pair<ChannelModel, BuiltList<ServerEvent>>> _eventPairSubscription;
+  StreamSubscription<BuiltList<ServerEvent>> _serverEventListSubscription;
 
   // title visible stream
   Stream<bool> get titleVisibleStream {
@@ -32,6 +35,7 @@ class ActionsViewBloc extends BaseBloc {
 
   @override
   void dispose() {
+    _eventPairSubscription?.cancel();
     _serverEventListSubscription?.cancel();
     _serverEventListSubject.close();
 
@@ -56,7 +60,40 @@ class ActionsViewBloc extends BaseBloc {
       return appState.channelState;
     });
 
-    _serverEventListSubscription = Rx.combineLatest2(serverEventStateStream, channelStateStream, (
+    // stream mappers. scroll to end
+    _serverEventListSubscription = serverEventStateStream.distinct((prevState, nextState) {
+      final prevList = prevState.events[currentChannelModel.channelId];
+      final nextList = nextState.events[currentChannelModel.channelId];
+
+      return prevList?.length == nextList?.length;
+    }).map((ServerEventState serverEventState) {
+      return serverEventState.getEventsForChannel(currentChannelModel);
+    }).listen((BuiltList<ServerEvent> list) {
+      if (currentChannelModel == null) {
+        return;
+      }
+
+      if (scrollController.hasClients && currentChannelModel.useAutoScroll) {
+        if (scrollController == null || !scrollController.hasClients) {
+          return;
+        }
+
+        Timer(const Duration(milliseconds: 100), () {
+          if (scrollController == null || !scrollController.hasClients) {
+            return;
+          }
+
+          scrollController?.animateTo(
+            kActionsItemExtent * list.length,
+            curve: Curves.easeOut,
+            duration: const Duration(milliseconds: 150),
+          );
+        });
+      }
+    });
+
+    // stream mappers. actions state
+    _eventPairSubscription = Rx.combineLatest2(serverEventStateStream, channelStateStream, (
       ServerEventState serverEventState,
       ChannelState channelState,
     ) {
@@ -64,34 +101,11 @@ class ActionsViewBloc extends BaseBloc {
         return null;
       }
 
-      BuiltList<ServerEvent> eventList = serverEventState.getEventsForChannel(currentChannelModel);
+      final BuiltList<ServerEvent> serverEventList = serverEventState.getEventsForChannel(currentChannelModel);
 
-      return Pair(currentChannelModel, eventList);
-    }).distinct((prev, next) {
-      // print('prev = ${prev.hashCode}, next = ${next.hashCode} eq = ${prev == next}');
-
-      return prev == next;
+      return Pair(currentChannelModel, serverEventList);
     }).listen((Pair<ChannelModel, BuiltList<ServerEvent>> pair) {
       _serverEventListSubject.add(pair);
-
-      // scroll to end
-      if (currentChannelModel == null) {
-        return;
-      }
-
-      if (scrollController.hasClients && currentChannelModel.useAutoScroll) {
-        Future.delayed(const Duration(milliseconds: 100), () {
-          if (scrollController == null || !scrollController.hasClients) {
-            return;
-          }
-
-          scrollController.animateTo(
-            scrollController.position.maxScrollExtent,
-            curve: Curves.easeOut,
-            duration: const Duration(milliseconds: 200),
-          );
-        });
-      }
     });
   }
 

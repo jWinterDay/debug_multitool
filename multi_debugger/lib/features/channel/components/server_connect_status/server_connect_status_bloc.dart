@@ -43,7 +43,7 @@ class ConnectStatusBloc extends BaseBloc {
       return state.serverEventState;
     }).listen((ServerEventState state) {
       final bool eventInCurrentChannel = state.channelIdForLastEvent == widgetChannelModel.channelId;
-      final bool currentChannelIsTheSame = currentChannelModel.channelId == widgetChannelModel.channelId;
+      final bool currentChannelIsTheSame = currentChannelModel?.channelId == widgetChannelModel.channelId;
 
       if (eventInCurrentChannel && !currentChannelIsTheSame) {
         _unreadEventsCount++;
@@ -55,7 +55,7 @@ class ConnectStatusBloc extends BaseBloc {
     _channelSubscription = appGlobals.store.nextSubstate((AppState state) {
       return state.channelState;
     }).listen((ChannelState state) {
-      if (widgetChannelModel.channelId == currentChannelModel.channelId) {
+      if (widgetChannelModel.channelId == currentChannelModel?.channelId) {
         _unreadEventsCount = 0;
         _unreadEventCountSubject.add(_unreadEventsCount);
       }

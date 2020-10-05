@@ -171,9 +171,10 @@ class _ActionsViewState extends State<ActionsViewScreen> {
                       ),
                     )
                   else
-                    SliverList(
+                    SliverFixedExtentList(
+                      itemExtent: kActionsItemExtent,
                       delegate: SliverChildBuilderDelegate(
-                        (context, index) {
+                        (_, int index) {
                           return _item(
                             currentChannelModel,
                             serverEventList[index],
@@ -181,6 +182,7 @@ class _ActionsViewState extends State<ActionsViewScreen> {
                           );
                         },
                         childCount: serverEventList.length,
+                        addAutomaticKeepAlives: false,
                       ),
                     ),
                 ],
