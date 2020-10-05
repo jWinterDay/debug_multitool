@@ -65,7 +65,6 @@ class _ActionsViewState extends State<ActionsViewScreen> {
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.only(top: 12.0, bottom: 10.0, left: 15.0),
-
                       child: const Text(
                         'Actions',
                         style: const TextStyle(

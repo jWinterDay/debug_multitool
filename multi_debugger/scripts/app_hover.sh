@@ -3,7 +3,6 @@
 
 ROOT=$PWD
 APP_TYPE=$1
-HOVER_PORT=50300
 
 # app.sh
 bash scripts/app.sh

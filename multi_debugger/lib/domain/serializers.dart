@@ -20,6 +20,7 @@ part 'serializers.g.dart';
   SavedUrlState,
   SavedUrl,
   PlatformEventState,
+  UserProfileState,
 
   // models
   ChannelModel,

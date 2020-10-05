@@ -1,12 +1,8 @@
 #!/bin/bash
 
+source scripts/constants.sh
+
 ROOT=$PWD
-FLUTTER_VERSION="1.21.0-7.0.pre"
-RED_COLOR='\033[0;31m'
-GREEN_COLOR='\033[0;32m'
-YELLOW_COLOR='\033[1;33m'
-ORANGE_COLOR='\033[0;33m'
-NO_COLOR='\033[0m'
 
 function checking_flutter_version {
   cd $(dirname $(which flutter)) && cd ..

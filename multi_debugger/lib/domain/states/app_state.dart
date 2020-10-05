@@ -1,10 +1,5 @@
 import 'package:built_value/built_value.dart';
-import 'package:multi_debugger/domain/states/app_config_state.dart';
-import 'package:multi_debugger/domain/states/channel_state.dart';
-import 'package:multi_debugger/domain/states/platform_event_state.dart';
-import 'package:multi_debugger/domain/states/saved_url_state.dart';
-import 'package:multi_debugger/domain/states/server_communicate_services_state.dart';
-import 'package:multi_debugger/domain/states/server_event_state.dart';
+import 'package:multi_debugger/domain/states/states.dart';
 
 part 'app_state.g.dart';
 
@@ -19,6 +14,7 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
         ..serverCommunicateServicesState = ServerCommunicateServicesState()
         ..serverEventState = ServerEventState().toBuilder()
         ..platformEventState = PlatformEventState().toBuilder()
+        ..userProfileState = UserProfileState().toBuilder()
         ..update(updates),
     );
   }
@@ -32,6 +28,8 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
   ServerEventState get serverEventState;
 
   PlatformEventState get platformEventState;
+
+  UserProfileState get userProfileState;
 
   ServerCommunicateServicesState get serverCommunicateServicesState;
 }

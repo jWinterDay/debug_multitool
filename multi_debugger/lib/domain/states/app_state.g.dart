@@ -18,6 +18,8 @@ class _$AppState extends AppState {
   @override
   final PlatformEventState platformEventState;
   @override
+  final UserProfileState userProfileState;
+  @override
   final ServerCommunicateServicesState serverCommunicateServicesState;
 
   factory _$AppState([void Function(AppStateBuilder) updates]) => (new AppStateBuilder()..update(updates)).build();
@@ -28,6 +30,7 @@ class _$AppState extends AppState {
       this.savedUrlState,
       this.serverEventState,
       this.platformEventState,
+      this.userProfileState,
       this.serverCommunicateServicesState})
       : super._() {
     if (appConfigState == null) {
@@ -44,6 +47,9 @@ class _$AppState extends AppState {
     }
     if (platformEventState == null) {
       throw new BuiltValueNullFieldError('AppState', 'platformEventState');
+    }
+    if (userProfileState == null) {
+      throw new BuiltValueNullFieldError('AppState', 'userProfileState');
     }
     if (serverCommunicateServicesState == null) {
       throw new BuiltValueNullFieldError('AppState', 'serverCommunicateServicesState');
@@ -65,6 +71,7 @@ class _$AppState extends AppState {
         savedUrlState == other.savedUrlState &&
         serverEventState == other.serverEventState &&
         platformEventState == other.platformEventState &&
+        userProfileState == other.userProfileState &&
         serverCommunicateServicesState == other.serverCommunicateServicesState;
   }
 
@@ -72,9 +79,11 @@ class _$AppState extends AppState {
   int get hashCode {
     return $jf($jc(
         $jc(
-            $jc($jc($jc($jc(0, appConfigState.hashCode), channelState.hashCode), savedUrlState.hashCode),
-                serverEventState.hashCode),
-            platformEventState.hashCode),
+            $jc(
+                $jc($jc($jc($jc(0, appConfigState.hashCode), channelState.hashCode), savedUrlState.hashCode),
+                    serverEventState.hashCode),
+                platformEventState.hashCode),
+            userProfileState.hashCode),
         serverCommunicateServicesState.hashCode));
   }
 
@@ -86,6 +95,7 @@ class _$AppState extends AppState {
           ..add('savedUrlState', savedUrlState)
           ..add('serverEventState', serverEventState)
           ..add('platformEventState', platformEventState)
+          ..add('userProfileState', userProfileState)
           ..add('serverCommunicateServicesState', serverCommunicateServicesState))
         .toString();
   }
@@ -115,6 +125,10 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   set platformEventState(PlatformEventStateBuilder platformEventState) =>
       _$this._platformEventState = platformEventState;
 
+  UserProfileStateBuilder _userProfileState;
+  UserProfileStateBuilder get userProfileState => _$this._userProfileState ??= new UserProfileStateBuilder();
+  set userProfileState(UserProfileStateBuilder userProfileState) => _$this._userProfileState = userProfileState;
+
   ServerCommunicateServicesState _serverCommunicateServicesState;
   ServerCommunicateServicesState get serverCommunicateServicesState => _$this._serverCommunicateServicesState;
   set serverCommunicateServicesState(ServerCommunicateServicesState serverCommunicateServicesState) =>
@@ -129,6 +143,7 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
       _savedUrlState = _$v.savedUrlState?.toBuilder();
       _serverEventState = _$v.serverEventState?.toBuilder();
       _platformEventState = _$v.platformEventState?.toBuilder();
+      _userProfileState = _$v.userProfileState?.toBuilder();
       _serverCommunicateServicesState = _$v.serverCommunicateServicesState;
       _$v = null;
     }
@@ -159,6 +174,7 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
               savedUrlState: savedUrlState.build(),
               serverEventState: serverEventState.build(),
               platformEventState: platformEventState.build(),
+              userProfileState: userProfileState.build(),
               serverCommunicateServicesState: serverCommunicateServicesState);
     } catch (_) {
       String _$failedField;
@@ -173,6 +189,8 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
         serverEventState.build();
         _$failedField = 'platformEventState';
         platformEventState.build();
+        _$failedField = 'userProfileState';
+        userProfileState.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError('AppState', _$failedField, e.toString());
       }

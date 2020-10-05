@@ -2,4 +2,8 @@ export 'app_config_state.dart';
 export 'app_state.dart';
 export 'channel_state.dart';
 export 'local_settings_state.dart';
+export 'platform_event_state.dart';
 export 'saved_url_state.dart';
+export 'server_communicate_services_state.dart';
+export 'server_event_state.dart';
+export 'user_profile_state.dart';
