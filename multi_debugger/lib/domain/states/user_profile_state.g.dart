@@ -21,11 +21,6 @@ class _$UserProfileStateSerializer implements StructuredSerializer<UserProfileSt
       'logged',
       serializers.serialize(object.logged, specifiedType: const FullType(bool)),
     ];
-    if (object.localSettings != null) {
-      result
-        ..add('localSettings')
-        ..add(serializers.serialize(object.localSettings, specifiedType: const FullType(LocalSettingsState)));
-    }
     if (object.email != null) {
       result..add('email')..add(serializers.serialize(object.email, specifiedType: const FullType(String)));
     }
@@ -43,10 +38,6 @@ class _$UserProfileStateSerializer implements StructuredSerializer<UserProfileSt
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
-        case 'localSettings':
-          result.localSettings.replace(
-              serializers.deserialize(value, specifiedType: const FullType(LocalSettingsState)) as LocalSettingsState);
-          break;
         case 'email':
           result.email = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
           break;
@@ -62,8 +53,6 @@ class _$UserProfileStateSerializer implements StructuredSerializer<UserProfileSt
 
 class _$UserProfileState extends UserProfileState {
   @override
-  final LocalSettingsState localSettings;
-  @override
   final String email;
   @override
   final bool logged;
@@ -71,7 +60,7 @@ class _$UserProfileState extends UserProfileState {
   factory _$UserProfileState([void Function(UserProfileStateBuilder) updates]) =>
       (new UserProfileStateBuilder()..update(updates)).build();
 
-  _$UserProfileState._({this.localSettings, this.email, this.logged}) : super._() {
+  _$UserProfileState._({this.email, this.logged}) : super._() {
     if (logged == null) {
       throw new BuiltValueNullFieldError('UserProfileState', 'logged');
     }
@@ -86,33 +75,22 @@ class _$UserProfileState extends UserProfileState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is UserProfileState &&
-        localSettings == other.localSettings &&
-        email == other.email &&
-        logged == other.logged;
+    return other is UserProfileState && email == other.email && logged == other.logged;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, localSettings.hashCode), email.hashCode), logged.hashCode));
+    return $jf($jc($jc(0, email.hashCode), logged.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('UserProfileState')
-          ..add('localSettings', localSettings)
-          ..add('email', email)
-          ..add('logged', logged))
-        .toString();
+    return (newBuiltValueToStringHelper('UserProfileState')..add('email', email)..add('logged', logged)).toString();
   }
 }
 
 class UserProfileStateBuilder implements Builder<UserProfileState, UserProfileStateBuilder> {
   _$UserProfileState _$v;
-
-  LocalSettingsStateBuilder _localSettings;
-  LocalSettingsStateBuilder get localSettings => _$this._localSettings ??= new LocalSettingsStateBuilder();
-  set localSettings(LocalSettingsStateBuilder localSettings) => _$this._localSettings = localSettings;
 
   String _email;
   String get email => _$this._email;
@@ -128,7 +106,6 @@ class UserProfileStateBuilder implements Builder<UserProfileState, UserProfileSt
 
   UserProfileStateBuilder get _$this {
     if (_$v != null) {
-      _localSettings = _$v.localSettings?.toBuilder();
       _email = _$v.email;
       _logged = _$v.logged;
       _$v = null;
@@ -151,19 +128,7 @@ class UserProfileStateBuilder implements Builder<UserProfileState, UserProfileSt
 
   @override
   _$UserProfileState build() {
-    _$UserProfileState _$result;
-    try {
-      _$result = _$v ?? new _$UserProfileState._(localSettings: _localSettings?.build(), email: email, logged: logged);
-    } catch (_) {
-      String _$failedField;
-      try {
-        _$failedField = 'localSettings';
-        _localSettings?.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError('UserProfileState', _$failedField, e.toString());
-      }
-      rethrow;
-    }
+    final _$result = _$v ?? new _$UserProfileState._(email: email, logged: logged);
     replace(_$result);
     return _$result;
   }

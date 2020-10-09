@@ -1,6 +1,5 @@
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
-import 'package:multi_debugger/domain/states/states.dart';
 
 part 'user_profile_state.g.dart';
 
@@ -15,10 +14,9 @@ abstract class UserProfileState implements Built<UserProfileState, UserProfileSt
     );
   }
 
-  static void _initializeBuilder(UserProfileStateBuilder b) => b..logged = false;
-
-  @nullable
-  LocalSettingsState get localSettings;
+  static void _initializeBuilder(UserProfileStateBuilder b) {
+    b.logged = false;
+  }
 
   @nullable
   String get email;
