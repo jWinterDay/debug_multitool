@@ -242,13 +242,14 @@ class _ActionsViewState extends State<ActionsViewScreen> {
               onTap: canSelect ? () => _bloc.toggleSelectServerEvent(serverEvent) : null,
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 12.0).copyWith(left: 15.0),
-                child: Text(
+                child: SelectableText(
                   '${serverEvent.index}) ${serverEvent.action}',
                   style: TextStyle(
                     color: textColor,
                     fontSize: 15.0,
                   ),
-                  overflow: TextOverflow.ellipsis,
+                  onTap: canSelect ? () => _bloc.toggleSelectServerEvent(serverEvent) : null,
+                  // overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
