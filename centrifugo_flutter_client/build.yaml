@@ -1,7 +1,0 @@
-targets:
-    $default:
-        sources:
-            - lib/src/models/**
-            - pubspec.*
-            - $package$
-            - lib/$lib$
