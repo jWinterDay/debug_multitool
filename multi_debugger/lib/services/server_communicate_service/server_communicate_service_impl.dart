@@ -9,6 +9,8 @@ import 'package:multi_debugger/domain/base/pair.dart';
 import 'package:multi_debugger/domain/enums/server_event_type.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/services/logger_service/logger_service.dart';
+import 'package:multi_debugger/services/server_communicate_service/system_service_action.dart';
+import 'package:multi_debugger/tools/common_tools.dart';
 
 import 'server_communicate_service.dart';
 
@@ -92,8 +94,15 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
       _connected = false;
 
       // channel connect status
-      Pair<ChannelModel, ServerConnectStatus> channelPair = Pair(channelModel, ServerConnectStatus.disconnected);
-      appGlobals.store.actions.channelActions.changeConnectStatus(channelPair);
+      // ChannelModel nextChannelModel = ChannelModel((b) {
+      //   b
+      //     ..replace(channelModel)
+      //     ..isCurrent = true;
+
+      //   return b;
+      // });
+      // Pair<ChannelModel, ServerConnectStatus> channelPair = Pair(channelModel, ServerConnectStatus.disconnected);
+      // appGlobals.store.actions.channelActions.changeConnectStatus(channelPair);
 
       // server event -> disconnect
       ServerEvent serverEvent = ServerEvent((b) {
@@ -165,13 +174,174 @@ class ServerCommunicateServiceImpl extends ServerCommunicateService {
         return b;
       });
 
-      Pair<String, ServerEvent> event = Pair(channelModel.channelId, serverEvent);
-      appGlobals.store.actions.serverEventActions.addEvent(event);
+      Pair<String, ServerEvent> pair = Pair(channelModel.channelId, serverEvent);
+
+      _eventPairHandler(pair);
     });
 
     // connect
     _subscription.subscribe();
     _client.connect();
+  }
+
+  /// event handler
+  /// format input data for adding new channel
+  /// {
+  ///   "action": "createNewChannel",
+  ///   "payload": {
+  ///     "name": "test_1",
+  ///     "autoConnect": true,
+  ///     "wsUrl": "ws://172.16.55.141:8001/connection/websocket?format=protobuf"
+  ///   }
+  /// }
+  ///
+  /// format input data for deleting channel
+  /// {
+  ///   "action": "deleteChannel",
+  ///   "payload": {
+  ///     "name": "test_1"
+  ///   }
+  /// }
+  ///
+  ///
+  /// {"action": "deleteChannel", "payload": {"name": "test_1"}}
+  /// {"action": "createNewChannel", "payload": {"name": "test_1", "autoConnect": true,"wsUrl": "ws://172.16.55.141:8001/connection/websocket?format=protobuf"}}
+  void _eventPairHandler(Pair<String, ServerEvent> pair) {
+    String channelId = pair.first;
+    ServerEvent serverEvent = pair.second;
+    JsonObject payload = serverEvent.payload;
+
+    if (!payload.isMap) {
+      ServerEvent errorServerEvent = ServerEvent((b) {
+        b
+          ..action = 'Format error. Payload type is not Map'
+          ..serverEventType = ServerEventType.formatError;
+
+        return b;
+      });
+
+      appGlobals.store.actions.serverEventActions.addEvent(Pair(channelId, errorServerEvent));
+      return;
+    }
+
+    switch (serverEvent.action) {
+      // add
+      case SystemServiceAction.createNewChannel:
+        Map<dynamic, dynamic> payloadMap = payload.asMap;
+
+        String channelName = payloadMap['name']?.toString();
+        String channelShortName = payloadMap['shortName'] == null ? channelName : payloadMap['shortName'].toString();
+        bool autoConnect = payloadMap['autoConnect'] is bool ? (payloadMap['autoConnect'] as bool) : false;
+        String wsUrl = payloadMap['wsUrl']?.toString();
+
+        // validate
+        final String validateNameMess = checkChannelName(channelName);
+        final String validateShortNameMess = checkChannelShortName(channelShortName);
+        final String validateWsUrl = checkWsUrl(wsUrl);
+
+        final bool correctName = validateNameMess == null;
+        final bool correctShortName = validateShortNameMess == null;
+        final bool correctWsUrl = validateWsUrl == null;
+
+        if (!correctName || !correctShortName || !correctWsUrl) {
+          ServerEvent errorServerEvent = ServerEvent((b) {
+            b
+              ..action = (validateNameMess ?? validateShortNameMess ?? validateWsUrl)
+              ..serverEventType = ServerEventType.formatError;
+
+            return b;
+          });
+
+          appGlobals.store.actions.serverEventActions.addEvent(Pair(channelId, errorServerEvent));
+          break;
+        }
+
+        Iterable<String> channelNames = appGlobals.store.state.channelState.channels.values.map((ChannelModel cm) {
+          return cm.name;
+        });
+
+        final bool nameContains = channelNames.contains(channelName);
+        if (nameContains) {
+          ServerEvent errorServerEvent = ServerEvent((b) {
+            b
+              ..action = 'you have already this channel name'
+              ..payload = JsonObject('channel $channelName has already added to channel list')
+              ..serverEventType = ServerEventType.formatError;
+
+            return b;
+          });
+
+          appGlobals.store.actions.serverEventActions.addEvent(Pair(channelId, errorServerEvent));
+          break;
+        }
+
+        // add channel
+        ChannelModel channelModel = ChannelModel((b) {
+          return b
+            ..name = channelName
+            ..shortName = channelShortName
+            ..serverConnectStatus = ServerConnectStatus.disconnected
+            ..isCurrent = false
+            ..wsUrl = wsUrl
+            ..autoConnect = autoConnect;
+        });
+        appGlobals.store.actions.channelActions.addChannel(channelModel);
+
+        // info to current channel
+        ServerEvent errorServerEvent = ServerEvent((b) {
+          b
+            ..action = 'added new channel'
+            ..payload = JsonObject({
+              'name': channelName,
+              'short name': channelShortName,
+              'ws url': wsUrl,
+              'autoconnect': autoConnect,
+            })
+            ..serverEventType = ServerEventType.formatError;
+
+          return b;
+        });
+
+        appGlobals.store.actions.serverEventActions.addEvent(Pair(channelId, errorServerEvent));
+
+        break;
+
+      // delete
+      case SystemServiceAction.deleteChannel:
+        Map<dynamic, dynamic> payloadMap = payload.asMap;
+        String channelName = payloadMap['name']?.toString() ?? '';
+        String channelId = payloadMap['channelId']?.toString() ?? '';
+
+        // validate
+        if (channelId == null && channelName == null) {
+          ServerEvent errorServerEvent = ServerEvent((b) {
+            b
+              ..action = 'Remote deleting. Unknown channel ID and Name'
+              ..serverEventType = ServerEventType.formatError;
+
+            return b;
+          });
+
+          appGlobals.store.actions.serverEventActions.addEvent(Pair(channelId, errorServerEvent));
+          break;
+        }
+
+        // try to delete channel by id
+        if (channelId != '') {
+          appGlobals.store.actions.channelActions.removeChannelById(channelId);
+          break;
+        }
+
+        // try to delete channel by name
+        if (channelName != '') {
+          appGlobals.store.actions.channelActions.removeChannelByName(channelName);
+          break;
+        }
+
+        break;
+      default:
+        appGlobals.store.actions.serverEventActions.addEvent(pair);
+    }
   }
 
   @override

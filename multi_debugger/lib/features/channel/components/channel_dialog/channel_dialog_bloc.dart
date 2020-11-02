@@ -15,7 +15,7 @@ class ChannelDialogBloc extends BaseBloc {
   }
 
   void removeChannel(ChannelModel channelModel) {
-    appGlobals.store.actions.channelActions.removeChannel(channelModel);
+    appGlobals.store.actions.channelActions.removeChannelById(channelModel.channelId);
   }
 
   void showChannelEditor(BuildContext context, ChannelModel channelModel) {

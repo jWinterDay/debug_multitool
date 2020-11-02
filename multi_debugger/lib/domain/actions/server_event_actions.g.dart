@@ -16,19 +16,22 @@ class _$ServerEventActions extends ServerEventActions {
   _$ServerEventActions._() : super._();
 
   final addEvent = ActionDispatcher<Pair<String, ServerEvent>>('ServerEventActions-addEvent');
-  final clearEvents = ActionDispatcher<ChannelModel>('ServerEventActions-clearEvents');
+  final clearEventsByChannelId = ActionDispatcher<String>('ServerEventActions-clearEventsByChannelId');
+  final clearEventsByChannelName = ActionDispatcher<String>('ServerEventActions-clearEventsByChannelName');
   final toggleFavorite = ActionDispatcher<Pair<String, ServerEvent>>('ServerEventActions-toggleFavorite');
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
     addEvent.setDispatcher(dispatcher);
-    clearEvents.setDispatcher(dispatcher);
+    clearEventsByChannelId.setDispatcher(dispatcher);
+    clearEventsByChannelName.setDispatcher(dispatcher);
     toggleFavorite.setDispatcher(dispatcher);
   }
 }
 
 class ServerEventActionsNames {
   static final addEvent = ActionName<Pair<String, ServerEvent>>('ServerEventActions-addEvent');
-  static final clearEvents = ActionName<ChannelModel>('ServerEventActions-clearEvents');
+  static final clearEventsByChannelId = ActionName<String>('ServerEventActions-clearEventsByChannelId');
+  static final clearEventsByChannelName = ActionName<String>('ServerEventActions-clearEventsByChannelName');
   static final toggleFavorite = ActionName<Pair<String, ServerEvent>>('ServerEventActions-toggleFavorite');
 }

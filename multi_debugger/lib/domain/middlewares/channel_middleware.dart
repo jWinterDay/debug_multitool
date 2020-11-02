@@ -13,7 +13,8 @@ MiddlewareBuilder<AppState, AppStateBuilder, AppActions> createChannelMiddleware
   return MiddlewareBuilder<AppState, AppStateBuilder, AppActions>()
     ..add<ChannelModel>(ChannelActionsNames.addChannel, _addChannel)
     ..add<Iterable<ChannelModel>>(ChannelActionsNames.addAllChannel, _addAllChannel)
-    ..add<ChannelModel>(ChannelActionsNames.removeChannel, _removeChannel)
+    ..add<String>(ChannelActionsNames.removeChannelById, _removeChannelById)
+    ..add<String>(ChannelActionsNames.removeChannelByName, _removeChannelByName)
     ..add<ChannelModel>(ChannelActionsNames.updateChannel, _updateChannel)
     ..add<ChannelModel>(ChannelActionsNames.setCurrentChannel, _setCurrentChannel)
     ..add<Pair<ChannelModel, ServerConnectStatus>>(ChannelActionsNames.changeConnectStatus, _changeConnectStatus);
@@ -34,6 +35,12 @@ void _addChannel(
   api.state.serverCommunicateServicesState.services.putIfAbsent(channelModel.channelId, () {
     return service;
   });
+
+  if (channelModel.autoConnect) {
+    Pair<ChannelModel, ServerConnectStatus> pair = Pair(channelModel, ServerConnectStatus.connecting);
+
+    api.actions.channelActions.changeConnectStatus(pair);
+  }
 }
 
 void _addAllChannel(
@@ -52,21 +59,64 @@ void _addAllChannel(
   api.state.serverCommunicateServicesState.services.addAll(channelModelListAsMap);
 }
 
-void _removeChannel(
+void _removeChannelById(
   MiddlewareApi<AppState, AppStateBuilder, AppActions> api,
   ActionHandler next,
-  Action<ChannelModel> action,
+  Action<String> action,
 ) {
-  final ChannelModel channelModel = action.payload;
+  final String channelId = action.payload;
 
   // close and remove communicate service
-  api.state.serverCommunicateServicesState.services[channelModel.channelId]
-    ..disconnect()
-    ..dispose();
-  api.state.serverCommunicateServicesState.services.remove(channelModel.channelId);
+  ServerCommunicateService service = api.state.serverCommunicateServicesState.services[channelId];
+
+  if (service != null) {
+    service
+      ..disconnect()
+      ..dispose();
+
+    api.state.serverCommunicateServicesState.services.remove(channelId);
+  }
 
   // clear logs
-  api.actions.serverEventActions.clearEvents(channelModel);
+  api.actions.serverEventActions.clearEventsByChannelId(channelId);
+
+  next(action);
+}
+
+void _removeChannelByName(
+  MiddlewareApi<AppState, AppStateBuilder, AppActions> api,
+  ActionHandler next,
+  Action<String> action,
+) {
+  final String channelName = action.payload;
+
+  // find channel
+  ChannelModel channelModel = api.state.channelState.channels.values.firstWhere(
+    (ChannelModel cm) {
+      return cm.name == channelName;
+    },
+    orElse: () => null,
+  );
+
+  if (channelModel == null) {
+    return;
+  }
+
+  final String channelId = channelModel.channelId;
+
+  // close and remove communicate service
+  ServerCommunicateService service = api.state.serverCommunicateServicesState.services[channelId];
+
+  if (service != null) {
+    service
+      ..disconnect()
+      ..dispose();
+
+    api.state.serverCommunicateServicesState.services.remove(channelId);
+  }
+
+  // clear logs
+  api.actions.serverEventActions.clearEventsByChannelName(channelName);
 
   next(action);
 }
@@ -101,9 +151,11 @@ void _changeConnectStatus(
 
   // add url to list
   if (status == ServerConnectStatus.connecting) {
-    final SavedUrl savedUrl = SavedUrl((b) => b
-      ..url = channelModel.wsUrl
-      ..custom = true);
+    final SavedUrl savedUrl = SavedUrl(
+      (b) => b
+        ..url = channelModel.wsUrl
+        ..custom = true,
+    );
 
     api.actions.savedUrlActions.addUrl(savedUrl);
   }

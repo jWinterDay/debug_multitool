@@ -10,7 +10,6 @@ import 'package:rxdart/rxdart.dart';
 
 class SelectUrlBloc extends BaseBloc {
   StreamSubscription<SavedUrlState> _savedUrlStateSubscription;
-
   BehaviorSubject<SavedUrlState> _savedUrlStateSubject;
   SavedUrlState get initSavedUrlState => appGlobals.store.state.savedUrlState;
   Stream<SavedUrlState> get savedUrlStateStream => _savedUrlStateSubject.stream;

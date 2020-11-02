@@ -47,7 +47,11 @@ class ConnectStatusBloc extends BaseBloc {
 
       if (eventInCurrentChannel && !currentChannelIsTheSame) {
         _unreadEventsCount++;
-        _unreadEventCountSubject.add(_unreadEventsCount);
+
+        final bool closed = _unreadEventCountSubject?.isClosed ?? true;
+        if (!closed) {
+          _unreadEventCountSubject.add(_unreadEventsCount);
+        }
       }
     });
 

@@ -128,6 +128,6 @@ class ChannelActionsBloc extends BaseBloc {
       return;
     }
 
-    appGlobals.store.actions.serverEventActions.clearEvents(currentChannelModel);
+    appGlobals.store.actions.serverEventActions.clearEventsByChannelId(currentChannelModel.channelId);
   }
 }

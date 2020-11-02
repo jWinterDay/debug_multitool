@@ -57,3 +57,35 @@ Object _castJson(JsonObject obj) {
 
   return obj.asString;
 }
+
+String checkChannelName(String name) {
+  if (name == null || name.isEmpty) {
+    return 'Enter non empty name';
+  }
+
+  if (name.length > 15) {
+    return 'Name length must be < 15 symbols';
+  }
+
+  return null;
+}
+
+String checkChannelShortName(String name) {
+  if (name == null || name.isEmpty) {
+    return 'Enter non empty short name';
+  }
+
+  if (name.length > 15) {
+    return 'Short name length must be < 15 symbols';
+  }
+
+  return null;
+}
+
+String checkWsUrl(String wsUrl) {
+  if (wsUrl == null || wsUrl.isEmpty) {
+    return 'Enter non empty ws url';
+  }
+
+  return null;
+}

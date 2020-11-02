@@ -22,8 +22,8 @@ class ServerConnectEpic {
     }).doOnData((Action<dynamic> action) {
       final Pair<ChannelModel, ServerConnectStatus> pair = action.payload as Pair<ChannelModel, ServerConnectStatus>;
 
-      final ServerConnectStatus nextStatus = pair.second;
       final ChannelModel channelModel = pair.first;
+      final ServerConnectStatus nextStatus = pair.second;
 
       final ServerCommunicateService service =
           api.state.serverCommunicateServicesState.services[channelModel.channelId];

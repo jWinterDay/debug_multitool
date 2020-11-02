@@ -17,7 +17,8 @@ class _$ChannelActions extends ChannelActions {
 
   final addChannel = ActionDispatcher<ChannelModel>('ChannelActions-addChannel');
   final addAllChannel = ActionDispatcher<Iterable<ChannelModel>>('ChannelActions-addAllChannel');
-  final removeChannel = ActionDispatcher<ChannelModel>('ChannelActions-removeChannel');
+  final removeChannelById = ActionDispatcher<String>('ChannelActions-removeChannelById');
+  final removeChannelByName = ActionDispatcher<String>('ChannelActions-removeChannelByName');
   final updateChannel = ActionDispatcher<ChannelModel>('ChannelActions-updateChannel');
   final changeConnectStatus =
       ActionDispatcher<Pair<ChannelModel, ServerConnectStatus>>('ChannelActions-changeConnectStatus');
@@ -38,7 +39,8 @@ class _$ChannelActions extends ChannelActions {
   void setDispatcher(Dispatcher dispatcher) {
     addChannel.setDispatcher(dispatcher);
     addAllChannel.setDispatcher(dispatcher);
-    removeChannel.setDispatcher(dispatcher);
+    removeChannelById.setDispatcher(dispatcher);
+    removeChannelByName.setDispatcher(dispatcher);
     updateChannel.setDispatcher(dispatcher);
     changeConnectStatus.setDispatcher(dispatcher);
     setCurrentChannel.setDispatcher(dispatcher);
@@ -58,7 +60,8 @@ class _$ChannelActions extends ChannelActions {
 class ChannelActionsNames {
   static final addChannel = ActionName<ChannelModel>('ChannelActions-addChannel');
   static final addAllChannel = ActionName<Iterable<ChannelModel>>('ChannelActions-addAllChannel');
-  static final removeChannel = ActionName<ChannelModel>('ChannelActions-removeChannel');
+  static final removeChannelById = ActionName<String>('ChannelActions-removeChannelById');
+  static final removeChannelByName = ActionName<String>('ChannelActions-removeChannelByName');
   static final updateChannel = ActionName<ChannelModel>('ChannelActions-updateChannel');
   static final changeConnectStatus =
       ActionName<Pair<ChannelModel, ServerConnectStatus>>('ChannelActions-changeConnectStatus');

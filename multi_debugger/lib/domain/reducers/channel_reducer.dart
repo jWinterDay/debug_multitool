@@ -12,7 +12,8 @@ NestedReducerBuilder<AppState, AppStateBuilder, ChannelState, ChannelStateBuilde
     )
       ..add<ChannelModel>(ChannelActionsNames.addChannel, _addChannel)
       ..add<Iterable<ChannelModel>>(ChannelActionsNames.addAllChannel, _addAllChannel)
-      ..add<ChannelModel>(ChannelActionsNames.removeChannel, _removeChannel)
+      ..add<String>(ChannelActionsNames.removeChannelById, _removeChannelById)
+      ..add<String>(ChannelActionsNames.removeChannelByName, _removeChannelByName)
       ..add<ChannelModel>(ChannelActionsNames.updateChannel, _updateChannel)
       ..add<Pair<ChannelModel, ServerConnectStatus>>(ChannelActionsNames.changeConnectStatus, _changeConnectStatus)
       ..add<ChannelModel>(ChannelActionsNames.setCurrentChannel, _setCurrentChannel)
@@ -34,9 +35,11 @@ void _addChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBu
   final ChannelModel channelModel = action.payload;
 
   // set other channel not current
-  builder.channels.updateAllValues((String id, ChannelModel cm) {
-    return cm.rebuild((builder) => builder.isCurrent = false);
-  });
+  if (channelModel.isCurrent) {
+    builder.channels.updateAllValues((String id, ChannelModel cm) {
+      return cm.rebuild((builder) => builder.isCurrent = false);
+    });
+  }
 
   // channel list
   builder.channels.putIfAbsent(channelModel.channelId, () => channelModel);
@@ -52,11 +55,18 @@ void _addAllChannel(ChannelState state, Action<Iterable<ChannelModel>> action, C
   builder.channels.addAll(savedChannelsAsMap);
 }
 
-void _removeChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {
-  final ChannelModel channelModel = action.payload;
+void _removeChannelById(ChannelState state, Action<String> action, ChannelStateBuilder builder) {
+  final String channelId = action.payload;
 
-  // channel list
-  builder.channels.remove(channelModel.channelId);
+  builder.channels.remove(channelId);
+}
+
+void _removeChannelByName(ChannelState state, Action<String> action, ChannelStateBuilder builder) {
+  final String channelName = action.payload;
+
+  builder.channels.removeWhere((String channelId, ChannelModel cm) {
+    return cm.name == channelName;
+  });
 }
 
 void _updateChannel(ChannelState state, Action<ChannelModel> action, ChannelStateBuilder builder) {

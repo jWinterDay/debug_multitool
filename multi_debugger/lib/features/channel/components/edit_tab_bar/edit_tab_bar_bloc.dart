@@ -5,6 +5,7 @@ import 'package:multi_debugger/app_routes.dart';
 import 'package:multi_debugger/domain/base/base_bloc.dart';
 import 'package:multi_debugger/domain/models/models.dart';
 import 'package:multi_debugger/domain/states/states.dart';
+import 'package:multi_debugger/tools/common_tools.dart';
 import 'package:rxdart/rxdart.dart';
 
 class EditTabBarBloc extends BaseBloc {
@@ -50,15 +51,10 @@ class EditTabBarBloc extends BaseBloc {
       String name,
       String shortName,
     ) {
-      if (name.isEmpty || shortName.isEmpty) {
-        return false;
-      }
+      final bool correctName = checkChannelName(name) == null;
+      final bool correctShortName = checkChannelShortName(shortName) == null;
 
-      if (name.length > 15 || shortName.length > 15) {
-        return false;
-      }
-
-      return true;
+      return correctName && correctShortName;
     }).listen((bool correct) {
       _correctFormSubject.add(correct);
     });
@@ -93,8 +89,10 @@ class EditTabBarBloc extends BaseBloc {
     final String shortName = _shortNameSubject.value;
 
     // validate
-    final bool correct = name.isNotEmpty && shortName.isNotEmpty;
-    if (!correct) {
+    final bool correctName = checkChannelName(name) == null;
+    final bool correctShortName = checkChannelShortName(shortName) == null;
+
+    if (!correctName || !correctShortName) {
       return;
     }
 
@@ -112,6 +110,14 @@ class EditTabBarBloc extends BaseBloc {
   void updateChannel(ChannelModel channelModel) {
     final String name = _nameSubject.value;
     final String shortName = _shortNameSubject.value;
+
+    // validate
+    final bool correctName = checkChannelName(name) == null;
+    final bool correctShortName = checkChannelShortName(shortName) == null;
+
+    if (!correctName || !correctShortName) {
+      return;
+    }
 
     ChannelModel nextChannelModel = ChannelModel((b) {
       b

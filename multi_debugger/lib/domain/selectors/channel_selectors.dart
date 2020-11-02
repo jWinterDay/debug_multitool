@@ -6,7 +6,8 @@ class ChannelSelectors {
     //
     ChannelActionsNames.addChannel.name,
     ChannelActionsNames.updateChannel.name,
-    ChannelActionsNames.removeChannel.name,
+    ChannelActionsNames.removeChannelById.name,
+    ChannelActionsNames.removeChannelByName.name,
     ChannelActionsNames.setCurrentChannel.name,
     //
     ChannelActionsNames.addBlackListItem.name,

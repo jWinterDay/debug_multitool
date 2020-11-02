@@ -62,11 +62,17 @@ class ActionsViewBloc extends BaseBloc {
 
     // stream mappers. scroll to end
     _serverEventListSubscription = serverEventStateStream.distinct((prevState, nextState) {
-      final prevList = prevState.events[currentChannelModel.channelId];
-      final nextList = nextState.events[currentChannelModel.channelId];
+      final String curChannelId = currentChannelModel?.channelId;
+
+      final BuiltList<ServerEvent> prevList = prevState.events[curChannelId];
+      final BuiltList<ServerEvent> nextList = nextState.events[curChannelId];
 
       return prevList?.length == nextList?.length;
     }).map((ServerEventState serverEventState) {
+      if (currentChannelModel == null) {
+        return null;
+      }
+
       return serverEventState.getEventsForChannel(currentChannelModel);
     }).listen((BuiltList<ServerEvent> list) {
       if (currentChannelModel == null) {

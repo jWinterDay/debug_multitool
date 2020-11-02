@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
-import 'package:flutter_simple_dependency_injection/injector.dart';
 import 'package:multi_debugger/app_globals.dart';
 import 'package:multi_debugger/domain/epics/local_epic.dart';
 import 'package:multi_debugger/domain/epics/remote_epic.dart';
@@ -17,6 +15,7 @@ import 'package:multi_debugger/services/remove_storage_service/remote_storage_se
 import 'package:multi_debugger/services/remove_storage_service/remote_storage_service_impl.dart';
 import 'package:multi_debugger/services/server_communicate_service/server_communicate_service.dart';
 import 'package:multi_debugger/services/server_communicate_service/server_communicate_service_impl.dart';
+import 'package:flutter_simple_dependency_injection/injector.dart';
 
 final Injector di = Injector.getInjector();
 
@@ -42,7 +41,6 @@ class AppDI {
       )
 
       // local storage
-
       ..map<LocalStorageService>(
         (Injector injector) => localStorage,
         isSingleton: true,

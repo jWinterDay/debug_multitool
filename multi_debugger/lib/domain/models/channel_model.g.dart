@@ -24,6 +24,10 @@ class _$ChannelModelSerializer implements StructuredSerializer<ChannelModel> {
       serializers.serialize(object.name, specifiedType: const FullType(String)),
       'shortName',
       serializers.serialize(object.shortName, specifiedType: const FullType(String)),
+      'removable',
+      serializers.serialize(object.removable, specifiedType: const FullType(bool)),
+      'autoConnect',
+      serializers.serialize(object.autoConnect, specifiedType: const FullType(bool)),
       'description',
       serializers.serialize(object.description, specifiedType: const FullType(String)),
       'isWhiteListUsed',
@@ -75,6 +79,12 @@ class _$ChannelModelSerializer implements StructuredSerializer<ChannelModel> {
           break;
         case 'shortName':
           result.shortName = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
+          break;
+        case 'removable':
+          result.removable = serializers.deserialize(value, specifiedType: const FullType(bool)) as bool;
+          break;
+        case 'autoConnect':
+          result.autoConnect = serializers.deserialize(value, specifiedType: const FullType(bool)) as bool;
           break;
         case 'wsUrl':
           result.wsUrl = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
@@ -131,6 +141,10 @@ class _$ChannelModel extends ChannelModel {
   @override
   final String shortName;
   @override
+  final bool removable;
+  @override
+  final bool autoConnect;
+  @override
   final String wsUrl;
   @override
   final String description;
@@ -162,6 +176,8 @@ class _$ChannelModel extends ChannelModel {
       {this.channelId,
       this.name,
       this.shortName,
+      this.removable,
+      this.autoConnect,
       this.wsUrl,
       this.description,
       this.isWhiteListUsed,
@@ -183,6 +199,12 @@ class _$ChannelModel extends ChannelModel {
     }
     if (shortName == null) {
       throw new BuiltValueNullFieldError('ChannelModel', 'shortName');
+    }
+    if (removable == null) {
+      throw new BuiltValueNullFieldError('ChannelModel', 'removable');
+    }
+    if (autoConnect == null) {
+      throw new BuiltValueNullFieldError('ChannelModel', 'autoConnect');
     }
     if (description == null) {
       throw new BuiltValueNullFieldError('ChannelModel', 'description');
@@ -229,6 +251,8 @@ class _$ChannelModel extends ChannelModel {
         channelId == other.channelId &&
         name == other.name &&
         shortName == other.shortName &&
+        removable == other.removable &&
+        autoConnect == other.autoConnect &&
         wsUrl == other.wsUrl &&
         description == other.description &&
         isWhiteListUsed == other.isWhiteListUsed &&
@@ -257,8 +281,12 @@ class _$ChannelModel extends ChannelModel {
                                         $jc(
                                             $jc(
                                                 $jc(
-                                                    $jc($jc($jc(0, channelId.hashCode), name.hashCode),
-                                                        shortName.hashCode),
+                                                    $jc(
+                                                        $jc(
+                                                            $jc($jc($jc(0, channelId.hashCode), name.hashCode),
+                                                                shortName.hashCode),
+                                                            removable.hashCode),
+                                                        autoConnect.hashCode),
                                                     wsUrl.hashCode),
                                                 description.hashCode),
                                             isWhiteListUsed.hashCode),
@@ -279,6 +307,8 @@ class _$ChannelModel extends ChannelModel {
           ..add('channelId', channelId)
           ..add('name', name)
           ..add('shortName', shortName)
+          ..add('removable', removable)
+          ..add('autoConnect', autoConnect)
           ..add('wsUrl', wsUrl)
           ..add('description', description)
           ..add('isWhiteListUsed', isWhiteListUsed)
@@ -309,6 +339,14 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
   String _shortName;
   String get shortName => _$this._shortName;
   set shortName(String shortName) => _$this._shortName = shortName;
+
+  bool _removable;
+  bool get removable => _$this._removable;
+  set removable(bool removable) => _$this._removable = removable;
+
+  bool _autoConnect;
+  bool get autoConnect => _$this._autoConnect;
+  set autoConnect(bool autoConnect) => _$this._autoConnect = autoConnect;
 
   String _wsUrl;
   String get wsUrl => _$this._wsUrl;
@@ -367,6 +405,8 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
       _channelId = _$v.channelId;
       _name = _$v.name;
       _shortName = _$v.shortName;
+      _removable = _$v.removable;
+      _autoConnect = _$v.autoConnect;
       _wsUrl = _$v.wsUrl;
       _description = _$v.description;
       _isWhiteListUsed = _$v.isWhiteListUsed;
@@ -406,6 +446,8 @@ class ChannelModelBuilder implements Builder<ChannelModel, ChannelModelBuilder> 
               channelId: channelId,
               name: name,
               shortName: shortName,
+              removable: removable,
+              autoConnect: autoConnect,
               wsUrl: wsUrl,
               description: description,
               isWhiteListUsed: isWhiteListUsed,
