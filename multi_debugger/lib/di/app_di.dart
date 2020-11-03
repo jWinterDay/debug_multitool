@@ -62,7 +62,6 @@ class AppDI {
       ..map<ServerCommunicateService>(
         (Injector injector) => ServerCommunicateServiceImpl(
           loggerService: loggerService,
-          appGlobals: di.get<AppGlobals>(),
         )..init(),
         isSingleton: false, // !
       )
