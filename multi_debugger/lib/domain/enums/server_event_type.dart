@@ -17,6 +17,10 @@ class ServerEventType extends EnumClass {
 
   static const ServerEventType formatError = _$formatError;
 
+  static const ServerEventType controlCommand = _$controlCommand;
+
+  static const ServerEventType errorControlCommand = _$errorControlCommand;
+
   static BuiltSet<ServerEventType> get values => _$values;
 
   static ServerEventType valueOf(String name) => _$serverEventTypeValueOf(name);
