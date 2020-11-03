@@ -21,8 +21,6 @@ abstract class ServerCommunicateService extends BaseService {
   BehaviorSubject<Pair<ChannelModel, ServerError>> errorSubject = BehaviorSubject<Pair<ChannelModel, ServerError>>();
 
   /// channelModel -> data from server
-  // BehaviorSubject<Pair<ChannelModel, Map<String, dynamic>>> publishSubject =
-  //     BehaviorSubject<Pair<ChannelModel, Map<String, dynamic>>>();
   BehaviorSubject<Pair<ChannelModel, ServerEvent>> publishSubject = BehaviorSubject<Pair<ChannelModel, ServerEvent>>();
 
   Future<void> connect(ChannelModel channelModel, String channelName, {centrifuge.ClientConfig clientConfig});

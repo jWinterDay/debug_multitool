@@ -104,6 +104,7 @@ class ServerCommunicateServicesState {
     ServerEvent errorEvent = ServerEvent((b) {
       return b
         ..action = serverError.message
+        ..payload = JsonObject(serverError.message)
         ..serverEventType = serverError.serverEventType;
     });
 
@@ -157,6 +158,140 @@ class ServerCommunicateServicesState {
   void _eventPairHandler(Pair<String, ServerEvent> pair) {
     String channelId = pair.first;
     ServerEvent serverEvent = pair.second;
+
+    // control command
+    if (serverEvent.serverEventType == ServerEventType.controlCommand) {
+      JsonObject payload = serverEvent.payload;
+      Map<dynamic, dynamic> payloadMap = payload.asMap;
+      String payloadChannelName = payloadMap['name']?.toString() ?? '';
+      String payloadChannelId = payloadMap['channelId']?.toString() ?? '';
+
+      switch (serverEvent.action) {
+        // Iterable<String> channelNames = appGlobals.store.state.channelState.channels.values.map((ChannelModel cm) {
+        //     return cm.name;
+        //   });
+
+        //   if (channelNames.contains(payloadChannelName)) {}
+
+        // delete channel
+        case SystemServiceAction.deleteChannel:
+          if (payloadChannelId != '') {
+            appGlobals.store.actions.channelActions.removeChannelById(payloadChannelId);
+            // info to current channel
+            ServerEvent errorServerEvent = ServerEvent((b) {
+              b
+                ..action = 'REMOTE. Removed channel by id'
+                ..payload = JsonObject('removed channel by id: $payloadChannelId')
+                ..serverEventType = ServerEventType.controlCommand;
+
+              return b;
+            });
+            appGlobals.store.actions.serverEventActions.addEvent(Pair(channelId, errorServerEvent));
+
+            break;
+          }
+
+          if (payloadChannelName != '') {
+            appGlobals.store.actions.channelActions.removeChannelByName(payloadChannelName);
+            // info to current channel
+            ServerEvent errorServerEvent = ServerEvent((b) {
+              b
+                ..action = 'REMOTE. Removed channel'
+                ..payload = JsonObject('removed channel by name: $payloadChannelName')
+                ..serverEventType = ServerEventType.controlCommand;
+
+              return b;
+            });
+            appGlobals.store.actions.serverEventActions.addEvent(Pair(channelId, errorServerEvent));
+
+            break;
+          }
+
+          break;
+
+        // add channel
+        case SystemServiceAction.createNewChannel:
+          String payloadChannelShortName =
+              payloadMap['shortName'] == null ? payloadChannelName : payloadMap['shortName'].toString();
+          bool autoConnect = payloadMap['autoConnect'] is bool ? (payloadMap['autoConnect'] as bool) : false;
+          String wsUrl = payloadMap['wsUrl']?.toString();
+
+          // validate
+          final String validateNameMess = common_tools.checkChannelName(payloadChannelName);
+          final String validateShortNameMess = common_tools.checkChannelShortName(payloadChannelShortName);
+          final String validateWsUrl = common_tools.checkWsUrl(wsUrl);
+          final bool correctName = validateNameMess == null;
+          final bool correctShortName = validateShortNameMess == null;
+          final bool correctWsUrl = validateWsUrl == null;
+          if (!correctName || !correctShortName || !correctWsUrl) {
+            ServerEvent errorServerEvent = ServerEvent((b) {
+              return b
+                ..action = (validateNameMess ?? validateShortNameMess ?? validateWsUrl)
+                ..payload = JsonObject({
+                  'name': payloadChannelName,
+                  'shortName': payloadChannelName,
+                  'autoConnect': autoConnect,
+                  'wsUrl': wsUrl
+                })
+                ..serverEventType = ServerEventType.errorControlCommand;
+            });
+
+            appGlobals.store.actions.serverEventActions.addEvent(Pair(channelId, errorServerEvent));
+            break;
+          }
+
+          Iterable<String> channelNames = appGlobals.store.state.channelState.channels.values.map((ChannelModel cm) {
+            return cm.name;
+          });
+
+          if (channelNames.contains(payloadChannelName)) {
+            ServerEvent errorServerEvent = ServerEvent((b) {
+              return b
+                ..action = 'REMOTE. Error adding new channel'
+                ..payload = JsonObject('channel $payloadChannelName has already added to channel list')
+                ..serverEventType = ServerEventType.errorControlCommand;
+            });
+
+            appGlobals.store.actions.serverEventActions.addEvent(Pair(channelId, errorServerEvent));
+            break;
+          }
+
+          // add channel
+          ChannelModel channelModel = ChannelModel((b) {
+            return b
+              ..name = payloadChannelName
+              ..shortName = payloadChannelShortName
+              ..serverConnectStatus = ServerConnectStatus.disconnected
+              ..isCurrent = false
+              ..wsUrl = wsUrl
+              ..autoConnect = autoConnect;
+          });
+          appGlobals.store.actions.channelActions.addChannel(channelModel);
+
+          // info to current channel
+          ServerEvent errorServerEvent = ServerEvent((b) {
+            b
+              ..action = 'REMOTE. Added new channel'
+              ..payload = JsonObject({
+                'name': payloadChannelName,
+                'short name': payloadChannelShortName,
+                'ws url': wsUrl,
+                'autoconnect': autoConnect,
+              })
+              ..serverEventType = ServerEventType.controlCommand;
+
+            return b;
+          });
+          appGlobals.store.actions.serverEventActions.addEvent(Pair(channelId, errorServerEvent));
+
+          break;
+
+        default:
+      }
+
+      return;
+    }
+
     JsonObject payload = serverEvent.payload;
 
     appGlobals.store.actions.serverEventActions.addEvent(pair); //Pair(channelId, errorServerEvent));

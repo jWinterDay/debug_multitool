@@ -195,7 +195,10 @@ class _ActionsViewState extends State<ActionsViewScreen> {
 
   Widget _item(ChannelModel channelModel, ServerEvent serverEvent, {@required int index}) {
     final bool isDelimiter = serverEvent.serverEventType == ServerEventType.delimiter;
-    final bool isFormatError = serverEvent.serverEventType == ServerEventType.formatError;
+    final bool isError = [
+      ServerEventType.formatError,
+      ServerEventType.errorControlCommand,
+    ].contains(serverEvent.serverEventType);
     final bool canSelect = serverEvent.serverEventType != ServerEventType.delimiter;
     final bool selected = serverEvent.serverEventId == channelModel.selectedEvent?.serverEventId;
 
@@ -211,6 +214,7 @@ class _ActionsViewState extends State<ActionsViewScreen> {
     final bool inBlackList = channelModel.blackList.contains(serverEvent.action);
 
     Color textColor = AppColors.bodyText2Color;
+    TextDecoration textDecoration = TextDecoration.none;
     switch (serverEvent.serverEventType) {
       case ServerEventType.connect:
         textColor = selected ? AppColors.background : AppColors.positive;
@@ -220,6 +224,14 @@ class _ActionsViewState extends State<ActionsViewScreen> {
         break;
       case ServerEventType.formatError:
         textColor = selected ? AppColors.background : AppColors.serverEventFormatError;
+        break;
+      case ServerEventType.controlCommand:
+        textColor = selected ? AppColors.background : AppColors.autoScrollText;
+        textDecoration = TextDecoration.underline;
+        break;
+      case ServerEventType.errorControlCommand:
+        textColor = selected ? AppColors.background : AppColors.autoScrollText;
+        textDecoration = TextDecoration.underline;
         break;
 
       default:
@@ -241,12 +253,13 @@ class _ActionsViewState extends State<ActionsViewScreen> {
             child: InkWell(
               onTap: canSelect ? () => _bloc.toggleSelectServerEvent(serverEvent) : null,
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12.0).copyWith(left: 15.0),
+                padding: const EdgeInsets.only(left: 15.0), // symmetric(vertical: 1.0).copyWith(left: 15.0),
                 child: SelectableText(
                   '${serverEvent.index}) ${serverEvent.action}',
                   style: TextStyle(
                     color: textColor,
                     fontSize: 15.0,
+                    decoration: textDecoration,
                   ),
                   onTap: canSelect ? () => _bloc.toggleSelectServerEvent(serverEvent) : null,
                   // overflow: TextOverflow.ellipsis,
@@ -256,7 +269,7 @@ class _ActionsViewState extends State<ActionsViewScreen> {
           ),
 
           // repeat
-          if (!isFormatError)
+          if (!isError)
             const Padding(
               padding: EdgeInsets.only(right: 20.0),
               child: Icon(
@@ -267,7 +280,7 @@ class _ActionsViewState extends State<ActionsViewScreen> {
             ),
 
           // favorite
-          if (!isFormatError)
+          if (!isError)
             InkWell(
               onTap: () => _bloc.toggleFavorite(serverEvent),
               child: Padding(
@@ -281,7 +294,7 @@ class _ActionsViewState extends State<ActionsViewScreen> {
             ),
 
           // white list
-          if (!isFormatError)
+          if (!isError)
             InkWell(
               onTap: () => _bloc.toggleWhiteList(serverEvent),
               child: Padding(
@@ -295,7 +308,7 @@ class _ActionsViewState extends State<ActionsViewScreen> {
             ),
 
           // black list
-          if (!isFormatError)
+          if (!isError)
             InkWell(
               onTap: () => _bloc.toggleBlackList(serverEvent),
               child: Padding(
