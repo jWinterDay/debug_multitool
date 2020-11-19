@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "debug",
+            "name": "test",
             "request": "launch",
             "type": "dart",
-            "program": "example/lib/main.dart"
+            "program": "test/all_test.dart"
         },
         // {
         //     "name": "hover",

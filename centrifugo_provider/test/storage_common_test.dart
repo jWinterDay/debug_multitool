@@ -31,7 +31,6 @@ void main() {
       expect(_channelProvider.connectStatus, ConnectStatus.disconnected);
       expect(_channelProvider.sending, isFalse);
       expect(_channelProvider.channels, isEmpty);
-      expect(_channelProvider.dataBufferLength, kBufferLimit);
     });
 
     test('[COMMON UNINITIALIZED] without initialize', () {
@@ -148,11 +147,12 @@ void main() {
         _channelProvider.connectedStream,
         emitsInOrder(
           <ConnectStatus>[
-            // ConnectStatus.connected,
             ConnectStatus.disconnected,
           ],
         ),
       );
+
+      expect(_channelProvider.sending, isFalse);
     });
   });
 }

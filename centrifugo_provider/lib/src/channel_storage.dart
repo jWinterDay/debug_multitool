@@ -33,7 +33,6 @@ class ChannelProvider {
   // common
   List<DataBuffer> _dataBuffer;
   bool _sending = false;
-  int get dataBufferLength => _dataBuffer.length;
   bool get sending => _sending;
 
   final BehaviorSubject<ConnectStatus> _connectedSubject =
@@ -85,6 +84,7 @@ class ChannelProvider {
   }
 
   void disconnect() {
+    _sending = false;
     _connectedSubject.add(ConnectStatus.disconnected);
 
     _centrifugoConnectSubscription?.cancel();
