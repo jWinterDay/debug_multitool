@@ -11,6 +11,8 @@ const ServerEventType _$disconnect = const ServerEventType._('disconnect');
 const ServerEventType _$action = const ServerEventType._('action');
 const ServerEventType _$delimiter = const ServerEventType._('delimiter');
 const ServerEventType _$formatError = const ServerEventType._('formatError');
+const ServerEventType _$controlCommand = const ServerEventType._('controlCommand');
+const ServerEventType _$errorControlCommand = const ServerEventType._('errorControlCommand');
 
 ServerEventType _$serverEventTypeValueOf(String name) {
   switch (name) {
@@ -24,6 +26,10 @@ ServerEventType _$serverEventTypeValueOf(String name) {
       return _$delimiter;
     case 'formatError':
       return _$formatError;
+    case 'controlCommand':
+      return _$controlCommand;
+    case 'errorControlCommand':
+      return _$errorControlCommand;
     default:
       throw new ArgumentError(name);
   }
@@ -35,6 +41,8 @@ final BuiltSet<ServerEventType> _$values = new BuiltSet<ServerEventType>(const <
   _$action,
   _$delimiter,
   _$formatError,
+  _$controlCommand,
+  _$errorControlCommand,
 ]);
 
 Serializer<ServerEventType> _$serverEventTypeSerializer = new _$ServerEventTypeSerializer();

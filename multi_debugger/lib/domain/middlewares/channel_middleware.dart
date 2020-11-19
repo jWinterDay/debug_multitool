@@ -29,17 +29,14 @@ void _addChannel(
 
   final ChannelModel channelModel = action.payload;
 
-  // create and add communicate service
+  // create communicate service
   final ServerCommunicateService service = di.get<ServerCommunicateService>();
 
-  api.state.serverCommunicateServicesState.services.putIfAbsent(channelModel.channelId, () {
-    return service;
-  });
+  api.state.serverCommunicateServicesState.addService(channelModel.channelId, service);
 
+  // immediately run service
   if (channelModel.autoConnect) {
-    Pair<ChannelModel, ServerConnectStatus> pair = Pair(channelModel, ServerConnectStatus.connecting);
-
-    api.actions.channelActions.changeConnectStatus(pair);
+    api.actions.channelActions.changeConnectStatus(Pair(channelModel, ServerConnectStatus.connecting));
   }
 }
 
@@ -56,7 +53,7 @@ void _addAllChannel(
     for (ChannelModel channelModel in channelModelList) (channelModel).channelId: di.get<ServerCommunicateService>(),
   };
 
-  api.state.serverCommunicateServicesState.services.addAll(channelModelListAsMap);
+  api.state.serverCommunicateServicesState.addAllServices(channelModelListAsMap);
 }
 
 void _removeChannelById(
@@ -67,14 +64,14 @@ void _removeChannelById(
   final String channelId = action.payload;
 
   // close and remove communicate service
-  ServerCommunicateService service = api.state.serverCommunicateServicesState.services[channelId];
+  ServerCommunicateService service = api.state.serverCommunicateServicesState.getService(channelId);
 
   if (service != null) {
     service
       ..disconnect()
       ..dispose();
 
-    api.state.serverCommunicateServicesState.services.remove(channelId);
+    api.state.serverCommunicateServicesState.removeService(channelId);
   }
 
   // clear logs
@@ -92,9 +89,7 @@ void _removeChannelByName(
 
   // find channel
   ChannelModel channelModel = api.state.channelState.channels.values.firstWhere(
-    (ChannelModel cm) {
-      return cm.name == channelName;
-    },
+    (ChannelModel cm) => cm.name == channelName,
     orElse: () => null,
   );
 
@@ -105,14 +100,14 @@ void _removeChannelByName(
   final String channelId = channelModel.channelId;
 
   // close and remove communicate service
-  ServerCommunicateService service = api.state.serverCommunicateServicesState.services[channelId];
+  ServerCommunicateService service = api.state.serverCommunicateServicesState.getService(channelId);
 
   if (service != null) {
     service
       ..disconnect()
       ..dispose();
 
-    api.state.serverCommunicateServicesState.services.remove(channelId);
+    api.state.serverCommunicateServicesState.removeService(channelId);
   }
 
   // clear logs

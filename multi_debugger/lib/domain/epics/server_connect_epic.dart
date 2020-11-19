@@ -24,16 +24,18 @@ class ServerConnectEpic {
 
       final ChannelModel channelModel = pair.first;
       final ServerConnectStatus nextStatus = pair.second;
+      final String channelId = channelModel.channelId;
 
-      final ServerCommunicateService service =
-          api.state.serverCommunicateServicesState.services[channelModel.channelId];
+      final ServerCommunicateService service = api.state.serverCommunicateServicesState.getService(channelId);
 
       switch (nextStatus) {
         case ServerConnectStatus.disconnected:
           service.disconnect();
           break;
         case ServerConnectStatus.connecting:
-          service.connect(channelModel);
+          String computerName = api.state.appConfigState.computerName?.trim() ?? '';
+          String compositeChannelName = computerName + '_' + channelModel.name;
+          service.connect(channelModel, compositeChannelName);
           break;
         case ServerConnectStatus.connected:
           break;
