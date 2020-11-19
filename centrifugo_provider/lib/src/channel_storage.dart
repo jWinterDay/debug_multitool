@@ -9,19 +9,22 @@ import 'package:rxdart/rxdart.dart';
 import 'data_buffer.dart';
 
 const int _kDefaultBufferLimit = 1000;
-const Duration _kConnectTimeout = Duration(seconds: 1);
+const Duration _kConnectTimeout = Duration(seconds: 10);
 
 class ChannelProvider {
   ChannelProvider({
     this.bufferLimit = _kDefaultBufferLimit,
     @required this.url,
+    this.connectTimeout = _kConnectTimeout,
   })  : assert(bufferLimit != null),
-        assert(url != null) {
+        assert(url != null),
+        assert(_kConnectTimeout != null) {
     _dataBuffer = List(bufferLimit);
   }
 
   final int bufferLimit;
   final String url;
+  final Duration connectTimeout;
 
   /// <channel name, subscription>
   final Map<String, centrifuge.Subscription> _subscriptionMap = {};
@@ -38,6 +41,8 @@ class ChannelProvider {
   Stream<ConnectStatus> get connectedStream => _connectedSubject.stream;
   ConnectStatus get connectStatus => _connectedSubject.value;
 
+  Timer _connectTimer;
+
   // centrifugo
   centrifuge.Client _client;
   StreamSubscription _centrifugoConnectSubscription;
@@ -50,13 +55,28 @@ class ChannelProvider {
 
     _connectedSubject.add(ConnectStatus.connecting);
 
+    // connect timer
+    _connectTimer = Timer(connectTimeout, () {
+      _connectedSubject.add(ConnectStatus.disconnected);
+    });
+
     _client = centrifuge.createClient(url, config: clientConfig);
 
     _centrifugoConnectSubscription = _client.connectStream.listen((centrifuge.ConnectEvent event) {
       _connectedSubject.add(ConnectStatus.connected);
+
+      // cancel connect timer
+      final bool timerActive = _connectTimer?.isActive ?? false;
+      if (timerActive) {
+        _connectTimer?.cancel();
+      }
     });
+
     _centrifugoDisconnectSubscription = _client.disconnectStream.listen((centrifuge.DisconnectEvent event) {
-      _connectedSubject.add(ConnectStatus.disconnected);
+      // _connectedSubject.add(ConnectStatus.disconnected);
+      // _connectedSubject?.close();
+      // _centrifugoConnectSubscription?.cancel();
+      // _centrifugoDisconnectSubscription?.cancel();
     });
 
     _client.connect();
@@ -65,13 +85,16 @@ class ChannelProvider {
   }
 
   void disconnect() {
-    _connectedSubject?.close();
+    _connectedSubject.add(ConnectStatus.disconnected);
+
     _centrifugoConnectSubscription?.cancel();
     _centrifugoDisconnectSubscription?.cancel();
 
     if (connectStatus == ConnectStatus.connected) {
       _client?.disconnect();
     }
+
+    _connectTimer?.cancel();
   }
 
   void createSubscription(String channelName) {
