@@ -33,12 +33,12 @@ void main() {
       expect(_channelProvider.channels, isEmpty);
     });
 
-    test('[COMMON UNINITIALIZED] without initialize', () {
-      expect(
-        _channelProvider.send('name1', 'action1', null),
-        isFalse,
-      );
-    });
+    // test('[COMMON UNINITIALIZED] without initialize', () {
+    //   expect(
+    //     _channelProvider.send('name1', 'action1', null),
+    //     isFalse,
+    //   );
+    // });
   });
 
   group('[INCORRECT URL]', () {
@@ -153,6 +153,20 @@ void main() {
       );
 
       expect(_channelProvider.sending, isFalse);
+    });
+
+    test('[MANUAL DISCONNECTING] restoring after disconnect', () async {
+      _channelProvider.connect();
+
+      await expectLater(
+        _channelProvider.connectedStream,
+        emitsInOrder(
+          <ConnectStatus>[
+            ConnectStatus.connecting,
+            ConnectStatus.connected,
+          ],
+        ),
+      );
     });
   });
 }

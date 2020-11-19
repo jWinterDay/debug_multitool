@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:convert';
+import 'dart:collection';
 
 import 'package:centrifuge/centrifuge.dart' as centrifuge;
 import 'package:centrifugo_provider/src/connect_status.dart';
@@ -16,15 +16,18 @@ class ChannelProvider {
     this.bufferLimit = _kDefaultBufferLimit,
     @required this.url,
     this.connectTimeout = _kConnectTimeout,
+    this.clientConfig,
   })  : assert(bufferLimit != null),
         assert(url != null),
         assert(_kConnectTimeout != null) {
-    _dataBuffer = List(bufferLimit);
+    _dataBuffer = []..length = bufferLimit;
+    _client = centrifuge.createClient(url, config: clientConfig);
   }
 
   final int bufferLimit;
   final String url;
   final Duration connectTimeout;
+  final centrifuge.ClientConfig clientConfig;
 
   /// <channel name, subscription>
   final Map<String, centrifuge.Subscription> _subscriptionMap = {};
@@ -32,6 +35,8 @@ class ChannelProvider {
 
   // common
   List<DataBuffer> _dataBuffer;
+  UnmodifiableListView<DataBuffer> get dataBuffer => UnmodifiableListView(_dataBuffer);
+
   bool _sending = false;
   bool get sending => _sending;
 
@@ -47,7 +52,11 @@ class ChannelProvider {
   StreamSubscription _centrifugoConnectSubscription;
   StreamSubscription _centrifugoDisconnectSubscription;
 
-  bool connect([centrifuge.ClientConfig clientConfig]) {
+  void clearBuffer() {
+    _dataBuffer.clear();
+  }
+
+  bool connect() {
     if (connectStatus == ConnectStatus.connecting) {
       return false; //throw AlreadyInitializedException();
     }
@@ -58,8 +67,6 @@ class ChannelProvider {
     _connectTimer = Timer(connectTimeout, () {
       _connectedSubject.add(ConnectStatus.disconnected);
     });
-
-    _client = centrifuge.createClient(url, config: clientConfig);
 
     _centrifugoConnectSubscription = _client.connectStream.listen((centrifuge.ConnectEvent event) {
       _connectedSubject.add(ConnectStatus.connected);
@@ -72,10 +79,7 @@ class ChannelProvider {
     });
 
     _centrifugoDisconnectSubscription = _client.disconnectStream.listen((centrifuge.DisconnectEvent event) {
-      // _connectedSubject.add(ConnectStatus.disconnected);
-      // _connectedSubject?.close();
-      // _centrifugoConnectSubscription?.cancel();
-      // _centrifugoDisconnectSubscription?.cancel();
+      _connectedSubject.add(ConnectStatus.disconnected);
     });
 
     _client.connect();
@@ -97,75 +101,94 @@ class ChannelProvider {
     _connectTimer?.cancel();
   }
 
-  void createSubscription(String channelName) {
+  bool createSubscription(String channelName) {
+    if (_client == null) {
+      return false;
+    }
+
     _subscriptionMap.putIfAbsent(
       channelName,
       () => _client.getSubscription(channelName),
     );
 
     _subscriptionMap[channelName].subscribe();
+
+    return true;
   }
 
   bool send(String channelName, String action, List<int> utf8ListData) {
-    if (connectStatus != ConnectStatus.connected) {
-      // ignore: avoid_print
-      // print('-----CentrifugoProvider not connected. _dataBuffer.length = ${_dataBuffer.length} action: $action');
+    if (_client == null) {
       return false;
     }
 
-    final centrifuge.Subscription subscription = _subscriptionMap[channelName];
+    if (connectStatus != ConnectStatus.connected) {
+      // in range
+      if (_dataBuffer.length > bufferLimit) {
+        _dataBuffer.removeAt(0);
+      }
 
-    if (_sending) {
       _dataBuffer.add(DataBuffer(
         action: action,
         channelName: channelName,
         utf8ListData: utf8ListData,
       ));
-      return false;
+
+      return true;
     }
 
-    _sending = true;
-    runZonedGuarded(() async {
-      if (subscription == null) {
-        return;
-      }
+    // final centrifuge.Subscription subscription = _subscriptionMap[channelName];
 
-      await subscription
-          .publish(utf8ListData)
-          .timeout(const Duration(seconds: 1))
-          .catchError((dynamic error, StackTrace stackTrace) {
-        final Map<String, dynamic> outputMap = <String, dynamic>{
-          'action': action,
-          'payload': 'Sending failed by timeout',
-        };
-        final List<int> timeoutData = utf8.encode(jsonEncode(outputMap));
+    // if (_sending) {
+    //   _dataBuffer.add(DataBuffer(
+    //     action: action,
+    //     channelName: channelName,
+    //     utf8ListData: utf8ListData,
+    //   ));
+    //   return false;
+    // }
 
-        // send failed action
-        _sending = false;
-        send(
-          channelName,
-          action,
-          timeoutData,
-        );
+    // _sending = true;
+    // runZonedGuarded(() async {
+    //   if (subscription == null) {
+    //     return;
+    //   }
 
-        return;
-      });
+    //   await subscription
+    //       .publish(utf8ListData)
+    //       .timeout(const Duration(seconds: 1))
+    //       .catchError((dynamic error, StackTrace stackTrace) {
+    //     final Map<String, dynamic> outputMap = <String, dynamic>{
+    //       'action': action,
+    //       'payload': 'Sending failed by timeout',
+    //     };
+    //     final List<int> timeoutData = utf8.encode(jsonEncode(outputMap));
 
-      _sending = false;
+    //     // send failed action
+    //     _sending = false;
+    //     send(
+    //       channelName,
+    //       action,
+    //       timeoutData,
+    //     );
 
-      if (_dataBuffer.isNotEmpty) {
-        // recursively send all data
-        // _DataBuffer dataBuffer = _dataBuffer.removeAt(0);
-        // send(
-        //   dataBuffer.channelName,
-        //   dataBuffer.action,
-        //   dataBuffer.utf8ListData,
-        // );
-      }
-    }, (error, stackTrace) async {
-      // logger.e('CENTRIFUGO. Unexpected error: $error'); //\n$stackTrace', error.runtimeType, stackTrace);
-      _sending = false;
-    });
+    //     return;
+    //   });
+
+    //   _sending = false;
+
+    //   if (_dataBuffer.isNotEmpty) {
+    //     // recursively send all data
+    //     // _DataBuffer dataBuffer = _dataBuffer.removeAt(0);
+    //     // send(
+    //     //   dataBuffer.channelName,
+    //     //   dataBuffer.action,
+    //     //   dataBuffer.utf8ListData,
+    //     // );
+    //   }
+    // }, (error, stackTrace) async {
+    //   // logger.e('CENTRIFUGO. Unexpected error: $error'); //\n$stackTrace', error.runtimeType, stackTrace);
+    //   _sending = false;
+    // });
 
     return true;
   }
