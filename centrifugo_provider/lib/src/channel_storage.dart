@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
 
 import 'package:centrifuge/centrifuge.dart' as centrifuge;
+import 'package:centrifugo_provider/centrifugo_provider.dart';
 import 'package:centrifugo_provider/src/connect_status.dart';
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
@@ -9,17 +11,21 @@ import 'package:rxdart/rxdart.dart';
 import 'data_buffer.dart';
 
 const int _kDefaultBufferLimit = 1000;
-const Duration _kConnectTimeout = Duration(seconds: 10);
+const Duration _kDefaultConnectTimeout = Duration(seconds: 10);
+const Duration _kDefaultSendTimeout = Duration(seconds: 1);
+const String _kTimeoutExceptionMessage = 'Failed by timeout';
 
 class ChannelProvider {
   ChannelProvider({
     this.bufferLimit = _kDefaultBufferLimit,
     @required this.url,
-    this.connectTimeout = _kConnectTimeout,
+    this.connectTimeout = _kDefaultConnectTimeout,
     this.clientConfig,
+    this.sendTimeout = _kDefaultSendTimeout,
   })  : assert(bufferLimit != null),
         assert(url != null),
-        assert(_kConnectTimeout != null) {
+        assert(_kDefaultConnectTimeout != null),
+        assert(_kDefaultSendTimeout != null) {
     _dataBuffer = []..length = bufferLimit;
     _client = centrifuge.createClient(url, config: clientConfig);
   }
@@ -27,6 +33,7 @@ class ChannelProvider {
   final int bufferLimit;
   final String url;
   final Duration connectTimeout;
+  final Duration sendTimeout;
   final centrifuge.ClientConfig clientConfig;
 
   /// <channel name, subscription>
@@ -116,38 +123,77 @@ class ChannelProvider {
     return true;
   }
 
-  bool send(String channelName, String action, List<int> utf8ListData) {
+  void _addToBuffer(String channelName, String action, List<int> utf8ListData) {
+    // in range
+    if (_dataBuffer.length > bufferLimit) {
+      _dataBuffer.removeAt(0);
+    }
+
+    _dataBuffer.add(DataBuffer(
+      action: action,
+      channelName: channelName,
+      utf8ListData: utf8ListData,
+    ));
+  }
+
+  /// custom data for sending
+  List<int> _getLiteData(String action, String message) {
+    final Map<String, dynamic> outputMap = <String, dynamic>{
+      'action': action,
+      'payload': message,
+    };
+    final List<int> timeoutData = utf8.encode(jsonEncode(outputMap));
+
+    return timeoutData;
+  }
+
+  Future<SendResult> send(String channelName, String action, List<int> utf8ListData) async {
     if (_client == null) {
-      return false;
+      return SendResult.clientIsNull;
     }
 
     if (connectStatus != ConnectStatus.connected) {
-      // in range
-      if (_dataBuffer.length > bufferLimit) {
-        _dataBuffer.removeAt(0);
-      }
+      _addToBuffer(channelName, action, utf8ListData);
 
-      _dataBuffer.add(DataBuffer(
-        action: action,
-        channelName: channelName,
-        utf8ListData: utf8ListData,
-      ));
-
-      return true;
+      return SendResult.notConnected;
     }
 
-    // final centrifuge.Subscription subscription = _subscriptionMap[channelName];
+    final centrifuge.Subscription subscription = _subscriptionMap[channelName];
 
-    // if (_sending) {
-    //   _dataBuffer.add(DataBuffer(
-    //     action: action,
-    //     channelName: channelName,
-    //     utf8ListData: utf8ListData,
-    //   ));
-    //   return false;
-    // }
+    if (_sending) {
+      _addToBuffer(channelName, action, utf8ListData);
+      return SendResult.anotherDataIsSending;
+    }
 
-    // _sending = true;
+    _sending = true;
+
+    try {
+      await subscription.publish(utf8ListData).timeout(sendTimeout);
+    } catch (error) {
+      _sending = false;
+      // resend lite data on timeout exception
+      // replace big data with lite message
+      if (error is TimeoutException) {
+        final List<int> liteMessage = _getLiteData(action, _kTimeoutExceptionMessage);
+
+        _addToBuffer(channelName, action, liteMessage);
+
+        return SendResult.timeException;
+      }
+    }
+
+    // runZonedGuarded(() async {
+    //   await subscription.publish(utf8ListData).timeout(sendTimeout);
+    // }, (error, stackTrace) {
+    //   // if (error is TimeoutException) {
+    //   //   print('failed by timeout action: $action');
+    //   //   return false;
+    //   // }
+
+    //   print('===========error = $error');
+    //   return true;
+    // });
+
     // runZonedGuarded(() async {
     //   if (subscription == null) {
     //     return;
@@ -190,6 +236,6 @@ class ChannelProvider {
     //   _sending = false;
     // });
 
-    return true;
+    return SendResult.ok;
   }
 }

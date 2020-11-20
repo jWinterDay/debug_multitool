@@ -39,8 +39,8 @@ void main() {
       final bool createResult = _channelProvider.createSubscription(channelName);
       expect(createResult, isTrue);
 
-      final bool sendResult = _channelProvider.send(channelName, 'action1', null);
-      expect(sendResult, isTrue);
+      final SendResult sendResult = await _channelProvider.send(channelName, 'action1', null);
+      expect(sendResult, SendResult.notConnected);
 
       // check 1 not null item in buffer
       final Iterable<DataBuffer> notNullItems = _channelProvider.dataBuffer.where((e) => e != null);
@@ -59,7 +59,7 @@ void main() {
       expect(_channelProvider.sending, isFalse);
 
       for (int i = 0; i <= kBufferLimit; i++) {
-        _channelProvider.send(channelName, 'action_$i', null);
+        await _channelProvider.send(channelName, 'action_$i', null);
       }
 
       // check by action name
@@ -70,7 +70,7 @@ void main() {
       expect(actionList, orderedEquals(<String>['action_0', 'action_1', 'action_2']));
 
       // more than limit
-      _channelProvider.send(channelName, 'action_3', null);
+      await _channelProvider.send(channelName, 'action_3', null);
       final List<String> actionList2 = _channelProvider.dataBuffer.map((DataBuffer data) {
         return data.action;
       }).toList();
