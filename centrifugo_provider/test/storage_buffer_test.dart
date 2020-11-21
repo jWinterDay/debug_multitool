@@ -33,7 +33,7 @@ void main() {
       _channelProvider.disconnect();
     });
 
-    test('[STORAGE BUFFER] createSubscription, send without connect()', () async {
+    test('createSubscription, send without connect()', () async {
       final String channelName = 'channel1';
 
       final bool createResult = _channelProvider.createSubscription(channelName);
@@ -53,7 +53,7 @@ void main() {
 
     /// circle buffer
     /// the oldest item will be removed, the newest will be inserted
-    test('[STORAGE BUFFER] circle buffer', () async {
+    test('circle buffer', () async {
       final String channelName = 'channel1';
 
       expect(_channelProvider.sending, isFalse);

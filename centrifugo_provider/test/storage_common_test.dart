@@ -27,7 +27,7 @@ void main() {
       _channelProvider.disconnect();
     });
 
-    test('[COMMON UNINITIALIZED] initialize', () {
+    test('initialize', () {
       expect(_channelProvider.connectStatus, ConnectStatus.disconnected);
       expect(_channelProvider.sending, isFalse);
       expect(_channelProvider.channels, isEmpty);
@@ -60,8 +60,8 @@ void main() {
       _channelProvider.disconnect();
     });
 
-    test('[INCORRECT] connect status', () async {
-      _channelProvider.connect();
+    test('connect status', () async {
+      await _channelProvider.connect();
 
       await expectLater(
         _channelProvider.connectedStream,
@@ -93,8 +93,8 @@ void main() {
       _channelProvider.disconnect();
     });
 
-    test('[CORRECT URL] connect status', () async {
-      _channelProvider.connect();
+    test('connect status', () async {
+      await _channelProvider.connect();
 
       await expectLater(
         _channelProvider.connectedStream,
@@ -126,8 +126,8 @@ void main() {
       _channelProvider.disconnect();
     });
 
-    test('[MANUAL DISCONNECTING] connect status', () async {
-      _channelProvider.connect();
+    test('connect status', () async {
+      await _channelProvider.connect();
 
       await expectLater(
         _channelProvider.connectedStream,
@@ -140,7 +140,7 @@ void main() {
       );
     });
 
-    test('[MANUAL DISCONNECTING] disconnect status', () async {
+    test('disconnect status', () async {
       _channelProvider.disconnect();
 
       await expectLater(
@@ -155,8 +155,8 @@ void main() {
       expect(_channelProvider.sending, isFalse);
     });
 
-    test('[MANUAL DISCONNECTING] restoring after disconnect', () async {
-      _channelProvider.connect();
+    test('restoring after disconnect', () async {
+      await _channelProvider.connect();
 
       await expectLater(
         _channelProvider.connectedStream,

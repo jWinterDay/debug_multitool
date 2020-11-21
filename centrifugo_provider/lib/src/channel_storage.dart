@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:isolate';
 
 import 'package:centrifuge/centrifuge.dart' as centrifuge;
 import 'package:centrifugo_provider/centrifugo_provider.dart';
@@ -21,20 +22,40 @@ class ChannelProvider {
     @required this.url,
     this.connectTimeout = _kDefaultConnectTimeout,
     this.clientConfig,
-    this.sendTimeout = _kDefaultSendTimeout,
+    this.useBuffer = true,
   })  : assert(bufferLimit != null),
         assert(url != null),
-        assert(_kDefaultConnectTimeout != null),
-        assert(_kDefaultSendTimeout != null) {
+        assert(_kDefaultConnectTimeout != null) {
     _dataBuffer = []..length = bufferLimit;
     _client = centrifuge.createClient(url, config: clientConfig);
   }
 
+  /// main entry point
+  // Future<ChannelProvider> init({
+  //   int bufferLimit,
+  //   @required String url,
+  //   Duration connectTimeout,
+  //   centrifuge.ClientConfig clientConfig,
+  //   bool useBuffer = true,
+  // }) async {
+  //   _receivePort = ReceivePort();
+  //   _mainIsolate = await Isolate.spawn(gfg, _receivePort.sendPort);
+
+  //   return ChannelProvider._(
+  //     bufferLimit: bufferLimit,
+  //     url: url,
+  //     connectTimeout: connectTimeout,
+  //     clientConfig: clientConfig,
+  //     useBuffer: useBuffer,
+  //   );
+  // }
+
   final int bufferLimit;
   final String url;
   final Duration connectTimeout;
-  final Duration sendTimeout;
+  // final Duration sendTimeout;
   final centrifuge.ClientConfig clientConfig;
+  final bool useBuffer;
 
   /// <channel name, subscription>
   final Map<String, centrifuge.Subscription> _subscriptionMap = {};
@@ -59,11 +80,30 @@ class ChannelProvider {
   StreamSubscription _centrifugoConnectSubscription;
   StreamSubscription _centrifugoDisconnectSubscription;
 
+  // isolate
+  Isolate _mainIsolate;
+  ReceivePort _receivePort;
+  SendPort _sendPort;
+
   void clearBuffer() {
     _dataBuffer.clear();
   }
 
-  bool connect() {
+  static void gfg(SendPort sendPort) {
+    int counter = 0;
+
+    // Printing Output message after every 2 sec.
+    Timer.periodic(new Duration(seconds: 2), (Timer t) {
+      // Increasing the counter
+      print('-----timer $counter');
+      counter++;
+
+      //Printing the output message
+      // stdout.writeln('Welcome to GeeksForGeeks $counter');
+    });
+  }
+
+  Future<bool> connect() async {
     if (connectStatus == ConnectStatus.connecting) {
       return false; //throw AlreadyInitializedException();
     }
@@ -91,6 +131,9 @@ class ChannelProvider {
 
     _client.connect();
 
+    _receivePort = ReceivePort();
+    _mainIsolate = await Isolate.spawn(gfg, _receivePort.sendPort);
+
     return true;
   }
 
@@ -106,6 +149,8 @@ class ChannelProvider {
     }
 
     _connectTimer?.cancel();
+
+    _mainIsolate?.kill(priority: Isolate.immediate);
   }
 
   bool createSubscription(String channelName) {
@@ -124,6 +169,10 @@ class ChannelProvider {
   }
 
   void _addToBuffer(String channelName, String action, List<int> utf8ListData) {
+    if (!useBuffer) {
+      return;
+    }
+
     // in range
     if (_dataBuffer.length > bufferLimit) {
       _dataBuffer.removeAt(0);
@@ -147,7 +196,12 @@ class ChannelProvider {
     return timeoutData;
   }
 
-  Future<SendResult> send(String channelName, String action, List<int> utf8ListData) async {
+  Future<SendResult> send(
+    String channelName,
+    String action,
+    List<int> utf8ListData, {
+    Duration sendTimeout = _kDefaultSendTimeout,
+  }) async {
     if (_client == null) {
       return SendResult.clientIsNull;
     }
@@ -180,6 +234,11 @@ class ChannelProvider {
 
         return SendResult.timeException;
       }
+
+      // ignore: avoid_print
+      print('send error for action: $action: $error');
+
+      return SendResult.anotherException;
     }
 
     // runZonedGuarded(() async {
